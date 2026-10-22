@@ -1,0 +1,123 @@
+[
+  {
+    "id": "data-analyst", "title": "Data Analyst", "industry": "Data & Analytics",
+    "description": "Turns raw data into clear insights, dashboards and recommendations that help teams make decisions.",
+    "interestKeywords": ["data", "analytics", "analysis", "charts", "reports", "dashboards", "insights", "business intelligence", "statistics"],
+    "relatedMajors": ["statistics", "mathematics", "economics", "computer science", "information systems", "business", "data science", "finance"],
+    "requiredSkills": [
+      { "skillId": "sql", "importance": 5 }, { "skillId": "data-analysis", "importance": 5 }, { "skillId": "data-visualization", "importance": 5 },
+      { "skillId": "statistics", "importance": 4 }, { "skillId": "python", "importance": 3 }, { "skillId": "communication", "importance": 4 },
+      { "skillId": "data-storytelling", "importance": 4 }, { "skillId": "critical-thinking", "importance": 3 }, { "skillId": "problem-solving", "importance": 3 }
+    ]
+  },
+  {
+    "id": "data-scientist", "title": "Data Scientist", "industry": "Data & Analytics",
+    "description": "Builds statistical and machine learning models to predict outcomes and uncover patterns in complex data.",
+    "interestKeywords": ["ai", "machine learning", "data science", "prediction", "models", "statistics", "research", "analytics", "python"],
+    "relatedMajors": ["statistics", "mathematics", "computer science", "data science", "physics", "engineering", "artificial intelligence"],
+    "requiredSkills": [
+      { "skillId": "python", "importance": 5 }, { "skillId": "statistics", "importance": 5 }, { "skillId": "machine-learning", "importance": 5 },
+      { "skillId": "sql", "importance": 4 }, { "skillId": "data-analysis", "importance": 4 }, { "skillId": "data-visualization", "importance": 3 },
+      { "skillId": "critical-thinking", "importance": 4 }, { "skillId": "communication", "importance": 3 }, { "skillId": "problem-solving", "importance": 4 }
+    ]
+  },
+  {
+    "id": "software-developer", "title": "Software Developer", "industry": "Technology",
+    "description": "Designs, builds, tests and maintains software applications and services.",
+    "interestKeywords": ["software", "programming", "coding", "apps", "web", "development", "engineering", "building", "backend", "frontend"],
+    "relatedMajors": ["computer science", "software engineering", "information technology", "information systems", "computer engineering"],
+    "requiredSkills": [
+      { "skillId": "software-engineering", "importance": 5 }, { "skillId": "java", "importance": 3 }, { "skillId": "javascript", "importance": 3 },
+      { "skillId": "python", "importance": 3 }, { "skillId": "apis", "importance": 4 }, { "skillId": "git", "importance": 4 },
+      { "skillId": "testing", "importance": 3 }, { "skillId": "sql", "importance": 3 }, { "skillId": "problem-solving", "importance": 5 }, { "skillId": "teamwork", "importance": 3 }
+    ]
+  },
+  {
+    "id": "ai-ml-engineer", "title": "AI/ML Engineer", "industry": "Technology",
+    "description": "Designs, trains and deploys machine learning and generative AI systems in production software.",
+    "interestKeywords": ["ai", "artificial intelligence", "machine learning", "deep learning", "llm", "neural networks", "models", "automation", "generative"],
+    "relatedMajors": ["computer science", "artificial intelligence", "data science", "mathematics", "engineering", "software engineering"],
+    "requiredSkills": [
+      { "skillId": "python", "importance": 5 }, { "skillId": "machine-learning", "importance": 5 }, { "skillId": "deep-learning", "importance": 4 },
+      { "skillId": "software-engineering", "importance": 4 }, { "skillId": "apis", "importance": 3 }, { "skillId": "cloud-computing", "importance": 3 },
+      { "skillId": "generative-ai", "importance": 4 }, { "skillId": "statistics", "importance": 3 }, { "skillId": "problem-solving", "importance": 4 }, { "skillId": "ai-literacy", "importance": 3 }
+    ]
+  },
+  {
+    "id": "business-analyst", "title": "Business Analyst", "industry": "Business",
+    "description": "Bridges business needs and technical teams by analysing processes, gathering requirements and recommending improvements.",
+    "interestKeywords": ["business", "process", "requirements", "strategy", "consulting", "operations", "stakeholders", "improvement", "analysis"],
+    "relatedMajors": ["business", "information systems", "economics", "management", "finance", "accounting", "industrial engineering"],
+    "requiredSkills": [
+      { "skillId": "business-analysis", "importance": 5 }, { "skillId": "data-analysis", "importance": 4 }, { "skillId": "sql", "importance": 3 },
+      { "skillId": "communication", "importance": 5 }, { "skillId": "stakeholder-management", "importance": 4 }, { "skillId": "project-management", "importance": 3 },
+      { "skillId": "data-visualization", "importance": 3 }, { "skillId": "problem-solving", "importance": 4 }, { "skillId": "critical-thinking", "importance": 3 }
+    ]
+  },
+  {
+    "id": "ux-designer", "title": "UX Designer", "industry": "Design",
+    "description": "Researches user needs and designs usable, accessible digital products and interfaces.",
+    "interestKeywords": ["design", "user experience", "ux", "ui", "usability", "creative", "prototype", "users", "interface", "accessibility"],
+    "relatedMajors": ["design", "psychology", "multimedia", "human-computer interaction", "computer science", "communication", "creative media"],
+    "requiredSkills": [
+      { "skillId": "ux-research", "importance": 5 }, { "skillId": "ui-design", "importance": 5 }, { "skillId": "creativity", "importance": 4 },
+      { "skillId": "communication", "importance": 4 }, { "skillId": "teamwork", "importance": 3 }, { "skillId": "critical-thinking", "importance": 3 },
+      { "skillId": "problem-solving", "importance": 3 }, { "skillId": "generative-ai", "importance": 2 }, { "skillId": "data-analysis", "importance": 2 }
+    ]
+  },
+  {
+    "id": "digital-marketing-specialist", "title": "Digital Marketing Specialist", "industry": "Marketing",
+    "description": "Plans and measures online campaigns, content and search presence to grow audiences and customers.",
+    "interestKeywords": ["marketing", "social media", "content", "brand", "campaigns", "advertising", "seo", "audience", "creative", "ecommerce"],
+    "relatedMajors": ["marketing", "business", "communication", "mass communication", "advertising", "media"],
+    "requiredSkills": [
+      { "skillId": "digital-marketing", "importance": 5 }, { "skillId": "seo-analytics", "importance": 4 }, { "skillId": "content-writing", "importance": 4 },
+      { "skillId": "data-analysis", "importance": 3 }, { "skillId": "creativity", "importance": 4 }, { "skillId": "communication", "importance": 4 },
+      { "skillId": "generative-ai", "importance": 3 }, { "skillId": "adaptability", "importance": 3 }
+    ]
+  },
+  {
+    "id": "cybersecurity-analyst", "title": "Cybersecurity Analyst", "industry": "Security",
+    "description": "Monitors, defends and tests systems against cyber threats and helps organisations manage security risk.",
+    "interestKeywords": ["security", "cybersecurity", "hacking", "threats", "privacy", "protection", "risk", "networks", "defence", "forensics"],
+    "relatedMajors": ["computer science", "information technology", "cybersecurity", "computer engineering", "information systems", "networking"],
+    "requiredSkills": [
+      { "skillId": "cybersecurity", "importance": 5 }, { "skillId": "networking", "importance": 4 }, { "skillId": "risk-assessment", "importance": 4 },
+      { "skillId": "python", "importance": 3 }, { "skillId": "problem-solving", "importance": 4 }, { "skillId": "critical-thinking", "importance": 4 },
+      { "skillId": "ethics", "importance": 3 }, { "skillId": "communication", "importance": 3 }, { "skillId": "cloud-computing", "importance": 2 }
+    ]
+  },
+  {
+    "id": "project-manager", "title": "Project Manager", "industry": "Business",
+    "description": "Plans, coordinates and delivers projects on time by managing scope, people, risk and stakeholders.",
+    "interestKeywords": ["project", "planning", "management", "leadership", "coordination", "teams", "delivery", "operations", "organising", "agile"],
+    "relatedMajors": ["business", "management", "engineering", "information technology", "industrial engineering", "operations"],
+    "requiredSkills": [
+      { "skillId": "project-management", "importance": 5 }, { "skillId": "stakeholder-management", "importance": 5 }, { "skillId": "communication", "importance": 5 },
+      { "skillId": "leadership", "importance": 4 }, { "skillId": "risk-assessment", "importance": 3 }, { "skillId": "teamwork", "importance": 4 },
+      { "skillId": "adaptability", "importance": 3 }, { "skillId": "data-analysis", "importance": 2 }, { "skillId": "generative-ai", "importance": 2 }
+    ]
+  },
+  {
+    "id": "cloud-engineer", "title": "Cloud Engineer", "industry": "Technology",
+    "description": "Designs, deploys and operates secure, scalable infrastructure and services on cloud platforms.",
+    "interestKeywords": ["cloud", "infrastructure", "aws", "azure", "devops", "automation", "servers", "deployment", "systems", "scalability"],
+    "relatedMajors": ["computer science", "information technology", "computer engineering", "networking", "software engineering"],
+    "requiredSkills": [
+      { "skillId": "cloud-computing", "importance": 5 }, { "skillId": "devops", "importance": 5 }, { "skillId": "networking", "importance": 4 },
+      { "skillId": "cybersecurity", "importance": 3 }, { "skillId": "python", "importance": 3 }, { "skillId": "git", "importance": 3 },
+      { "skillId": "problem-solving", "importance": 4 }, { "skillId": "teamwork", "importance": 2 }
+    ]
+  },
+  {
+    "id": "education-technologist", "title": "Education Technologist", "industry": "Education",
+    "description": "Designs digital learning experiences and helps schools, universities and employers use technology to teach well.",
+    "interestKeywords": ["education", "teaching", "learning", "training", "edtech", "curriculum", "students", "e-learning", "technology", "mentoring"],
+    "relatedMajors": ["education", "instructional design", "psychology", "computer science", "communication", "information technology"],
+    "requiredSkills": [
+      { "skillId": "instructional-design", "importance": 5 }, { "skillId": "edtech-tools", "importance": 5 }, { "skillId": "communication", "importance": 4 },
+      { "skillId": "creativity", "importance": 3 }, { "skillId": "ai-literacy", "importance": 3 }, { "skillId": "generative-ai", "importance": 3 },
+      { "skillId": "data-analysis", "importance": 2 }, { "skillId": "content-writing", "importance": 3 }, { "skillId": "teamwork", "importance": 3 }, { "skillId": "adaptability", "importance": 3 }
+    ]
+  }
+]

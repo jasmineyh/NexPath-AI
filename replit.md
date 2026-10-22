@@ -1,45 +1,34 @@
-# [Project name]
+# NexPath AI
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+AI-powered career navigation and reskilling web app for Malaysian students and early-career professionals (SDC Hackathon 2026). Landing page at `/`, app workspace at `/app/...`.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Workflows: `artifacts/api-server: API Server`, `artifacts/nexpath: web`
+- `pnpm run typecheck` — full typecheck
+- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas
+- Optional env: `EMBEDDING_API_URL`, `EMBEDDING_API_KEY` (external embedding endpoint; falls back to rule-based matching when absent)
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- pnpm workspaces, Node.js, TypeScript 5.9
+- Frontend: React + Vite + Tailwind (`artifacts/nexpath`)
+- API: Express 5 (`artifacts/api-server`), OpenAPI + Orval codegen, Zod
+- No database; reference data lives in `artifacts/api-server/data/*.json`
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- API contract: `lib/api-spec/openapi.yaml`
+- Matching engine: `artifacts/api-server/src/lib/matcher` and `src/lib/engine.ts`
+- Data files: `artifacts/api-server/data` (re-read per request)
+- See `README.md` for env vars, embedding endpoint contract and data provenance
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
-
-## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- User profile, target career and roadmap progress persist client-side in localStorage; the backend is stateless.
+- Embedding scores are blended with deterministic scores by max, so keyword hits are never lost.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- The workflow runs the API from `artifacts/api-server`, so data is resolved from `./data` (override with `NEXPATH_DATA_DIR`).
+- Do not claim guaranteed outcomes or forecasts anywhere in the UI (user's trust rules).

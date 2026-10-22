@@ -1,0 +1,176 @@
+{
+  "sdgs": [
+    { "number": 1, "name": "No Poverty", "color": "#E5243B" },
+    { "number": 2, "name": "Zero Hunger", "color": "#DDA63A" },
+    { "number": 3, "name": "Good Health and Well-being", "color": "#4C9F38" },
+    { "number": 4, "name": "Quality Education", "color": "#C5192D" },
+    { "number": 5, "name": "Gender Equality", "color": "#FF3A21" },
+    { "number": 6, "name": "Clean Water and Sanitation", "color": "#26BDE2" },
+    { "number": 7, "name": "Affordable and Clean Energy", "color": "#FCC30B" },
+    { "number": 8, "name": "Decent Work and Economic Growth", "color": "#A21942" },
+    { "number": 9, "name": "Industry, Innovation and Infrastructure", "color": "#FD6925" },
+    { "number": 10, "name": "Reduced Inequalities", "color": "#DD1367" },
+    { "number": 11, "name": "Sustainable Cities and Communities", "color": "#FD9D24" },
+    { "number": 12, "name": "Responsible Consumption and Production", "color": "#BF8B2E" },
+    { "number": 13, "name": "Climate Action", "color": "#3F7E44" },
+    { "number": 14, "name": "Life Below Water", "color": "#0A97D9" },
+    { "number": 15, "name": "Life on Land", "color": "#56C02B" },
+    { "number": 16, "name": "Peace, Justice and Strong Institutions", "color": "#00689D" },
+    { "number": 17, "name": "Partnerships for the Goals", "color": "#19486A" }
+  ],
+  "occupations": {
+    "data-analyst": [
+      { "sdg": 8, "justification": "Evidence-based analysis helps organisations plan productive work and growth." },
+      { "sdg": 13, "justification": "Data analysis can support SDG 13 when applied to climate and environmental monitoring." }
+    ],
+    "data-scientist": [
+      { "sdg": 3, "justification": "Predictive models can support health-resource planning and disease surveillance." },
+      { "sdg": 13, "justification": "Modelling can improve climate, energy and disaster forecasting when applied to those problems." },
+      { "sdg": 9, "justification": "Data-driven R&D supports industrial innovation." }
+    ],
+    "software-developer": [
+      { "sdg": 9, "justification": "Software is core digital infrastructure for innovation across industries." },
+      { "sdg": 4, "justification": "Developers can build accessible learning platforms and tools." },
+      { "sdg": 8, "justification": "Digital products create skilled, productive employment." }
+    ],
+    "ai-ml-engineer": [
+      { "sdg": 9, "justification": "Applied AI drives industrial and service innovation." },
+      { "sdg": 3, "justification": "ML systems can assist in diagnostics and care delivery when responsibly validated." },
+      { "sdg": 13, "justification": "ML can optimise energy use and improve climate forecasting." }
+    ],
+    "business-analyst": [
+      { "sdg": 8, "justification": "Process improvement raises organisational productivity and job quality." },
+      { "sdg": 9, "justification": "Requirements analysis helps organisations adopt new technology effectively." }
+    ],
+    "ux-designer": [
+      { "sdg": 10, "justification": "Inclusive and accessible design widens access to digital services." },
+      { "sdg": 4, "justification": "Usable design lowers barriers in digital learning products." }
+    ],
+    "digital-marketing-specialist": [
+      { "sdg": 8, "justification": "Digital marketing helps small businesses reach customers and grow." },
+      { "sdg": 12, "justification": "Marketing can promote responsible consumption and local, sustainable products." }
+    ],
+    "cybersecurity-analyst": [
+      { "sdg": 16, "justification": "Protecting systems and data supports trusted, accountable institutions." },
+      { "sdg": 9, "justification": "Secure infrastructure is a prerequisite for resilient digital systems." }
+    ],
+    "project-manager": [
+      { "sdg": 8, "justification": "Well-run projects deliver economic value and decent work." },
+      { "sdg": 17, "justification": "Coordinating multi-party projects supports cross-sector partnerships." }
+    ],
+    "cloud-engineer": [
+      { "sdg": 9, "justification": "Scalable cloud infrastructure underpins digital innovation." },
+      { "sdg": 13, "justification": "Efficient shared infrastructure can reduce energy use compared with idle on-premise servers." },
+      { "sdg": 8, "justification": "Cloud skills are in demand and support digital-economy employment." }
+    ],
+    "education-technologist": [
+      { "sdg": 4, "justification": "Designing digital learning directly supports quality education." },
+      { "sdg": 10, "justification": "Online platforms can widen access for remote and lower-income learners." },
+      { "sdg": 9, "justification": "Education technology is part of the digital innovation ecosystem." }
+    ]
+  },
+  "skills": {
+    "python": [{ "sdg": 9, "justification": "Programming enables digital solutions and infrastructure innovation." }],
+    "software-engineering": [
+      { "sdg": 9, "justification": "Software builds the digital infrastructure behind innovation." },
+      { "sdg": 8, "justification": "Digital products create productive employment." }
+    ],
+    "apis": [
+      { "sdg": 9, "justification": "Open, interoperable APIs enable shared digital infrastructure." },
+      { "sdg": 17, "justification": "Open interfaces let organisations share data and cooperate." }
+    ],
+    "javascript": [
+      { "sdg": 4, "justification": "Web skills help build accessible learning and information platforms." },
+      { "sdg": 9, "justification": "Web technology is a core layer of digital infrastructure." }
+    ],
+    "testing": [{ "sdg": 9, "justification": "Quality assurance supports reliable, resilient digital systems." }],
+    "data-analysis": [
+      { "sdg": 13, "justification": "Data analysis can support SDG 13 when applied to climate and environmental monitoring." },
+      { "sdg": 8, "justification": "Evidence-based analysis supports productivity and decent-work planning." }
+    ],
+    "data-visualization": [
+      { "sdg": 11, "justification": "Dashboards and clear reporting help communities and planners track public services." },
+      { "sdg": 10, "justification": "Transparent reporting can reveal inequality gaps between groups." }
+    ],
+    "statistics": [
+      { "sdg": 3, "justification": "Statistical methods underpin public-health surveillance and clinical evidence." },
+      { "sdg": 10, "justification": "Disaggregating data by group helps expose inequality." }
+    ],
+    "machine-learning": [
+      { "sdg": 3, "justification": "ML can support diagnostics and health-resource planning when validated." },
+      { "sdg": 13, "justification": "ML can improve climate and energy forecasting." }
+    ],
+    "deep-learning": [{ "sdg": 9, "justification": "Advanced AI research drives industrial and scientific innovation." }],
+    "generative-ai": [
+      { "sdg": 4, "justification": "Generative AI can power personalised learning support." },
+      { "sdg": 8, "justification": "Responsible AI tooling can lift productivity." }
+    ],
+    "ai-literacy": [
+      { "sdg": 4, "justification": "AI literacy is a core digital skill for inclusive education." },
+      { "sdg": 16, "justification": "Understanding AI risks supports accountable use in institutions." }
+    ],
+    "cloud-computing": [
+      { "sdg": 9, "justification": "Cloud platforms give startups and institutions scalable infrastructure." },
+      { "sdg": 13, "justification": "Efficient shared infrastructure can reduce energy use." }
+    ],
+    "devops": [{ "sdg": 9, "justification": "Automation makes digital infrastructure more reliable and efficient." }],
+    "networking": [
+      { "sdg": 9, "justification": "Reliable networks underpin digital infrastructure and connectivity." },
+      { "sdg": 10, "justification": "Connectivity expands access to services for more people." }
+    ],
+    "cybersecurity": [
+      { "sdg": 16, "justification": "Protecting systems and data supports trusted institutions." },
+      { "sdg": 9, "justification": "Secure infrastructure is a prerequisite for resilient digital systems." }
+    ],
+    "risk-assessment": [{ "sdg": 16, "justification": "Risk and compliance practice supports accountable, well-governed institutions." }],
+    "ux-research": [
+      { "sdg": 10, "justification": "Inclusive research surfaces the needs of under-served users." },
+      { "sdg": 4, "justification": "Understanding learners improves educational products." }
+    ],
+    "ui-design": [
+      { "sdg": 10, "justification": "Accessible interface design widens access for people with disabilities." },
+      { "sdg": 9, "justification": "Good interaction design makes new technology usable at scale." }
+    ],
+    "digital-marketing": [
+      { "sdg": 8, "justification": "Digital marketing helps small businesses reach customers and grow." },
+      { "sdg": 12, "justification": "Marketing can promote responsible consumption messages." }
+    ],
+    "seo-analytics": [{ "sdg": 8, "justification": "Search and analytics skills help local businesses become discoverable online." }],
+    "content-writing": [{ "sdg": 4, "justification": "Clear educational content supports knowledge sharing." }],
+    "business-analysis": [
+      { "sdg": 8, "justification": "Process improvement raises organisational productivity." },
+      { "sdg": 9, "justification": "Requirements work helps organisations adopt technology effectively." }
+    ],
+    "instructional-design": [{ "sdg": 4, "justification": "Learning design directly supports quality education." }],
+    "edtech-tools": [
+      { "sdg": 4, "justification": "Digital learning tools extend quality education." },
+      { "sdg": 10, "justification": "Online platforms can widen access for remote and lower-income learners." }
+    ],
+    "project-management": [
+      { "sdg": 8, "justification": "Well-managed projects deliver economic value." },
+      { "sdg": 17, "justification": "Coordinating multi-party projects supports partnerships." }
+    ],
+    "stakeholder-management": [{ "sdg": 17, "justification": "Aligning stakeholders is central to multi-sector partnerships." }],
+    "communication": [{ "sdg": 4, "justification": "Explaining ideas clearly supports teaching and knowledge transfer." }],
+    "teamwork": [{ "sdg": 17, "justification": "Collaboration across groups mirrors the partnership approach of SDG 17." }],
+    "problem-solving": [{ "sdg": 9, "justification": "Practical problem solving drives innovation." }],
+    "critical-thinking": [{ "sdg": 16, "justification": "Evidence-based reasoning supports informed, accountable decisions." }],
+    "leadership": [
+      { "sdg": 5, "justification": "Inclusive leadership can promote gender equality in workplaces." },
+      { "sdg": 8, "justification": "Good leadership improves job quality and team productivity." }
+    ],
+    "adaptability": [
+      { "sdg": 8, "justification": "Lifelong learning helps workers stay employable as jobs change." },
+      { "sdg": 4, "justification": "Learning agility is the foundation of continuing education." }
+    ],
+    "creativity": [{ "sdg": 9, "justification": "Creative problem framing fuels innovation." }],
+    "data-storytelling": [
+      { "sdg": 13, "justification": "Communicating data clearly can build public support for climate action when applied to environmental topics." },
+      { "sdg": 16, "justification": "Clear presentation of evidence supports transparency." }
+    ],
+    "ethics": [
+      { "sdg": 16, "justification": "Data ethics and privacy practice supports trust and accountability." },
+      { "sdg": 10, "justification": "Responsible data practice helps guard against discriminatory outcomes." }
+    ]
+  }
+}

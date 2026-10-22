@@ -1,0 +1,96 @@
+{
+  "python": { "activity": "Work through a beginner Python course, then write a small script that cleans and summarises a CSV file.", "duration": "4-6 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Scientific Computing with Python", "provider": "freeCodeCamp", "url": "https://www.freecodecamp.org/learn/scientific-computing-with-python/" },
+    { "title": "Python (Kaggle Learn)", "provider": "Kaggle", "url": "https://www.kaggle.com/learn/python" },
+    { "title": "CS50's Introduction to Programming with Python", "provider": "Harvard / edX", "url": "https://cs50.harvard.edu/python/" } ] },
+  "sql": { "activity": "Learn core SQL queries and joins, then answer 10 practice questions on a sample database.", "duration": "2-4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Intro to SQL", "provider": "Kaggle", "url": "https://www.kaggle.com/learn/intro-to-sql" },
+    { "title": "Intro to SQL (Khan Academy)", "provider": "Khan Academy", "url": "https://www.khanacademy.org/computing/computer-programming/sql" },
+    { "title": "CS50's Introduction to Databases with SQL", "provider": "Harvard / edX", "url": "https://cs50.harvard.edu/sql/" } ] },
+  "java": { "activity": "Practise object-oriented Java by building a small command-line application.", "duration": "4-6 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: Java programming courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=java%20programming" } ] },
+  "javascript": { "activity": "Complete a JavaScript fundamentals track and build one small interactive web page.", "duration": "4-6 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "JavaScript Algorithms and Data Structures", "provider": "freeCodeCamp", "url": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures-v8/" } ] },
+  "software-engineering": { "activity": "Build and publish a small full application, including code review from a peer.", "duration": "6-8 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "CS50x: Introduction to Computer Science", "provider": "Harvard / edX", "url": "https://cs50.harvard.edu/x/" },
+    { "title": "Search: software engineering courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=software%20engineering" } ] },
+  "apis": { "activity": "Build a small REST API with a few endpoints and document it.", "duration": "2-3 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Back End Development and APIs", "provider": "freeCodeCamp", "url": "https://www.freecodecamp.org/learn/back-end-development-and-apis/" } ] },
+  "git": { "activity": "Read the Git basics chapters and practise branching and pull requests on a personal project.", "duration": "1 week", "durationBasis": "estimated", "resources": [
+    { "title": "Pro Git (free book)", "provider": "git-scm.com", "url": "https://git-scm.com/book/en/v2" } ] },
+  "testing": { "activity": "Add unit tests to one of your existing projects.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: software testing courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=software%20testing" } ] },
+  "data-analysis": { "activity": "Complete a structured data analysis course and finish one case-study project.", "duration": "3-6 months (part-time)", "durationBasis": "provider-stated", "resources": [
+    { "title": "Google Data Analytics Professional Certificate", "provider": "Google / Coursera", "url": "https://www.coursera.org/professional-certificates/google-data-analytics" },
+    { "title": "Data Analysis with Python", "provider": "freeCodeCamp", "url": "https://www.freecodecamp.org/learn/data-analysis-with-python/" },
+    { "title": "Pandas", "provider": "Kaggle", "url": "https://www.kaggle.com/learn/pandas" } ] },
+  "data-visualization": { "activity": "Build two dashboards or chart-based reports from public data and write a one-paragraph takeaway for each.", "duration": "2-3 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Data Visualization", "provider": "Kaggle", "url": "https://www.kaggle.com/learn/data-visualization" },
+    { "title": "Data Visualization certification", "provider": "freeCodeCamp", "url": "https://www.freecodecamp.org/learn/data-visualization/" } ] },
+  "statistics": { "activity": "Study descriptive statistics, probability and hypothesis testing, and apply them to a small dataset.", "duration": "4-6 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Statistics and probability", "provider": "Khan Academy", "url": "https://www.khanacademy.org/math/statistics-probability" } ] },
+  "machine-learning": { "activity": "Complete an introductory machine learning course and train, evaluate and explain one model.", "duration": "About 2 months (part-time)", "durationBasis": "provider-stated", "resources": [
+    { "title": "Machine Learning Specialization", "provider": "DeepLearning.AI / Stanford (Coursera)", "url": "https://www.coursera.org/specializations/machine-learning-introduction" },
+    { "title": "Intro to Machine Learning", "provider": "Kaggle", "url": "https://www.kaggle.com/learn/intro-to-machine-learning" },
+    { "title": "Machine Learning with Python", "provider": "freeCodeCamp", "url": "https://www.freecodecamp.org/learn/machine-learning-with-python/" } ] },
+  "deep-learning": { "activity": "Learn neural network basics and reproduce a small image or text classifier.", "duration": "4-6 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Intro to Deep Learning", "provider": "Kaggle", "url": "https://www.kaggle.com/learn/intro-to-deep-learning" },
+    { "title": "CS50's Introduction to AI with Python", "provider": "Harvard / edX", "url": "https://cs50.harvard.edu/ai/" } ] },
+  "generative-ai": { "activity": "Learn what generative AI can and cannot do, then document a prompt workflow for a task in your field.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Generative AI for Everyone", "provider": "DeepLearning.AI (Coursera)", "url": "https://www.coursera.org/learn/generative-ai-for-everyone" } ] },
+  "ai-literacy": { "activity": "Take a non-technical AI course and write a short note on risks and limits of AI in your target field.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "AI For Everyone", "provider": "DeepLearning.AI (Coursera)", "url": "https://www.coursera.org/learn/ai-for-everyone" } ] },
+  "cloud-computing": { "activity": "Complete a cloud fundamentals course and deploy a small app on a free tier.", "duration": "3-5 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Azure Fundamentals (AZ-900) learning paths", "provider": "Microsoft Learn", "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/" },
+    { "title": "AWS Skill Builder", "provider": "Amazon Web Services", "url": "https://explore.skillbuilder.aws/learn" } ] },
+  "devops": { "activity": "Containerise one of your projects and set up an automated build and test pipeline.", "duration": "3-4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: DevOps courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=devops" } ] },
+  "networking": { "activity": "Learn core networking concepts (IP, DNS, HTTP, firewalls) and practise with simple lab exercises.", "duration": "3-4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: computer networking courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=computer%20networking" } ] },
+  "cybersecurity": { "activity": "Complete a cybersecurity foundations programme and practise on beginner security labs.", "duration": "About 6 months (part-time)", "durationBasis": "provider-stated", "resources": [
+    { "title": "Google Cybersecurity Professional Certificate", "provider": "Google / Coursera", "url": "https://www.coursera.org/professional-certificates/google-cybersecurity" },
+    { "title": "Information Security certification", "provider": "freeCodeCamp", "url": "https://www.freecodecamp.org/learn/information-security/" },
+    { "title": "CS50's Introduction to Cybersecurity", "provider": "Harvard / edX", "url": "https://cs50.harvard.edu/cybersecurity/" } ] },
+  "risk-assessment": { "activity": "Learn a basic risk-register approach and apply it to a small project or system.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: risk management courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=risk%20management" } ] },
+  "ux-research": { "activity": "Plan and run 3-5 user interviews for a real or sample product and summarise the findings.", "duration": "2-3 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Google UX Design Professional Certificate", "provider": "Google / Coursera", "url": "https://www.coursera.org/professional-certificates/google-ux-design" } ] },
+  "ui-design": { "activity": "Design and prototype a small mobile or web flow, then test it with a few people.", "duration": "3-4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Google UX Design Professional Certificate", "provider": "Google / Coursera", "url": "https://www.coursera.org/professional-certificates/google-ux-design" },
+    { "title": "Search: UI design courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=ui%20design" } ] },
+  "digital-marketing": { "activity": "Complete a digital marketing programme and plan a mock campaign with goals and metrics.", "duration": "About 6 months (part-time)", "durationBasis": "provider-stated", "resources": [
+    { "title": "Google Digital Marketing & E-commerce Professional Certificate", "provider": "Google / Coursera", "url": "https://www.coursera.org/professional-certificates/google-digital-marketing-ecommerce" } ] },
+  "seo-analytics": { "activity": "Audit a small website for search basics and set up web analytics reporting.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: SEO and web analytics courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=seo%20analytics" } ] },
+  "content-writing": { "activity": "Write three short pieces for a target audience and get feedback on clarity and tone.", "duration": "2-3 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: copywriting and content courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=content%20writing" } ] },
+  "business-analysis": { "activity": "Practise writing requirements and mapping a process for a real workflow.", "duration": "3-4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Google Business Intelligence Professional Certificate", "provider": "Google / Coursera", "url": "https://www.coursera.org/professional-certificates/google-business-intelligence" },
+    { "title": "Search: business analysis courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=business%20analysis" } ] },
+  "instructional-design": { "activity": "Design a short learning module with objectives, activities and an assessment.", "duration": "3-4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: instructional design courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=instructional%20design" } ] },
+  "edtech-tools": { "activity": "Build a small course in a learning management system and try one interactive tool.", "duration": "2-3 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: educational technology courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=educational%20technology" } ] },
+  "project-management": { "activity": "Complete a project management foundations course and plan a small real project end to end.", "duration": "About 6 months (part-time)", "durationBasis": "provider-stated", "resources": [
+    { "title": "Google Project Management Professional Certificate", "provider": "Google / Coursera", "url": "https://www.coursera.org/professional-certificates/google-project-management" } ] },
+  "stakeholder-management": { "activity": "Practise stakeholder mapping and a difficult-conversation role play on a group project.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: stakeholder management courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=stakeholder%20management" } ] },
+  "communication": { "activity": "Give two short presentations and collect feedback on clarity.", "duration": "2-4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: professional communication courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=communication%20skills" } ] },
+  "teamwork": { "activity": "Join a team project or hackathon and reflect on your role and what you would improve.", "duration": "2-4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: teamwork and collaboration courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=teamwork" } ] },
+  "problem-solving": { "activity": "Solve a set of structured practice problems and write down your approach for each.", "duration": "Ongoing", "durationBasis": "estimated", "resources": [
+    { "title": "Search: problem solving courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=problem%20solving" } ] },
+  "critical-thinking": { "activity": "Practise evaluating claims and sources with a short critical-thinking course.", "duration": "2-3 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: critical thinking courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=critical%20thinking" } ] },
+  "leadership": { "activity": "Take a lead role in a student club or project and reflect on what worked.", "duration": "1-3 months", "durationBasis": "estimated", "resources": [
+    { "title": "Search: leadership courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=leadership" } ] },
+  "adaptability": { "activity": "Set a 30-day learning goal in a new area and record what you learn.", "duration": "4 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: learning how to learn", "provider": "Coursera", "url": "https://www.coursera.org/search?query=learning%20how%20to%20learn" } ] },
+  "creativity": { "activity": "Run a structured brainstorming and prototyping exercise on a real problem.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: creativity and innovation courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=creativity%20innovation" } ] },
+  "data-storytelling": { "activity": "Turn one of your analyses into a 5-slide story for a non-technical audience.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: data storytelling courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=data%20storytelling" } ] },
+  "ethics": { "activity": "Learn the basics of data ethics and Malaysia's data protection principles, and apply them to a project checklist.", "duration": "1-2 weeks", "durationBasis": "estimated", "resources": [
+    { "title": "Search: data ethics and privacy courses", "provider": "Coursera", "url": "https://www.coursera.org/search?query=data%20ethics" } ] }
+}

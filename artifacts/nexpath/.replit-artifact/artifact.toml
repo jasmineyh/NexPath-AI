@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "NexPath AI"
+description = "NexPath AI (Navigate What's Next.) is an AI-powered career navigation and reskilling platform for Malaysian university students, graduates and early-career professionals. Landing page plus an app workspace with profile survey, career matching, trends, career time machine, skill roadmap, progress tracker, resume generator and SDG impact visualisation."
+version = "1.0.0"
+id = "artifacts/nexpath"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22057
+
+[services.development]
+run = "pnpm --filter @workspace/nexpath run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nexpath", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/nexpath/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22057"
+BASE_PATH = "/"

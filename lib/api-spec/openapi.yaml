@@ -9,14 +9,16 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: profile
+  - name: explore
+  - name: roadmap
+  - name: impact
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +26,203 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /health:
+    get:
+      operationId: getAiStatus
+      tags: [health]
+      summary: Health plus active matching mode
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiStatus"
+  /similarity:
+    post:
+      operationId: testSimilarity
+      tags: [health]
+      summary: Return the skills most similar to a free-text phrase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SimilarityRequest"
+      responses:
+        "200":
+          description: Similar skills
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimilarityResult"
+  /profile/summary:
+    post:
+      operationId: getProfileSummary
+      tags: [profile]
+      summary: Template-generated career profile summary and linked market insights
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Profile"
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileSummary"
+  /skills:
+    get:
+      operationId: listSkills
+      tags: [profile]
+      summary: Skill catalogue (used for suggestions)
+      responses:
+        "200":
+          description: Skills
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+  /occupations:
+    get:
+      operationId: listOccupations
+      tags: [explore]
+      summary: Curated occupations (for compare pickers and Time Machine)
+      responses:
+        "200":
+          description: Occupations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Occupation"
+  /match:
+    post:
+      operationId: matchCareers
+      tags: [explore]
+      summary: Rank careers for a profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Profile"
+      responses:
+        "200":
+          description: Ranked matches
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchResponse"
+  /trends:
+    get:
+      operationId: listTrends
+      tags: [explore]
+      summary: Career evolution radar trends from data/trends.json
+      parameters:
+        - name: industry
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: skill
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Trends
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrendList"
+  /scenarios/{occupationId}:
+    get:
+      operationId: getScenarios
+      tags: [explore]
+      summary: Illustrative planning scenarios for an occupation
+      parameters:
+        - name: occupationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Scenarios
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScenarioSet"
+        "404":
+          description: Unknown occupation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /roadmap:
+    post:
+      operationId: buildRoadmap
+      tags: [roadmap]
+      summary: Ordered learning pathway for a target career
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoadmapRequest"
+      responses:
+        "200":
+          description: Roadmap
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Roadmap"
+        "404":
+          description: Unknown occupation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /sdgs:
+    get:
+      operationId: listSdgs
+      tags: [impact]
+      summary: SDG reference list
+      responses:
+        "200":
+          description: SDGs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Sdg"
+  /impact:
+    post:
+      operationId: buildImpact
+      tags: [impact]
+      summary: Career to skills to SDG relationship graph
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImpactRequest"
+      responses:
+        "200":
+          description: Graph
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImpactGraph"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +232,461 @@ components:
           type: string
       required:
         - status
-
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+    AiStatus:
+      type: object
+      required: [status, mode, modeLabel, embeddingConfigured, fallbackReason]
+      properties:
+        status:
+          type: string
+        mode:
+          type: string
+          enum: [embedding, deterministic]
+        modeLabel:
+          type: string
+        embeddingConfigured:
+          type: boolean
+        fallbackReason:
+          type: ["string", "null"]
+    SimilarityRequest:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          minLength: 1
+    SimilarSkill:
+      type: object
+      required: [skillId, name, similarity]
+      properties:
+        skillId:
+          type: string
+        name:
+          type: string
+        similarity:
+          type: number
+    SimilarityResult:
+      type: object
+      required: [mode, modeLabel, results]
+      properties:
+        mode:
+          type: string
+          enum: [embedding, deterministic]
+        modeLabel:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimilarSkill"
+    Experience:
+      type: object
+      required: [title, org, description]
+      properties:
+        title:
+          type: string
+        org:
+          type: string
+        description:
+          type: string
+        kind:
+          type: string
+          description: work, internship or project
+    Profile:
+      type: object
+      required: [educationLevel, major, status, technicalSkills, humanSkills]
+      properties:
+        name:
+          type: string
+        educationLevel:
+          type: string
+        major:
+          type: string
+        institution:
+          type: string
+        status:
+          type: string
+          description: student, fresh graduate, employed or career switcher
+        experiences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Experience"
+        technicalSkills:
+          type: array
+          items:
+            type: string
+        humanSkills:
+          type: array
+          items:
+            type: string
+        selfDescription:
+          type: string
+        interests:
+          type: string
+        goals:
+          type: string
+    Skill:
+      type: object
+      required: [id, name, category]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+          enum: [technical, professional]
+    OccupationSkill:
+      type: object
+      required: [skillId, name, importance]
+      properties:
+        skillId:
+          type: string
+        name:
+          type: string
+        importance:
+          type: number
+    Occupation:
+      type: object
+      required: [id, title, description, industry, requiredSkills, sdgs]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        industry:
+          type: string
+        requiredSkills:
+          type: array
+          items:
+            $ref: "#/components/schemas/OccupationSkill"
+        sdgs:
+          type: array
+          items:
+            type: integer
+    CareerMatch:
+      type: object
+      required: [occupation, score, coverage, interestAlignment, matchedSkills, missingSkills, reasons]
+      properties:
+        occupation:
+          $ref: "#/components/schemas/Occupation"
+        score:
+          type: number
+          description: Prototype suitability indicator 0-100, not a guarantee
+        coverage:
+          type: number
+          description: Weighted required-skill coverage 0-100
+        interestAlignment:
+          type: number
+          description: Interest alignment 0-100
+        matchedSkills:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillMatchDetail"
+        missingSkills:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillMatchDetail"
+        reasons:
+          type: array
+          items:
+            type: string
+    SkillMatchDetail:
+      type: object
+      required: [skillId, name, importance, similarity]
+      properties:
+        skillId:
+          type: string
+        name:
+          type: string
+        importance:
+          type: number
+        similarity:
+          type: number
+        evidence:
+          type: ["string", "null"]
+    MatchResponse:
+      type: object
+      required: [mode, modeLabel, results]
+      properties:
+        mode:
+          type: string
+          enum: [embedding, deterministic]
+        modeLabel:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/CareerMatch"
+    Trend:
+      type: object
+      required: [id, title, summary, industries, skills, occupations, sourceName, sourceUrl, publishedDate]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+        industries:
+          type: array
+          items:
+            type: string
+        skills:
+          type: array
+          items:
+            type: string
+        occupations:
+          type: array
+          items:
+            type: string
+        sourceName:
+          type: string
+        sourceUrl:
+          type: string
+        publishedDate:
+          type: string
+    TrendList:
+      type: object
+      required: [lastUpdated, industries, items]
+      properties:
+        lastUpdated:
+          type: string
+        industries:
+          type: array
+          items:
+            type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Trend"
+    ProfileSummary:
+      type: object
+      required: [overview, statedSkills, inferredStrengths, directions, developmentAreas, marketInsights, disclaimer, mode, modeLabel]
+      properties:
+        overview:
+          type: string
+        statedSkills:
+          type: array
+          items:
+            type: string
+        inferredStrengths:
+          type: array
+          items:
+            $ref: "#/components/schemas/InferredStrength"
+        directions:
+          type: array
+          items:
+            type: string
+        developmentAreas:
+          type: array
+          items:
+            type: string
+        marketInsights:
+          type: array
+          items:
+            $ref: "#/components/schemas/Trend"
+        disclaimer:
+          type: string
+        mode:
+          type: string
+          enum: [embedding, deterministic]
+        modeLabel:
+          type: string
+    InferredStrength:
+      type: object
+      required: [skillId, name, evidence]
+      properties:
+        skillId:
+          type: string
+        name:
+          type: string
+        evidence:
+          type: string
+    ScenarioSkill:
+      type: object
+      required: [skillId, name, baseline, gradual, rapid, gradualTrend, rapidTrend]
+      properties:
+        skillId:
+          type: string
+        name:
+          type: string
+        baseline:
+          type: number
+        gradual:
+          type: number
+        rapid:
+          type: number
+        gradualTrend:
+          type: string
+          enum: [rise, hold, decline]
+        rapidTrend:
+          type: string
+          enum: [rise, hold, decline]
+    ScenarioDetail:
+      type: object
+      required: [label, assumptions, actions]
+      properties:
+        label:
+          type: string
+        assumptions:
+          type: array
+          items:
+            type: string
+        actions:
+          type: array
+          items:
+            type: string
+    ScenarioSet:
+      type: object
+      required: [occupationId, occupationTitle, gradual, rapid, skills, disclaimer]
+      properties:
+        occupationId:
+          type: string
+        occupationTitle:
+          type: string
+        gradual:
+          $ref: "#/components/schemas/ScenarioDetail"
+        rapid:
+          $ref: "#/components/schemas/ScenarioDetail"
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScenarioSkill"
+        disclaimer:
+          type: string
+    RoadmapRequest:
+      type: object
+      required: [occupationId, profile]
+      properties:
+        occupationId:
+          type: string
+        profile:
+          $ref: "#/components/schemas/Profile"
+    Resource:
+      type: object
+      required: [title, provider, url, isSearchLink]
+      properties:
+        title:
+          type: string
+        provider:
+          type: string
+        url:
+          type: string
+        isSearchLink:
+          type: boolean
+    RoadmapStep:
+      type: object
+      required: [order, skillId, skill, why, activity, duration, durationBasis, resources]
+      properties:
+        order:
+          type: integer
+        skillId:
+          type: string
+        skill:
+          type: string
+        why:
+          type: string
+        activity:
+          type: string
+        duration:
+          type: string
+        durationBasis:
+          type: string
+          enum: [provider-stated, estimated]
+        resources:
+          type: array
+          items:
+            $ref: "#/components/schemas/Resource"
+    Roadmap:
+      type: object
+      required: [occupationId, occupationTitle, steps, alreadyCovered]
+      properties:
+        occupationId:
+          type: string
+        occupationTitle:
+          type: string
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoadmapStep"
+        alreadyCovered:
+          type: array
+          items:
+            type: string
+    Sdg:
+      type: object
+      required: [number, name, color]
+      properties:
+        number:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+    ImpactRequest:
+      type: object
+      required: [occupationId, completedSkillIds]
+      properties:
+        occupationId:
+          type: ["string", "null"]
+        completedSkillIds:
+          type: array
+          items:
+            type: string
+    ImpactNode:
+      type: object
+      required: [id, kind, label]
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum: [career, skill, sdg]
+        label:
+          type: string
+        sdgNumber:
+          type: ["integer", "null"]
+        completed:
+          type: ["boolean", "null"]
+    ImpactLink:
+      type: object
+      required: [source, target, level, justification]
+      properties:
+        source:
+          type: string
+        target:
+          type: string
+        level:
+          type: string
+          enum: [occupation, skill]
+        justification:
+          type: string
+    ImpactGraph:
+      type: object
+      required: [nodes, links, userSdgs, occupationSdgs, disclaimer]
+      properties:
+        nodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ImpactNode"
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/ImpactLink"
+        userSdgs:
+          type: array
+          items:
+            type: integer
+        occupationSdgs:
+          type: array
+          items:
+            type: integer
+        disclaimer:
+          type: string
