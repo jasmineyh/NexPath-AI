@@ -5,11 +5,19 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { CvPageInfo } from './cvPageInfo';
+import type { CvTextItem } from './cvTextItem';
 
+/**
+ * Provide either items (layout-aware text from the browser) or plain text
+ */
 export interface CvRequest {
-  /**
-     * @minLength 1
-     * @maxLength 60000
-     */
-  text: string;
+  /** @maxLength 200000 */
+  text?: string;
+  /** @maxItems 8000 */
+  items?: CvTextItem[];
+  pages?: CvPageInfo[];
+  /** Set false to force rule-based extraction */
+  useAi?: boolean;
+  debug?: boolean;
 }

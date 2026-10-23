@@ -5,7 +5,10 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { EducationEntry } from './educationEntry';
 import type { Experience } from './experience';
+import type { LanguageItem } from './languageItem';
+import type { SkillItem } from './skillItem';
 
 export interface Profile {
   name?: string;
@@ -26,4 +29,10 @@ export interface Profile {
   links?: string[];
   certifications?: string[];
   graduation?: string;
+  summary?: string;
+  interestTags?: string[];
+  education?: EducationEntry[];
+  skillDetails?: SkillItem[];
+  languages?: LanguageItem[];
+  awards?: string[];
 }

@@ -1,8 +1,9 @@
 import { Router, type IRouter } from "express";
-import { analyseCv } from "../lib/cv";
+import { analyseCv, cvMode } from "../lib/cv";
 import {
   AnalyseCvBody,
   AnalyseCvResponse,
+  GetCvModeResponse,
   BuildImpactBody,
   BuildImpactResponse,
   BuildRoadmapBody,
@@ -79,14 +80,23 @@ router.post("/profile/summary", async (req, res) => {
   res.json(GetProfileSummaryResponse.parse(summary));
 });
 
-// The CV text is processed in memory only: never stored and never logged.
+router.get("/cv/mode", (_req, res) => {
+  res.json(GetCvModeResponse.parse(cvMode()));
+});
+
+// The CV content is processed in memory only: never stored and never logged.
 router.post("/cv/analyse", async (req, res) => {
   const body = AnalyseCvBody.safeParse(req.body);
-  if (!body.success) {
-    res.status(400).json({ error: "CV text is required (max 60,000 characters)" });
+  if (!body.success || (!body.data.text && !(body.data.items && body.data.items.length))) {
+    res.status(400).json({ error: "CV text or layout items are required" });
     return;
   }
-  res.json(AnalyseCvResponse.parse(await analyseCv(body.data.text)));
+  const d = body.data;
+  res.json(
+    AnalyseCvResponse.parse(
+      await analyseCv({ text: d.text, items: d.items, pages: d.pages, useAi: d.useAi, debug: d.debug }),
+    ),
+  );
 });
 
 router.post("/match", async (req, res) => {

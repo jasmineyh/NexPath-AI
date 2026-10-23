@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import { useSearch, useLocation, Link } from 'wouter';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FileUp, PenLine, RotateCcw, ArrowLeft, ArrowRight, Briefcase, ExternalLink, FlaskConical, Lightbulb, Pencil, Plus, Sparkles, Trash2, X, Target, Compass } from 'lucide-react';
-import { useGetProfileSummary, useListSkills, getListSkillsQueryKey, type Profile, type Experience } from '@workspace/api-client-react';
+import { useGetProfileSummary, useListSkills, getListSkillsQueryKey, type CvAnalysis, type Profile, type Experience } from '@workspace/api-client-react';
 import { useStore } from '@/lib/store';
 import { DEMO_PROFILE, EDUCATION_LEVELS, STATUSES } from '@/lib/demo';
 import { useAutoMutation } from '@/hooks/use-auto-mutation';
@@ -313,7 +313,7 @@ export default function UnderstandPage() {
   const [, navigate] = useLocation();
   const editInit: View = source === 'cv' ? 'review' : 'survey';
   const [view, setView] = useState<View>(!profile ? 'choose' : search.includes('edit=1') ? editInit : 'summary');
-  const [cv, setCv] = useState<{ profile: Profile; found: string[]; mode?: { mode: string; label: string } } | null>(null);
+  const [cv, setCv] = useState<CvAnalysis | null>(null);
   const { toast } = useToast();
   useEffect(() => { if (search.includes('edit=1') && profile) setView(source === 'cv' ? 'review' : 'survey'); }, [search]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -332,9 +332,9 @@ export default function UnderstandPage() {
           <button onClick={startOver} data-testid="button-start-over" className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3.5 py-1.5 text-sm text-muted-foreground hover:border-destructive/40 hover:text-destructive"><RotateCcw className="h-4 w-4" /> Remove my data / start over</button>
         )} />
       {view === 'choose' && <EntryChoice onPick={(v) => setView(v)} />}
-      {view === 'cv' && <CvUpload onCancel={() => setView('choose')} onManual={() => setView('survey')} onResult={(p, found, mode) => { setCv({ profile: p, found, mode }); setView('review'); }} />}
+      {view === 'cv' && <CvUpload onCancel={() => setView('choose')} onManual={() => setView('survey')} onResult={(a) => { setCv(a); setView('review'); }} />}
       {view === 'review' && (
-        <CvReview key={cv ? 'cv' : 'edit'} initial={cv?.profile ?? profile ?? EMPTY} found={cv?.found ?? []} mode={cv?.mode}
+        <CvReview key={cv ? 'cv' : 'edit'} initial={cv?.profile ?? profile ?? EMPTY} analysis={cv}
           onCancel={() => setView(profile ? 'summary' : 'choose')} onConfirm={(p) => save(p, 'cv')} />
       )}
       {(view === 'survey' || view === 'demo') && (

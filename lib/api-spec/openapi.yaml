@@ -74,6 +74,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProfileSummary"
+  /cv/mode:
+    get:
+      operationId: getCvMode
+      tags: [profile]
+      summary: Which CV extraction mode is active (llm or rules)
+      responses:
+        "200":
+          description: Mode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CvMode"
   /cv/analyse:
     post:
       operationId: analyseCv
@@ -316,6 +328,10 @@ components:
           description: work, internship or project
         dates:
           type: string
+        role:
+          type: string
+        award:
+          type: string
     Profile:
       type: object
       required: [educationLevel, major, status, technicalSkills, humanSkills]
@@ -365,30 +381,238 @@ components:
             type: string
         graduation:
           type: string
-    CvRequest:
+        summary:
+          type: string
+        interestTags:
+          type: array
+          items:
+            type: string
+        education:
+          type: array
+          items:
+            $ref: "#/components/schemas/EducationEntry"
+        skillDetails:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillItem"
+        languages:
+          type: array
+          items:
+            $ref: "#/components/schemas/LanguageItem"
+        awards:
+          type: array
+          items:
+            type: string
+    EducationEntry:
       type: object
-      required: [text]
+      required: [institution, qualification, level, field, specialisation, results, dates, current]
+      properties:
+        institution:
+          type: string
+        qualification:
+          type: string
+        level:
+          type: string
+        field:
+          type: string
+        specialisation:
+          type: string
+        results:
+          type: string
+        dates:
+          type: string
+        current:
+          type: boolean
+    SkillItem:
+      type: object
+      required: [name, category, proficiency]
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        proficiency:
+          type: string
+    LanguageItem:
+      type: object
+      required: [name, proficiency]
+      properties:
+        name:
+          type: string
+        proficiency:
+          type: string
+    CvTextItem:
+      type: object
+      required: [text, x, y, w, size, page]
       properties:
         text:
           type: string
-          minLength: 1
-          maxLength: 60000
+        x:
+          type: number
+        y:
+          type: number
+          description: Distance from the top of the page
+        w:
+          type: number
+        size:
+          type: number
+        page:
+          type: integer
+        bold:
+          type: boolean
+    CvPageInfo:
+      type: object
+      required: [width, height]
+      properties:
+        width:
+          type: number
+        height:
+          type: number
+    CvRequest:
+      type: object
+      description: Provide either items (layout-aware text from the browser) or plain text
+      properties:
+        text:
+          type: string
+          maxLength: 200000
+        items:
+          type: array
+          maxItems: 8000
+          items:
+            $ref: "#/components/schemas/CvTextItem"
+        pages:
+          type: array
+          items:
+            $ref: "#/components/schemas/CvPageInfo"
+        useAi:
+          type: boolean
+          description: Set false to force rule-based extraction
+        debug:
+          type: boolean
+    CvMode:
+      type: object
+      required: [mode, provider, label]
+      properties:
+        mode:
+          type: string
+          enum: [llm, rules]
+        provider:
+          type: ["string", "null"]
+        label:
+          type: string
+    FieldMeta:
+      type: object
+      required: [status, confidence, source]
+      properties:
+        status:
+          type: string
+          enum: [cv, inferred, missing, optional-missing, check]
+        confidence:
+          type: string
+          enum: [high, medium, low]
+        source:
+          type: string
+    CvStats:
+      type: object
+      required: [total, filled, attention]
+      properties:
+        total:
+          type: integer
+        filled:
+          type: integer
+        attention:
+          type: integer
+    InferredSkill:
+      type: object
+      required: [name, category, evidence]
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        evidence:
+          type: string
+    CvDebugLine:
+      type: object
+      required: [text, x, y, page, size, col, section]
+      properties:
+        text:
+          type: string
+        x:
+          type: number
+        y:
+          type: number
+        page:
+          type: integer
+        size:
+          type: number
+        col:
+          type: string
+        section:
+          type: string
+    CvDebugSection:
+      type: object
+      required: [name, firstLine, lineCount]
+      properties:
+        name:
+          type: string
+        firstLine:
+          type: integer
+        lineCount:
+          type: integer
+    CvDebug:
+      type: object
+      required: [lines, sections, raw, notes]
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/CvDebugLine"
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/CvDebugSection"
+        raw:
+          type: string
+          description: Raw parsed JSON before mapping into the profile
+        notes:
+          type: array
+          items:
+            type: string
     CvAnalysis:
       type: object
-      required: [profile, found, mode, modeLabel]
+      required: [profile, found, fields, stats, inferredSkills, extractionMode, extractionLabel, mode, modeLabel]
       properties:
         profile:
           $ref: "#/components/schemas/Profile"
         found:
           type: array
-          description: Profile field keys that were found in the CV text
+          description: Field keys that were found in the CV text
           items:
             type: string
+        fields:
+          type: object
+          description: Per-field status, confidence and the rule or model that produced it
+          additionalProperties:
+            $ref: "#/components/schemas/FieldMeta"
+        stats:
+          $ref: "#/components/schemas/CvStats"
+        inferredSkills:
+          type: array
+          items:
+            $ref: "#/components/schemas/InferredSkill"
+        extractionMode:
+          type: string
+          enum: [llm, rules]
+        extractionLabel:
+          type: string
         mode:
           type: string
           enum: [embedding, deterministic]
         modeLabel:
           type: string
+        debug:
+          $ref: "#/components/schemas/CvDebug"
     Skill:
       type: object
       required: [id, name, category]

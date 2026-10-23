@@ -13,4 +13,6 @@ export interface Experience {
   /** work, internship or project */
   kind?: string;
   dates?: string;
+  role?: string;
+  award?: string;
 }

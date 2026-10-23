@@ -1,0 +1,1 @@
+- [CV parser design](cv-parser.md) — layout-aware hybrid parser, fixtures and test commands
