@@ -2,23 +2,64 @@
 
 AI-powered career navigation and reskilling prototype for Malaysian university students, fresh graduates and early-career professionals. Built for the SDC Hackathon 2026 (Future-Ready Workforce). Primary SDG 8; supporting SDGs 4, 9 and 10.
 
+## Team
+
+| | |
+|---|---|
+| **Team name** | `No Idea` |
+| **Domain / track** | Future-Ready Workforce |
+| **Members** | `Chia Jin Yi`, `Gan Yu Xuan`, `Jasmine Chin Ying Hui`, `Tan Xiao Shih`, `Then Pei Joo` |
+
+## Links
+
+| | |
+|---|---|
+| **Live app (Replit)** | https://replit.com/t/no-idea-nexpath-ai/repls/NexPath-AI |
+| **Demo video** | `TODO: ` |
+| **Pitch video** | `TODO:` |
+
+## Submission files
+
+All required documents are in [`submission/`](./submission):
+
+- `SDC2026_TeamName_Preliminary.pdf` — completed submission template
+- `Replit Proof of Use.pdf` — deployment and AI credits screenshots
+- `RunPod Proof of Use.pdf` — running pod and GPU usage screenshots
+
 ## Stack
 
 - Frontend: React + Vite + Tailwind (`artifacts/nexpath`), wouter routing, React Query. Profile, chosen career, roadmap progress and resume edits persist in `localStorage`.
 - Backend: Node + Express 5 + TypeScript (`artifacts/api-server`), contract-first OpenAPI (`lib/api-spec/openapi.yaml`) with generated Zod schemas and React Query hooks.
+- Embedding service: RunPod worker (`runpod-worker/`) serving `sentence-transformers/all-MiniLM-L6-v2`.
 - No database is required: all reference data is in editable JSON files.
 
-## Run
+## How to run
 
-Both services run as Replit workflows (`artifacts/api-server: API Server`, `artifacts/nexpath: web`). To change the API contract, edit `lib/api-spec/openapi.yaml` and run `pnpm --filter @workspace/api-spec run codegen`.
+**On Replit (recommended):** open the Replit project and press Run. Both services start as workflows:
+
+- `artifacts/api-server: API Server`
+- `artifacts/nexpath: web`
+
+**Locally:**
+
+```bash
+pnpm install
+# TODO: add the dev commands for api-server and nexpath (see each package.json)
+```
+
+To change the API contract, edit `lib/api-spec/openapi.yaml` and run:
+
+```bash
+pnpm --filter @workspace/api-spec run codegen
+```
 
 ## Environment variables
 
-| Variable | Purpose |
-| --- | --- |
+| Variable            | Purpose                                                                                                                     |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | `EMBEDDING_API_URL` | HTTP endpoint of the embedding service (e.g. a RunPod endpoint running `sentence-transformers/all-MiniLM-L6-v2`). Optional. |
-| `EMBEDDING_API_KEY` | Bearer token for that endpoint. Optional. |
-| `NEXPATH_DATA_DIR` | Optional override for the data directory (default `artifacts/api-server/data`). |
+| `EMBEDDING_API_KEY` | Bearer token for that endpoint. Optional.                                                                                   |
+| `NEXPATH_DATA_DIR`  | Optional override for the data directory (default `artifacts/api-server/data`).                                             |
 
 If either embedding variable is missing, or the call fails or times out (8 s), matching silently falls back to the rule-based matcher and the UI badge shows "Matching mode: Rule-based fallback".
 
@@ -50,14 +91,14 @@ Career score = 45% weighted required-skill coverage + 35% weighted similarity + 
 
 Files are re-read on every request, so edits take effect without a rebuild.
 
-| File | Content |
-| --- | --- |
-| `skills.json` | Skill catalogue with synonyms |
-| `occupations.json` | 11 curated occupations, required skills with importance weights, interest keywords, related majors |
-| `courses.json` | Learning activities and resources per skill |
-| `trends.json` | Trend cards with source name, URL and publication date, plus the "last updated" date |
-| `scenarios.json` | Explicit assumptions and skill-priority shifts for the Career Time Machine |
-| `sdg_mappings.json` | SDG list plus selective occupation-level and skill-level mappings with justifications |
+| File                | Content                                                                                            |
+|---------------------|----------------------------------------------------------------------------------------------------|
+| `skills.json`       | Skill catalogue with synonyms                                                                      |
+| `occupations.json`  | 11 curated occupations, required skills with importance weights, interest keywords, related majors |
+| `courses.json`      | Learning activities and resources per skill                                                        |
+| `trends.json`       | Trend cards with source name, URL and publication date, plus the "last updated" date               |
+| `scenarios.json`    | Explicit assumptions and skill-priority shifts for the Career Time Machine                         |
+| `sdg_mappings.json` | SDG list plus selective occupation-level and skill-level mappings with justifications              |
 
 ## Data sources and provenance
 
@@ -71,3 +112,7 @@ Files are re-read on every request, so edits take effect without a rebuild.
 ## Responsible AI
 
 Scenarios are illustrative, not predictions. Recommendations are decision support. The prototype does not claim guaranteed outcomes, real-time job availability or verified forecasts. Inferred strengths are labelled as system inferences and are not an assessment of competence.
+
+## License
+
+Apache-2.0. See [LICENSE](./LICENSE).
