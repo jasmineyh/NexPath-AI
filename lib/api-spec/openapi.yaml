@@ -316,6 +316,9 @@ components:
           description: work, internship or project
         dates:
           type: string
+        role:
+          type: string
+          description: Award or role for projects, competitions and volunteer activities
     Profile:
       type: object
       required: [educationLevel, major, status, technicalSkills, humanSkills]
@@ -365,6 +368,34 @@ components:
             type: string
         graduation:
           type: string
+        languages:
+          type: array
+          items:
+            type: string
+        education:
+          type: array
+          items:
+            $ref: "#/components/schemas/EducationEntry"
+    EducationEntry:
+      type: object
+      required: [institution, qualification, level, field, specialisation, results, dates, current]
+      properties:
+        institution:
+          type: string
+        qualification:
+          type: string
+        level:
+          type: string
+        field:
+          type: string
+        specialisation:
+          type: string
+        results:
+          type: string
+        dates:
+          type: string
+        current:
+          type: boolean
     CvRequest:
       type: object
       required: [text]

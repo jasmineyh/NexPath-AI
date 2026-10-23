@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { EducationEntry } from './educationEntry';
 import type { Experience } from './experience';
 
 export interface Profile {
@@ -26,4 +27,6 @@ export interface Profile {
   links?: string[];
   certifications?: string[];
   graduation?: string;
+  languages?: string[];
+  education?: EducationEntry[];
 }

@@ -1,5 +1,6 @@
 import { getSkills } from "./data";
 import { scoreTexts } from "./matcher";
+import { refineCv, type RefinableResult } from "./cvRefiner";
 
 /**
  * Rule-based CV text extraction. No LLM. Nothing here stores or logs the text.
@@ -404,7 +405,7 @@ export async function analyseCv(rawText: string) {
   const selfDescription = [summaryText, ...bulletPicks].filter(Boolean).join(" ").slice(0, 700).trim();
   if (selfDescription) found.push("selfDescription");
 
-  return {
+  const base = {
     profile: {
       name,
       educationLevel: edu.educationLevel,
@@ -432,4 +433,12 @@ export async function analyseCv(rawText: string) {
     mode: scored.mode,
     modeLabel: scored.modeLabel,
   };
+  // Optional accuracy pass; on any failure the original parse is returned unchanged.
+  try {
+    const refined = refineCv(rawText, base as unknown as RefinableResult);
+    if (refined) return refined as unknown as typeof base;
+  } catch {
+    /* keep base */
+  }
+  return base;
 }

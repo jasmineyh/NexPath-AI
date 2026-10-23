@@ -63,7 +63,8 @@ export const GetProfileSummaryBody = zod.object({
   "org": zod.string(),
   "description": zod.string(),
   "kind": zod.string().optional().describe('work, internship or project'),
-  "dates": zod.string().optional()
+  "dates": zod.string().optional(),
+  "role": zod.string().optional().describe('Award or role for projects, competitions and volunteer activities')
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
@@ -75,7 +76,18 @@ export const GetProfileSummaryBody = zod.object({
   "location": zod.string().optional(),
   "links": zod.array(zod.string()).optional(),
   "certifications": zod.array(zod.string()).optional(),
-  "graduation": zod.string().optional()
+  "graduation": zod.string().optional(),
+  "languages": zod.array(zod.string()).optional(),
+  "education": zod.array(zod.object({
+  "institution": zod.string(),
+  "qualification": zod.string(),
+  "level": zod.string(),
+  "field": zod.string(),
+  "specialisation": zod.string(),
+  "results": zod.string(),
+  "dates": zod.string(),
+  "current": zod.boolean()
+})).optional()
 })
 
 export const GetProfileSummaryResponse = zod.object({
@@ -128,7 +140,8 @@ export const AnalyseCvResponse = zod.object({
   "org": zod.string(),
   "description": zod.string(),
   "kind": zod.string().optional().describe('work, internship or project'),
-  "dates": zod.string().optional()
+  "dates": zod.string().optional(),
+  "role": zod.string().optional().describe('Award or role for projects, competitions and volunteer activities')
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
@@ -140,7 +153,18 @@ export const AnalyseCvResponse = zod.object({
   "location": zod.string().optional(),
   "links": zod.array(zod.string()).optional(),
   "certifications": zod.array(zod.string()).optional(),
-  "graduation": zod.string().optional()
+  "graduation": zod.string().optional(),
+  "languages": zod.array(zod.string()).optional(),
+  "education": zod.array(zod.object({
+  "institution": zod.string(),
+  "qualification": zod.string(),
+  "level": zod.string(),
+  "field": zod.string(),
+  "specialisation": zod.string(),
+  "results": zod.string(),
+  "dates": zod.string(),
+  "current": zod.boolean()
+})).optional()
 }),
   "found": zod.array(zod.string()).describe('Profile field keys that were found in the CV text'),
   "mode": zod.enum(['embedding', 'deterministic']),
@@ -192,7 +216,8 @@ export const MatchCareersBody = zod.object({
   "org": zod.string(),
   "description": zod.string(),
   "kind": zod.string().optional().describe('work, internship or project'),
-  "dates": zod.string().optional()
+  "dates": zod.string().optional(),
+  "role": zod.string().optional().describe('Award or role for projects, competitions and volunteer activities')
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
@@ -204,7 +229,18 @@ export const MatchCareersBody = zod.object({
   "location": zod.string().optional(),
   "links": zod.array(zod.string()).optional(),
   "certifications": zod.array(zod.string()).optional(),
-  "graduation": zod.string().optional()
+  "graduation": zod.string().optional(),
+  "languages": zod.array(zod.string()).optional(),
+  "education": zod.array(zod.object({
+  "institution": zod.string(),
+  "qualification": zod.string(),
+  "level": zod.string(),
+  "field": zod.string(),
+  "specialisation": zod.string(),
+  "results": zod.string(),
+  "dates": zod.string(),
+  "current": zod.boolean()
+})).optional()
 })
 
 export const MatchCareersResponse = zod.object({
@@ -319,7 +355,8 @@ export const BuildRoadmapBody = zod.object({
   "org": zod.string(),
   "description": zod.string(),
   "kind": zod.string().optional().describe('work, internship or project'),
-  "dates": zod.string().optional()
+  "dates": zod.string().optional(),
+  "role": zod.string().optional().describe('Award or role for projects, competitions and volunteer activities')
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
@@ -331,7 +368,18 @@ export const BuildRoadmapBody = zod.object({
   "location": zod.string().optional(),
   "links": zod.array(zod.string()).optional(),
   "certifications": zod.array(zod.string()).optional(),
-  "graduation": zod.string().optional()
+  "graduation": zod.string().optional(),
+  "languages": zod.array(zod.string()).optional(),
+  "education": zod.array(zod.object({
+  "institution": zod.string(),
+  "qualification": zod.string(),
+  "level": zod.string(),
+  "field": zod.string(),
+  "specialisation": zod.string(),
+  "results": zod.string(),
+  "dates": zod.string(),
+  "current": zod.boolean()
+})).optional()
 })
 })
 

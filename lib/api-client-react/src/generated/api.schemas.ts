@@ -62,6 +62,19 @@ export interface Experience {
   /** work, internship or project */
   kind?: string;
   dates?: string;
+  /** Award or role for projects, competitions and volunteer activities */
+  role?: string;
+}
+
+export interface EducationEntry {
+  institution: string;
+  qualification: string;
+  level: string;
+  field: string;
+  specialisation: string;
+  results: string;
+  dates: string;
+  current: boolean;
 }
 
 export interface Profile {
@@ -83,6 +96,8 @@ export interface Profile {
   links?: string[];
   certifications?: string[];
   graduation?: string;
+  languages?: string[];
+  education?: EducationEntry[];
 }
 
 export interface CvRequest {

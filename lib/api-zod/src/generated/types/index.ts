@@ -12,6 +12,7 @@ export * from './careerMatch';
 export * from './cvAnalysis';
 export * from './cvAnalysisMode';
 export * from './cvRequest';
+export * from './educationEntry';
 export * from './errorResponse';
 export * from './experience';
 export * from './healthStatus';
