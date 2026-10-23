@@ -27,6 +27,8 @@ export function CvUpload({ onResult, onManual, onCancel }: { onResult: (p: Profi
   const [error, setError] = useState<{ msg: string; unreadable: boolean } | null>(null);
   const [drag, setDrag] = useState(false);
   const [fileName, setFileName] = useState('');
+  const [pasteOpen, setPasteOpen] = useState(false);
+  const [pasted, setPasted] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const analyse = useAnalyseCv();
 
@@ -40,15 +42,27 @@ export function CvUpload({ onResult, onManual, onCancel }: { onResult: (p: Profi
       text = await extractCvText(file);
     } catch (e) {
       const ce = e instanceof CvReadError ? e : null;
-      setError({ msg: ce?.message ?? 'We could not read this file.', unreadable: !ce || ce.kind === 'unreadable' });
+      setError({ msg: ce?.message ?? 'We could not read this file.', unreadable: !ce || (ce.kind !== 'type' && ce.kind !== 'size') });
       setPhase('error');
       return;
     }
+    runAnalysis(text);
+  };
+
+  const runAnalysis = (text: string) => {
+    setError(null);
     setPhase('analysing');
     analyse.mutate({ data: { text } }, {
       onSuccess: (r) => onResult(r.profile, r.found, { mode: r.mode, label: r.modeLabel }),
       onError: () => { setError({ msg: 'The analysis service did not respond. Your file was not sent anywhere; please try again or use the manual form.', unreadable: false }); setPhase('error'); },
     });
+  };
+
+  const submitPasted = () => {
+    const t = pasted.trim();
+    if (t.replace(/\s/g, '').length < 30) { setError({ msg: 'Please paste at least a few lines of your CV.', unreadable: false }); setPhase('error'); return; }
+    setFileName('Pasted text');
+    runAnalysis(t.slice(0, 60000));
   };
 
   const onDrop = (e: DragEvent) => { e.preventDefault(); setDrag(false); void handle(e.dataTransfer.files?.[0]); };
@@ -91,6 +105,15 @@ export function CvUpload({ onResult, onManual, onCancel }: { onResult: (p: Profi
           </div>
         </motion.div>
       )}
+      <div className="rounded-2xl border bg-card p-4" data-testid="panel-cv-paste">
+        <button onClick={() => setPasteOpen((o) => !o)} aria-expanded={pasteOpen} className="text-sm font-semibold text-primary" data-testid="button-cv-paste-toggle">{pasteOpen ? 'Hide pasted text' : 'Or paste your CV text instead'}</button>
+        {pasteOpen && (
+          <div className="mt-3 space-y-2">
+            <Textarea rows={8} value={pasted} onChange={(e) => setPasted(e.target.value)} placeholder="Paste the text of your CV here" data-testid="input-cv-paste" />
+            <button onClick={submitPasted} disabled={busy} className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50" data-testid="button-cv-paste-submit">Analyse pasted text</button>
+          </div>
+        )}
+      </div>
       <PrivacyNote />
       <button onClick={onCancel} className="text-sm text-muted-foreground hover:text-foreground" data-testid="button-cv-cancel">Back to options</button>
     </div>

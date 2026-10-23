@@ -1,7 +1,7 @@
 export const MAX_CV_BYTES = 5 * 1024 * 1024;
 
 export class CvReadError extends Error {
-  constructor(public kind: 'type' | 'size' | 'unreadable', message: string) {
+  constructor(public kind: 'type' | 'size' | 'unreadable' | 'encrypted' | 'corrupt' | 'scanned', message: string) {
     super(message);
   }
 }
@@ -15,14 +15,21 @@ function kindOf(file: File): 'pdf' | 'docx' | 'txt' | null {
 }
 
 async function pdfText(buf: ArrayBuffer): Promise<string> {
-  const pdfjs = await import('pdfjs-dist');
-  const worker = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
+  // The legacy build bundles polyfills (e.g. Math.sumPrecise). The modern build throws while parsing
+  // embedded fonts in browsers that lack them, which surfaced as "Could not read this file".
+  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const worker = await import('pdfjs-dist/legacy/build/pdf.worker.min.mjs?url');
   pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
   const doc = await pdfjs.getDocument({ data: new Uint8Array(buf) }).promise;
   const pages: string[] = [];
   for (let i = 1; i <= doc.numPages; i++) {
     const page = await doc.getPage(i);
-    const content = await page.getTextContent();
+    let content;
+    try {
+      content = await page.getTextContent();
+    } catch {
+      continue; // one damaged page should not discard the rest of the CV
+    }
     let line = '';
     const out: string[] = [];
     for (const item of content.items) {
@@ -55,12 +62,15 @@ export async function extractCvText(file: File): Promise<string> {
       const buf = await file.arrayBuffer();
       text = kind === 'pdf' ? await pdfText(buf) : await docxText(buf);
     }
-  } catch {
-    throw new CvReadError('unreadable', 'We could not read this file. It may be password-protected or damaged.');
+  } catch (e) {
+    const name = (e as { name?: string } | null)?.name ?? '';
+    if (name === 'PasswordException') throw new CvReadError('encrypted', 'This PDF is password-protected. Remove the password and upload it again, or paste your CV text instead.');
+    if (name === 'InvalidPDFException' || name === 'FormatError') throw new CvReadError('corrupt', 'This file looks damaged or is not a valid document. Try exporting it again, or paste your CV text instead.');
+    throw new CvReadError('unreadable', 'We could not read this file. Try exporting it again as a PDF, or paste your CV text instead.');
   }
   text = text.replace(/\u0000/g, '').replace(/[ \t]+\n/g, '\n').trim();
   if (text.replace(/\s/g, '').length < 30) {
-    throw new CvReadError('unreadable', 'We could not read any text in this file. Scanned PDFs (images of pages) have no selectable text.');
+    throw new CvReadError('scanned', 'We could not find any text in this file. It may be a scanned PDF (an image of a page), which needs manual entry or pasted text because OCR is not available.');
   }
   return text.slice(0, 60000);
 }
