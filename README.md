@@ -71,9 +71,3 @@ Files are re-read on every request, so edits take effect without a rebuild.
 ## Responsible AI
 
 Scenarios are illustrative, not predictions. Recommendations are decision support. The prototype does not claim guaranteed outcomes, real-time job availability or verified forecasts. Inferred strengths are labelled as system inferences and are not an assessment of competence.
-
-## CV extraction (Understand Me)
-
-The CV parser has one interface with two modes. `rules` (default) is a layout-aware rule parser. `llm` is used only when both `LLM_PROVIDER` (`gemini`, `openai` or `anthropic`) and `LLM_API_KEY` are set; optional `LLM_MODEL` and `LLM_BASE_URL`. LLM output is verified against the CV text, the same validators run on both modes, and any failure or timeout falls back silently to `rules`. CV content is processed in memory and never stored or logged.
-
-Tests: `pnpm --filter @workspace/api-server exec tsx tests/make-fixtures.ts` then `pnpm --filter @workspace/api-server exec tsx tests/cv.test.ts`.

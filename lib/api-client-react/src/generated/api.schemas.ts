@@ -62,30 +62,6 @@ export interface Experience {
   /** work, internship or project */
   kind?: string;
   dates?: string;
-  role?: string;
-  award?: string;
-}
-
-export interface EducationEntry {
-  institution: string;
-  qualification: string;
-  level: string;
-  field: string;
-  specialisation: string;
-  results: string;
-  dates: string;
-  current: boolean;
-}
-
-export interface SkillItem {
-  name: string;
-  category: string;
-  proficiency: string;
-}
-
-export interface LanguageItem {
-  name: string;
-  proficiency: string;
 }
 
 export interface Profile {
@@ -107,133 +83,15 @@ export interface Profile {
   links?: string[];
   certifications?: string[];
   graduation?: string;
-  summary?: string;
-  interestTags?: string[];
-  education?: EducationEntry[];
-  skillDetails?: SkillItem[];
-  languages?: LanguageItem[];
-  awards?: string[];
 }
 
-export interface CvTextItem {
-  text: string;
-  x: number;
-  /** Distance from the top of the page */
-  y: number;
-  w: number;
-  size: number;
-  page: number;
-  bold?: boolean;
-}
-
-export interface CvPageInfo {
-  width: number;
-  height: number;
-}
-
-/**
- * Provide either items (layout-aware text from the browser) or plain text
- */
 export interface CvRequest {
-  /** @maxLength 200000 */
-  text?: string;
-  /** @maxItems 8000 */
-  items?: CvTextItem[];
-  pages?: CvPageInfo[];
-  /** Set false to force rule-based extraction */
-  useAi?: boolean;
-  debug?: boolean;
-}
-
-export type CvModeMode = typeof CvModeMode[keyof typeof CvModeMode];
-
-
-export const CvModeMode = {
-  llm: 'llm',
-  rules: 'rules',
-} as const;
-
-export interface CvMode {
-  mode: CvModeMode;
-  /** @nullable */
-  provider: string | null;
-  label: string;
-}
-
-export type FieldMetaStatus = typeof FieldMetaStatus[keyof typeof FieldMetaStatus];
-
-
-export const FieldMetaStatus = {
-  cv: 'cv',
-  inferred: 'inferred',
-  missing: 'missing',
-  'optional-missing': 'optional-missing',
-  check: 'check',
-} as const;
-
-export type FieldMetaConfidence = typeof FieldMetaConfidence[keyof typeof FieldMetaConfidence];
-
-
-export const FieldMetaConfidence = {
-  high: 'high',
-  medium: 'medium',
-  low: 'low',
-} as const;
-
-export interface FieldMeta {
-  status: FieldMetaStatus;
-  confidence: FieldMetaConfidence;
-  source: string;
-}
-
-export interface CvStats {
-  total: number;
-  filled: number;
-  attention: number;
-}
-
-export interface InferredSkill {
-  name: string;
-  category: string;
-  evidence: string;
-}
-
-export interface CvDebugLine {
+  /**
+     * @minLength 1
+     * @maxLength 60000
+     */
   text: string;
-  x: number;
-  y: number;
-  page: number;
-  size: number;
-  col: string;
-  section: string;
 }
-
-export interface CvDebugSection {
-  name: string;
-  firstLine: number;
-  lineCount: number;
-}
-
-export interface CvDebug {
-  lines: CvDebugLine[];
-  sections: CvDebugSection[];
-  /** Raw parsed JSON before mapping into the profile */
-  raw: string;
-  notes: string[];
-}
-
-/**
- * Per-field status, confidence and the rule or model that produced it
- */
-export type CvAnalysisFields = {[key: string]: FieldMeta};
-
-export type CvAnalysisExtractionMode = typeof CvAnalysisExtractionMode[keyof typeof CvAnalysisExtractionMode];
-
-
-export const CvAnalysisExtractionMode = {
-  llm: 'llm',
-  rules: 'rules',
-} as const;
 
 export type CvAnalysisMode = typeof CvAnalysisMode[keyof typeof CvAnalysisMode];
 
@@ -245,17 +103,10 @@ export const CvAnalysisMode = {
 
 export interface CvAnalysis {
   profile: Profile;
-  /** Field keys that were found in the CV text */
+  /** Profile field keys that were found in the CV text */
   found: string[];
-  /** Per-field status, confidence and the rule or model that produced it */
-  fields: CvAnalysisFields;
-  stats: CvStats;
-  inferredSkills: InferredSkill[];
-  extractionMode: CvAnalysisExtractionMode;
-  extractionLabel: string;
   mode: CvAnalysisMode;
   modeLabel: string;
-  debug?: CvDebug;
 }
 
 export type SkillCategory = typeof SkillCategory[keyof typeof SkillCategory];

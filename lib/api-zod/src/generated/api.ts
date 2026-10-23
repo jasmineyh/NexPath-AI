@@ -63,9 +63,7 @@ export const GetProfileSummaryBody = zod.object({
   "org": zod.string(),
   "description": zod.string(),
   "kind": zod.string().optional().describe('work, internship or project'),
-  "dates": zod.string().optional(),
-  "role": zod.string().optional(),
-  "award": zod.string().optional()
+  "dates": zod.string().optional()
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
@@ -77,29 +75,7 @@ export const GetProfileSummaryBody = zod.object({
   "location": zod.string().optional(),
   "links": zod.array(zod.string()).optional(),
   "certifications": zod.array(zod.string()).optional(),
-  "graduation": zod.string().optional(),
-  "summary": zod.string().optional(),
-  "interestTags": zod.array(zod.string()).optional(),
-  "education": zod.array(zod.object({
-  "institution": zod.string(),
-  "qualification": zod.string(),
-  "level": zod.string(),
-  "field": zod.string(),
-  "specialisation": zod.string(),
-  "results": zod.string(),
-  "dates": zod.string(),
-  "current": zod.boolean()
-})).optional(),
-  "skillDetails": zod.array(zod.object({
-  "name": zod.string(),
-  "category": zod.string(),
-  "proficiency": zod.string()
-})).optional(),
-  "languages": zod.array(zod.object({
-  "name": zod.string(),
-  "proficiency": zod.string()
-})).optional(),
-  "awards": zod.array(zod.string()).optional()
+  "graduation": zod.string().optional()
 })
 
 export const GetProfileSummaryResponse = zod.object({
@@ -130,42 +106,15 @@ export const GetProfileSummaryResponse = zod.object({
 
 
 /**
- * @summary Which CV extraction mode is active (llm or rules)
- */
-export const GetCvModeResponse = zod.object({
-  "mode": zod.enum(['llm', 'rules']),
-  "provider": zod.string().nullable(),
-  "label": zod.string()
-})
-
-
-/**
  * @summary Rule-based extraction of profile fields from CV text (text is never stored or logged)
  */
-export const analyseCvBodyTextMax = 200000;
-
-export const analyseCvBodyItemsMax = 8000;
+export const analyseCvBodyTextMax = 60000;
 
 
 
 export const AnalyseCvBody = zod.object({
-  "text": zod.string().max(analyseCvBodyTextMax).optional(),
-  "items": zod.array(zod.object({
-  "text": zod.string(),
-  "x": zod.number(),
-  "y": zod.number().describe('Distance from the top of the page'),
-  "w": zod.number(),
-  "size": zod.number(),
-  "page": zod.number().int(),
-  "bold": zod.boolean().optional()
-})).max(analyseCvBodyItemsMax).optional(),
-  "pages": zod.array(zod.object({
-  "width": zod.number(),
-  "height": zod.number()
-})).optional(),
-  "useAi": zod.boolean().optional().describe('Set false to force rule-based extraction'),
-  "debug": zod.boolean().optional()
-}).describe('Provide either items (layout-aware text from the browser) or plain text')
+  "text": zod.string().min(1).max(analyseCvBodyTextMax)
+})
 
 export const AnalyseCvResponse = zod.object({
   "profile": zod.object({
@@ -179,9 +128,7 @@ export const AnalyseCvResponse = zod.object({
   "org": zod.string(),
   "description": zod.string(),
   "kind": zod.string().optional().describe('work, internship or project'),
-  "dates": zod.string().optional(),
-  "role": zod.string().optional(),
-  "award": zod.string().optional()
+  "dates": zod.string().optional()
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
@@ -193,68 +140,11 @@ export const AnalyseCvResponse = zod.object({
   "location": zod.string().optional(),
   "links": zod.array(zod.string()).optional(),
   "certifications": zod.array(zod.string()).optional(),
-  "graduation": zod.string().optional(),
-  "summary": zod.string().optional(),
-  "interestTags": zod.array(zod.string()).optional(),
-  "education": zod.array(zod.object({
-  "institution": zod.string(),
-  "qualification": zod.string(),
-  "level": zod.string(),
-  "field": zod.string(),
-  "specialisation": zod.string(),
-  "results": zod.string(),
-  "dates": zod.string(),
-  "current": zod.boolean()
-})).optional(),
-  "skillDetails": zod.array(zod.object({
-  "name": zod.string(),
-  "category": zod.string(),
-  "proficiency": zod.string()
-})).optional(),
-  "languages": zod.array(zod.object({
-  "name": zod.string(),
-  "proficiency": zod.string()
-})).optional(),
-  "awards": zod.array(zod.string()).optional()
+  "graduation": zod.string().optional()
 }),
-  "found": zod.array(zod.string()).describe('Field keys that were found in the CV text'),
-  "fields": zod.record(zod.string(), zod.object({
-  "status": zod.enum(['cv', 'inferred', 'missing', 'optional-missing', 'check']),
-  "confidence": zod.enum(['high', 'medium', 'low']),
-  "source": zod.string()
-})).describe('Per-field status, confidence and the rule or model that produced it'),
-  "stats": zod.object({
-  "total": zod.number().int(),
-  "filled": zod.number().int(),
-  "attention": zod.number().int()
-}),
-  "inferredSkills": zod.array(zod.object({
-  "name": zod.string(),
-  "category": zod.string(),
-  "evidence": zod.string()
-})),
-  "extractionMode": zod.enum(['llm', 'rules']),
-  "extractionLabel": zod.string(),
+  "found": zod.array(zod.string()).describe('Profile field keys that were found in the CV text'),
   "mode": zod.enum(['embedding', 'deterministic']),
-  "modeLabel": zod.string(),
-  "debug": zod.object({
-  "lines": zod.array(zod.object({
-  "text": zod.string(),
-  "x": zod.number(),
-  "y": zod.number(),
-  "page": zod.number().int(),
-  "size": zod.number(),
-  "col": zod.string(),
-  "section": zod.string()
-})),
-  "sections": zod.array(zod.object({
-  "name": zod.string(),
-  "firstLine": zod.number().int(),
-  "lineCount": zod.number().int()
-})),
-  "raw": zod.string().describe('Raw parsed JSON before mapping into the profile'),
-  "notes": zod.array(zod.string())
-}).optional()
+  "modeLabel": zod.string()
 })
 
 
@@ -302,9 +192,7 @@ export const MatchCareersBody = zod.object({
   "org": zod.string(),
   "description": zod.string(),
   "kind": zod.string().optional().describe('work, internship or project'),
-  "dates": zod.string().optional(),
-  "role": zod.string().optional(),
-  "award": zod.string().optional()
+  "dates": zod.string().optional()
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
@@ -316,29 +204,7 @@ export const MatchCareersBody = zod.object({
   "location": zod.string().optional(),
   "links": zod.array(zod.string()).optional(),
   "certifications": zod.array(zod.string()).optional(),
-  "graduation": zod.string().optional(),
-  "summary": zod.string().optional(),
-  "interestTags": zod.array(zod.string()).optional(),
-  "education": zod.array(zod.object({
-  "institution": zod.string(),
-  "qualification": zod.string(),
-  "level": zod.string(),
-  "field": zod.string(),
-  "specialisation": zod.string(),
-  "results": zod.string(),
-  "dates": zod.string(),
-  "current": zod.boolean()
-})).optional(),
-  "skillDetails": zod.array(zod.object({
-  "name": zod.string(),
-  "category": zod.string(),
-  "proficiency": zod.string()
-})).optional(),
-  "languages": zod.array(zod.object({
-  "name": zod.string(),
-  "proficiency": zod.string()
-})).optional(),
-  "awards": zod.array(zod.string()).optional()
+  "graduation": zod.string().optional()
 })
 
 export const MatchCareersResponse = zod.object({
@@ -453,9 +319,7 @@ export const BuildRoadmapBody = zod.object({
   "org": zod.string(),
   "description": zod.string(),
   "kind": zod.string().optional().describe('work, internship or project'),
-  "dates": zod.string().optional(),
-  "role": zod.string().optional(),
-  "award": zod.string().optional()
+  "dates": zod.string().optional()
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
@@ -467,29 +331,7 @@ export const BuildRoadmapBody = zod.object({
   "location": zod.string().optional(),
   "links": zod.array(zod.string()).optional(),
   "certifications": zod.array(zod.string()).optional(),
-  "graduation": zod.string().optional(),
-  "summary": zod.string().optional(),
-  "interestTags": zod.array(zod.string()).optional(),
-  "education": zod.array(zod.object({
-  "institution": zod.string(),
-  "qualification": zod.string(),
-  "level": zod.string(),
-  "field": zod.string(),
-  "specialisation": zod.string(),
-  "results": zod.string(),
-  "dates": zod.string(),
-  "current": zod.boolean()
-})).optional(),
-  "skillDetails": zod.array(zod.object({
-  "name": zod.string(),
-  "category": zod.string(),
-  "proficiency": zod.string()
-})).optional(),
-  "languages": zod.array(zod.object({
-  "name": zod.string(),
-  "proficiency": zod.string()
-})).optional(),
-  "awards": zod.array(zod.string()).optional()
+  "graduation": zod.string().optional()
 })
 })
 

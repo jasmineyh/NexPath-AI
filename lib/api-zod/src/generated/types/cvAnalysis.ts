@@ -5,25 +5,13 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { CvAnalysisExtractionMode } from './cvAnalysisExtractionMode';
-import type { CvAnalysisFields } from './cvAnalysisFields';
 import type { CvAnalysisMode } from './cvAnalysisMode';
-import type { CvDebug } from './cvDebug';
-import type { CvStats } from './cvStats';
-import type { InferredSkill } from './inferredSkill';
 import type { Profile } from './profile';
 
 export interface CvAnalysis {
   profile: Profile;
-  /** Field keys that were found in the CV text */
+  /** Profile field keys that were found in the CV text */
   found: string[];
-  /** Per-field status, confidence and the rule or model that produced it */
-  fields: CvAnalysisFields;
-  stats: CvStats;
-  inferredSkills: InferredSkill[];
-  extractionMode: CvAnalysisExtractionMode;
-  extractionLabel: string;
   mode: CvAnalysisMode;
   modeLabel: string;
-  debug?: CvDebug;
 }

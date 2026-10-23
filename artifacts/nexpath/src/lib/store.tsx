@@ -13,7 +13,7 @@ export interface StepProgress {
 }
 export type ProfileSource = 'cv' | 'manual' | 'demo';
 export interface HistoryEntry { at: string; skillId: string; text: string }
-export type ResumeSection = 'summary' | 'education' | 'experience' | 'projects' | 'volunteer' | 'skills' | 'languages' | 'certifications';
+export type ResumeSection = 'summary' | 'education' | 'experience' | 'skills' | 'certifications';
 export interface ResumeState {
   template: 'classic' | 'modern';
   contact: { fullName: string; email: string; phone: string; location: string; link: string };

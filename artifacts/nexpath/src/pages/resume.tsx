@@ -11,11 +11,8 @@ import { cn } from '@/lib/utils';
 const SECTIONS: { key: ResumeSection; title: string }[] = [
   { key: 'summary', title: 'Professional Summary' },
   { key: 'education', title: 'Education' },
-  { key: 'experience', title: 'Experience' },
-  { key: 'projects', title: 'Projects & Competitions' },
-  { key: 'volunteer', title: 'Volunteer & Co-curricular' },
+  { key: 'experience', title: 'Experience & Projects' },
   { key: 'skills', title: 'Skills' },
-  { key: 'languages', title: 'Languages' },
   { key: 'certifications', title: 'Certifications & Learning' },
 ];
 
@@ -29,7 +26,7 @@ export default function ResumePage() {
 
   const origin = source === 'cv' ? 'From CV' : 'Self-reported';
   const built = useMemo(() => {
-    const empty = { text: { summary: '', education: '', experience: '', projects: '', volunteer: '', skills: '', languages: '', certifications: '' } as Record<ResumeSection, string>, tagged: [] as { name: string; tag: string; group: 'Technical' | 'Professional' }[] };
+    const empty = { text: { summary: '', education: '', experience: '', skills: '', certifications: '' } as Record<ResumeSection, string>, tagged: [] as { name: string; tag: string; group: 'Technical' | 'Professional' }[] };
     if (!profile) return empty;
     const done = Object.values(progress).filter((p) => p.status === 'completed');
     const seen = new Set<string>();
@@ -42,21 +39,8 @@ export default function ResumePage() {
     profile.technicalSkills.forEach((n) => push(n, origin, 'Technical'));
     profile.humanSkills.forEach((n) => push(n, origin, 'Professional'));
     done.forEach((d) => push(d.skill, 'Completed in roadmap', 'Technical'));
-    const details = new Map((profile.skillDetails ?? []).map((d) => [normSkill(d.name), d]));
-    const label = (n: string) => { const d = details.get(normSkill(n)); return d?.proficiency ? `${n} (${d.proficiency})` : n; };
-    const groups = new Map<string, string[]>();
-    tagged.filter((t) => t.group === 'Technical').forEach((t) => {
-      const g = t.tag === 'Completed in roadmap' ? 'Completed in roadmap' : details.get(normSkill(t.name))?.category || 'Technical';
-      groups.set(g, [...(groups.get(g) ?? []), label(t.name)]);
-    });
+    const tech = tagged.filter((t) => t.group === 'Technical').map((t) => t.name);
     const prof = tagged.filter((t) => t.group === 'Professional').map((t) => t.name);
-    const entryLines = (kinds: string[]) => (profile.experiences ?? []).filter((e) => e.title.trim() && kinds.includes(e.kind ?? 'work')).map((e) => {
-      const head = [e.title, e.role, e.award, e.org, e.dates].filter((x) => x && x.trim()).join(' | ');
-      return e.description.trim() ? `${head}\n- ${e.description.trim()}` : head;
-    }).join('\n\n');
-    const eduLines = (profile.education ?? []).length
-      ? (profile.education ?? []).map((e) => [[e.institution, e.dates].filter(Boolean).join(' | '), [e.qualification, e.results].filter(Boolean).join(' | ')].filter(Boolean).join('\n')).join('\n\n')
-      : '';
     const statusWord = profile.status === 'fresh graduate' ? 'Recent' : profile.status === 'student' ? 'Current' : '';
     const target = targetTitle ? ` seeking an entry-level ${targetTitle} role` : '';
     const strengths = profile.humanSkills.slice(0, 3).map((x) => x.toLowerCase()).join(', ');
@@ -65,13 +49,13 @@ export default function ResumePage() {
       ...done.filter((d) => d.course).map((d) => [`${d.course!.title} | ${d.course!.provider}`, d.completedAt, d.evidence ? `Evidence: ${d.evidence}` : ''].filter(Boolean).join(' | ')),
     ];
     const text: Record<ResumeSection, string> = {
-      summary: profile.summary?.trim() ? profile.summary.trim() : `${statusWord ? statusWord + ' ' : ''}${profile.major} ${profile.status === 'student' ? 'student' : 'graduate'}${target}. Hands-on with ${profile.technicalSkills.slice(0, 4).join(', ') || 'core technical tools'}${done.length ? `, recently building ${done.map((d) => d.skill).slice(0, 3).join(', ')}` : ''}.${strengths ? ` Brings ${strengths} to cross-functional teams.` : ''}`,
-      education: eduLines || [[profile.major, profile.institution].filter(Boolean).join(' | '), [profile.educationLevel, profile.graduation].filter(Boolean).join(' | ')].filter(Boolean).join('\n'),
-      experience: entryLines(['work', 'internship']),
-      projects: entryLines(['project', 'competition']),
-      volunteer: entryLines(['volunteer']),
-      skills: [...[...groups.entries()].map(([g, v]) => `${g}: ${v.join(', ')}`), prof.length ? `Professional: ${prof.join(', ')}` : ''].filter(Boolean).join('\n'),
-      languages: (profile.languages ?? []).map((l) => (l.proficiency ? `${l.name} (${l.proficiency})` : l.name)).join(', '),
+      summary: `${statusWord ? statusWord + ' ' : ''}${profile.major} ${profile.status === 'student' ? 'student' : 'graduate'}${target}. Hands-on with ${profile.technicalSkills.slice(0, 4).join(', ') || 'core technical tools'}${done.length ? `, recently building ${done.map((d) => d.skill).slice(0, 3).join(', ')}` : ''}.${strengths ? ` Brings ${strengths} to cross-functional teams.` : ''}`,
+      education: [[profile.major, profile.institution].filter(Boolean).join(' | '), [profile.educationLevel, profile.graduation].filter(Boolean).join(' | ')].filter(Boolean).join('\n'),
+      experience: (profile.experiences ?? []).filter((e) => e.title.trim()).map((e) => {
+        const head = [e.title, e.org, e.dates].filter((x) => x && x.trim()).join(' | ');
+        return e.description.trim() ? `${head}\n- ${e.description.trim()}` : head;
+      }).join('\n\n'),
+      skills: [tech.length ? `Technical: ${tech.join(', ')}` : '', prof.length ? `Professional: ${prof.join(', ')}` : ''].filter(Boolean).join('\n'),
       certifications: certLines.join('\n'),
     };
     return { text, tagged };

@@ -22,7 +22,6 @@ import type {
 import type {
   AiStatus,
   CvAnalysis,
-  CvMode,
   CvRequest,
   ErrorResponse,
   HealthStatus,
@@ -399,83 +398,6 @@ export const useGetProfileSummary = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getGetProfileSummaryMutationOptions(options));
     }
-
-export const getGetCvModeUrl = () => {
-
-
-
-
-  return `/api/cv/mode`
-}
-
-/**
- * @summary Which CV extraction mode is active (llm or rules)
- */
-export const getCvMode = async ( options?: Parameters<typeof customFetch>[1]): Promise<CvMode> => {
-
-  return customFetch<CvMode>(getGetCvModeUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getGetCvModeQueryKey = () => {
-    return [
-    `/api/cv/mode`
-    ] as const;
-    }
-
-
-export const getGetCvModeQueryOptions = <TData = Awaited<ReturnType<typeof getCvMode>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getCvMode>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetCvModeQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCvMode>>> = ({ signal }) => getCvMode({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCvMode>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetCvModeQueryResult = NonNullable<Awaited<ReturnType<typeof getCvMode>>>
-export type GetCvModeQueryError = ErrorType<unknown>
-
-
-/**
- * @summary Which CV extraction mode is active (llm or rules)
- */
-
-export function useGetCvMode<TData = Awaited<ReturnType<typeof getCvMode>>, TError = ErrorType<unknown>>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getCvMode>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
-
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-
-  const queryOptions = getGetCvModeQueryOptions(options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
 
 export const getAnalyseCvUrl = () => {
 
