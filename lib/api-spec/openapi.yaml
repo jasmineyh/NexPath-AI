@@ -523,6 +523,19 @@ components:
       type: object
       required: [id, title, summary, industries, skills, occupations, sourceName, sourceUrl, publishedDate]
       properties:
+        fields:
+          type: array
+          items:
+            type: string
+        geography:
+          type: string
+        evidenceType:
+          type: string
+          enum: [Observed, Externally forecast, Illustrative]
+        risingSkills:
+          type: array
+          items:
+            type: string
         id:
           type: string
         title:
@@ -547,10 +560,62 @@ components:
           type: string
         publishedDate:
           type: string
+    TrendField:
+      type: object
+      required: [id, name, occupations]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        occupations:
+          type: array
+          items:
+            type: string
+    OutlookSkill:
+      type: object
+      required: [skillId, name, direction, evidenceType, trendIds, sourceNames]
+      properties:
+        skillId:
+          type: string
+        name:
+          type: string
+        direction:
+          type: string
+          enum: [rising, stable, declining]
+        evidenceType:
+          type: string
+          enum: [Observed, Externally forecast, Illustrative]
+        trendIds:
+          type: array
+          items:
+            type: string
+        sourceNames:
+          type: array
+          items:
+            type: string
+    FieldOutlook:
+      type: object
+      required: [fieldId, skills]
+      properties:
+        fieldId:
+          type: string
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/OutlookSkill"
     TrendList:
       type: object
       required: [lastUpdated, industries, items]
       properties:
+        fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrendField"
+        outlook:
+          type: array
+          items:
+            $ref: "#/components/schemas/FieldOutlook"
         lastUpdated:
           type: string
         industries:

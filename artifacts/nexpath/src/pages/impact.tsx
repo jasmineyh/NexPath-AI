@@ -1,25 +1,30 @@
 import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { useBuildImpact, useListSdgs, getListSdgsQueryKey, useListSkills, getListSkillsQueryKey, type ImpactRequest, type ImpactNode, type ImpactLink } from '@workspace/api-client-react';
-import { useStore, completedIds } from '@/lib/store';
+import { Link } from 'wouter';
+import { useBuildImpact, useListSdgs, getListSdgsQueryKey, useListSkills, getListSkillsQueryKey, useListOccupations, getListOccupationsQueryKey, type ImpactRequest } from '@workspace/api-client-react';
+import { useStore } from '@/lib/store';
+import { useRoadmap } from '@/hooks/use-roadmap';
 import { useAutoMutation } from '@/hooks/use-auto-mutation';
 import { PageHeader, ErrorState, Shimmer, LockedPrompt, Disclaimer, NextStep } from '@/components/common';
-import { cn } from '@/lib/utils';
+import { ImpactMap, type MapLink, type MapSkill, type MapSdg, type SkillStatus } from '@/components/impact-map';
+import { SdgReference } from '@/components/sdg-reference';
 
-const W = 900;
-const COLX = { career: 120, skill: 450, sdg: 780 } as const;
+const norm = (x: string) => x.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9+#]+/g, ' ').trim();
+const lcFirst = (t: string) => (t ? t.charAt(0).toLowerCase() + t.slice(1) : t);
+const POTENTIAL = 'Potential after you complete this.';
 
 export default function ImpactPage() {
   const { profile, targetId, progress, source } = useStore();
   const sdgs = useListSdgs({ query: { queryKey: getListSdgsQueryKey(), staleTime: Infinity } });
+  const occs = useListOccupations({ query: { queryKey: getListOccupationsQueryKey(), staleTime: Infinity } });
+  const { roadmap } = useRoadmap();
+  const occ = occs.data?.find((o) => o.id === targetId);
+
   const m = useBuildImpact();
-  const done = useMemo(() => completedIds(progress), [progress]);
-  const payload = useMemo<ImpactRequest | null>(() => (profile ? { occupationId: targetId, completedSkillIds: done } : null), [profile, targetId, done]);
+  const payload = useMemo<ImpactRequest | null>(() => (profile && occ ? { occupationId: occ.id, completedSkillIds: occ.requiredSkills.map((r) => r.skillId) } : null), [profile, occ]);
   const retry = useAutoMutation(m.mutate, payload);
   const catalogue = useListSkills({ query: { queryKey: getListSkillsQueryKey(), staleTime: Infinity } });
   const existing = useMemo(() => {
     if (!profile || source !== 'cv' || !catalogue.data) return [];
-    const norm = (x: string) => x.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9+#]+/g, ' ').trim();
     const byName = new Map<string, (typeof catalogue.data)[number]>();
     catalogue.data.forEach((k) => [k.name, ...(k.synonyms ?? [])].forEach((n) => byName.set(norm(n), k)));
     const out = new Map<string, { id: string; name: string }>();
@@ -29,131 +34,138 @@ export default function ImpactPage() {
   const ex = useBuildImpact();
   const exPayload = useMemo<ImpactRequest | null>(() => (existing.length ? { occupationId: null, completedSkillIds: existing.map((e) => e.id) } : null), [existing]);
   useAutoMutation(ex.mutate, exPayload);
-  const [hover, setHover] = useState<string | null>(null);
-  const [sel, setSel] = useState<ImpactLink | null>(null);
+  const [active, setActive] = useState<MapLink | null>(null);
   const g = m.data;
   const color = (n?: number | null) => sdgs.data?.find((s) => s.number === n)?.color ?? 'hsl(200 80% 35%)';
 
-  const layout = useMemo(() => {
-    if (!g) return null;
-    const cols: Record<string, ImpactNode[]> = { career: [], skill: [], sdg: [] };
-    g.nodes.forEach((n) => cols[n.kind].push(n));
-    const rows = Math.max(...Object.values(cols).map((c) => c.length), 1);
-    const H = Math.max(320, rows * 58 + 40);
-    const pos: Record<string, { x: number; y: number; n: ImpactNode }> = {};
-    (Object.keys(cols) as (keyof typeof COLX)[]).forEach((k) => {
-      const list = cols[k];
-      const gap = H / (list.length + 1);
-      list.forEach((n, i) => { pos[n.id] = { x: COLX[k], y: gap * (i + 1), n }; });
+  const model = useMemo(() => {
+    if (!g || !occ || !sdgs.data) return null;
+    const covered = new Set((roadmap?.alreadyCovered ?? []).map(norm));
+    const cvIds = new Set(existing.map((e) => e.id));
+    const status = (id: string, name: string): SkillStatus => {
+      const p = progress[id];
+      if (p?.status === 'completed') return 'completed';
+      if (cvIds.has(id) || covered.has(norm(name))) return 'existing';
+      if (p?.status === 'in-progress') return 'in-progress';
+      return 'planned';
+    };
+    const skillInfo = new Map(occ.requiredSkills.map((r) => [`skill:${r.skillId}`, { id: r.skillId, name: r.name, status: status(r.skillId, r.name) }]));
+    const sdgName = (n: number) => sdgs.data!.find((s) => s.number === n)?.name ?? '';
+    const careerSdgLinks = g.links.filter((l) => l.source.startsWith('career:') && l.target.startsWith('sdg:'));
+    const skillSdgLinks = g.links.filter((l) => l.source.startsWith('skill:') && l.target.startsWith('sdg:'));
+    const held = (src: string) => { const s = skillInfo.get(src); return s?.status === 'completed' || s?.status === 'existing'; };
+    const careerSdgs = new Set(careerSdgLinks.map((l) => Number(l.target.slice(4))));
+    const heldSdgs = new Set(skillSdgLinks.filter((l) => held(l.source)).map((l) => Number(l.target.slice(4))));
+    const allowed = new Set([...careerSdgs, ...heldSdgs]);
+    const links: MapLink[] = [];
+    careerSdgLinks.forEach((l) => {
+      const n = Number(l.target.slice(4));
+      links.push({ key: `career-sdg-${n}`, kind: 'career-sdg', source: 'career', target: l.target, potential: false, heading: `${occ.title} to SDG ${n} ${sdgName(n)}`, sentence: `As a ${occ.title}, your work can support SDG ${n} (${sdgName(n)}): ${lcFirst(l.justification)}` });
     });
-    return { pos, H };
-  }, [g]);
+    const shownSkills = new Set<string>();
+    skillSdgLinks.forEach((l) => {
+      const n = Number(l.target.slice(4));
+      const s = skillInfo.get(l.source);
+      if (!s || !allowed.has(n)) return;
+      const potential = !held(l.source);
+      shownSkills.add(l.source);
+      links.push({ key: `skill-sdg-${s.id}-${n}`, kind: 'skill-sdg', source: l.source, target: l.target, potential, heading: `${s.name} to SDG ${n} ${sdgName(n)}`, sentence: `${s.name} may contribute to SDG ${n} (${sdgName(n)}): ${lcFirst(l.justification)}${potential ? ' ' + POTENTIAL : ''}` });
+    });
+    const skills: MapSkill[] = [...shownSkills].map((k) => skillInfo.get(k)!).sort((a, b) => ['completed', 'existing', 'in-progress', 'planned'].indexOf(a.status) - ['completed', 'existing', 'in-progress', 'planned'].indexOf(b.status));
+    skills.forEach((s) => {
+      const potential = s.status === 'planned' || s.status === 'in-progress';
+      links.push({ key: `career-skill-${s.id}`, kind: 'career-skill', source: 'career', target: `skill:${s.id}`, potential, heading: `${occ.title} to ${s.name}`, sentence: `${s.name} is a skill that ${occ.title} roles commonly need.${potential ? ' ' + POTENTIAL : ''}` });
+    });
+    const mapSdgs: MapSdg[] = [...allowed].sort((a, b) => a - b).map((n) => ({ number: n, name: sdgName(n), color: color(n) }));
+    return { links, skills, mapSdgs, count: heldSdgs.size, allowed };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [g, occ, sdgs.data, roadmap, existing, progress]);
 
-  if (!profile) return <LockedPrompt title="Complete Understand Me first" body="Impact mapping connects your career and completed skills to the UN Sustainable Development Goals." href="/app/understand" cta="Go to Understand Me" />;
-  const userSdgs = new Set(g?.userSdgs ?? []);
-  const occSdgs = new Set(g?.occupationSdgs ?? []);
+  if (!profile) return <LockedPrompt title="Complete Understand Me first" body="Impact mapping connects your career and skills to the UN Sustainable Development Goals." href="/app/understand" cta="Go to Understand Me" />;
+
+  const listGroups: { title: string; kinds: MapLink['kind'][] }[] = [
+    { title: 'Career to SDGs', kinds: ['career-sdg'] },
+    { title: 'Skills to SDGs', kinds: ['skill-sdg'] },
+  ];
+  const firstFor = new Map<number, string>();
+  model?.links.filter((l) => l.kind !== 'career-skill').sort((a, b) => Number(b.kind === 'career-sdg') - Number(a.kind === 'career-sdg')).forEach((l) => { const n = Number(l.target.slice(4)); if (!firstFor.has(n)) firstFor.set(n, l.key); });
 
   return (
     <div>
-      <PageHeader eyebrow="Impact / SDG Impact" title="Your SDG record" description="How your target career and completed skills could connect to the Sustainable Development Goals. Hover a link to read its justification." />
-      {m.isError && <ErrorState onRetry={retry} />}
-      {m.isPending && <Shimmer className="h-96" />}
-      {g && layout && (
+      <PageHeader eyebrow="Impact / SDG Impact" title="Your SDG record" description="How your career and skills could connect to the Sustainable Development Goals. Hover, focus or tap a line to read why it connects." />
+      {!targetId || (occs.data && !occ) ? (
+        <section className="rounded-3xl border border-dashed bg-card p-8 text-center" data-testid="panel-impact-empty">
+          <p className="font-display text-lg font-semibold">Choose a career to see your impact map</p>
+          <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">The map connects a career to the skills it needs and the SDGs they may support.</p>
+          <Link href="/app/explore/market" className="mt-4 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Open Career Market</Link>
+        </section>
+      ) : (
         <>
-          <div className="mb-6 grid gap-4 md:grid-cols-[auto_1fr] md:items-center">
-            <div className="rounded-3xl bg-navy px-7 py-5 text-white">
-              <p className="text-xs uppercase tracking-[0.18em] text-sidebar-primary">Your skills contribute to</p>
-              <p className="font-display text-5xl font-bold" data-testid="text-sdg-count">{g.userSdgs.length} <span className="text-2xl font-semibold">SDG{g.userSdgs.length === 1 ? '' : 's'}</span></p>
-            </div>
-            <p className="text-sm text-muted-foreground">{done.length === 0 ? 'Complete roadmap steps to grow your personal SDG record. Occupation-level links are shown in the meantime.' : `Based on ${done.length} completed roadmap skill${done.length === 1 ? '' : 's'}${targetId ? ' and your target career' : ''}.`}</p>
-          </div>
+          {(m.isError || occs.isError) && <ErrorState onRetry={retry} />}
+          {(m.isPending || occs.isLoading || sdgs.isLoading) && !m.isError && <Shimmer className="h-96" />}
+          {model && occ && (
+            <>
+              <div className="mb-6 grid gap-4 md:grid-cols-[auto_1fr] md:items-center">
+                <div className="rounded-3xl bg-navy px-7 py-5 text-white">
+                  <p className="text-xs uppercase tracking-[0.18em] text-sidebar-primary">Your skills may contribute to</p>
+                  <p className="font-display text-5xl font-bold" data-testid="text-sdg-count">{model.count} <span className="text-2xl font-semibold">SDG{model.count === 1 ? '' : 's'}</span></p>
+                </div>
+                <p className="text-sm text-muted-foreground">Counted from skills you already have or have completed. Skills still planned or in progress are shown as "Potential after you complete this".</p>
+              </div>
 
-          <div className="overflow-x-auto rounded-3xl border bg-card p-4">
-            <div className="mb-2 grid min-w-[760px] grid-cols-3 text-center font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"><span>Career</span><span>Skills</span><span>SDGs</span></div>
-            <svg viewBox={`0 0 ${W} ${layout.H}`} className="min-w-[760px] w-full" data-testid="chart-impact">
-              {g.links.map((l, i) => {
-                const a = layout.pos[l.source]; const b = layout.pos[l.target];
-                if (!a || !b) return null;
-                const active = hover ? l.source === hover || l.target === hover : sel === l;
-                const dim = (hover || sel) && !active;
-                const mx = (a.x + b.x) / 2;
-                const tgtColor = color(b.n.sdgNumber);
-                return (
-                  <g key={i} onMouseEnter={() => setSel(l)} onClick={() => setSel(l)} className="cursor-pointer">
-                    <motion.path d={`M${a.x + 70},${a.y} C${mx},${a.y} ${mx},${b.y} ${b.x - 70},${b.y}`} fill="none"
-                      stroke={l.level === 'occupation' ? 'hsl(200 80% 35%)' : tgtColor} strokeWidth={active ? 4 : 2.2}
-                      className={l.level === 'occupation' ? 'flow-dash' : ''} opacity={dim ? 0.12 : 0.7}
-                      initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: i * 0.04 }} />
-                    <path d={`M${a.x + 70},${a.y} C${mx},${a.y} ${mx},${b.y} ${b.x - 70},${b.y}`} fill="none" stroke="transparent" strokeWidth={14} />
-                  </g>
-                );
-              })}
-              {Object.values(layout.pos).map(({ x, y, n }) => {
-                const isSdg = n.kind === 'sdg';
-                const fill = isSdg ? color(n.sdgNumber) : n.kind === 'career' ? 'hsl(206 58% 13%)' : n.completed ? 'hsl(174 64% 38%)' : 'hsl(188 42% 92%)';
-                const txt = n.kind === 'skill' && !n.completed ? 'hsl(204 60% 18%)' : '#fafcfc';
-                return (
-                  <g key={n.id} onMouseEnter={() => setHover(n.id)} onMouseLeave={() => setHover(null)} className="cursor-pointer" data-testid={`node-${n.id}`}>
-                    <motion.rect x={x - 70} y={y - 19} width={140} height={38} rx={19} fill={fill} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} style={{ transformOrigin: `${x}px ${y}px` }}
-                      stroke={isSdg && userSdgs.has(n.sdgNumber ?? -1) ? 'hsl(206 58% 13%)' : 'none'} strokeWidth={2.5} />
-                    <text x={x} y={y + 4} textAnchor="middle" fontSize="11.5" fontWeight={600} fill={txt} fontFamily="Geist, sans-serif">
-                      {(isSdg ? `SDG ${n.sdgNumber}` : n.label).slice(0, 22)}
-                    </text>
-                  </g>
-                );
-              })}
-            </svg>
-            <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5"><span className="h-0.5 w-6 border-t-2 border-dashed border-primary" /> occupation-level mapping</span>
-              <span className="flex items-center gap-1.5"><span className="h-0.5 w-6 bg-teal" /> skill-level mapping</span>
-              <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-teal" /> completed skill</span>
-            </div>
-          </div>
+              <ImpactMap careerTitle={occ.title} skills={model.skills} sdgs={model.mapSdgs} links={model.links} active={active} onActive={setActive} />
 
-          <motion.div key={sel ? sel.source + sel.target : 'none'} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-4 rounded-2xl border-l-4 border-teal bg-accent/40 p-4 text-sm" data-testid="text-justification">
-            {sel ? <><span className="mr-2 rounded bg-card px-1.5 py-0.5 font-mono text-[10px] uppercase">{sel.level}-level</span>{sel.justification}</> : 'Hover or tap a link to read why it connects.'}
-          </motion.div>
+              <div className="mt-4 min-h-[3.5rem] rounded-2xl border-l-4 border-teal bg-accent/40 p-4 text-sm" aria-live="polite" data-testid="text-justification">
+                {active ? active.sentence : 'Hover, focus or tap a line on the map to read why it connects.'}
+              </div>
 
-          {source === 'cv' && (
-            <section className="mt-10" data-testid="section-existing-skills">
-              <h2 className="text-xl font-bold">Existing skills</h2>
-              <p className="mb-4 text-sm text-muted-foreground">Skills from your uploaded CV profile and the SDGs they could connect to. Shown separately from your roadmap record.</p>
-              {existing.length === 0 ? <p className="text-sm text-muted-foreground">None of your CV skills matched the skill catalogue yet.</p> : (
-                <ul className="grid gap-2 sm:grid-cols-2">
-                  {existing.map((k) => {
-                    const links = (ex.data?.links ?? []).filter((l) => l.source.includes(k.id) && l.level === 'skill');
-                    const nums = links.map((l) => ex.data?.nodes.find((n) => n.id === l.target)?.sdgNumber).filter((n): n is number => typeof n === 'number');
-                    return (
-                      <li key={k.id} className="flex items-center gap-3 rounded-2xl border bg-card px-4 py-3" title={links.map((l) => l.justification).join(' ')} data-testid={`row-existing-${k.id}`}>
-                        <span className="flex-1 text-sm font-medium">{k.name}</span>
-                        {ex.isPending ? <span className="text-xs text-muted-foreground">...</span> : nums.length ? nums.map((n) => <span key={n} className="rounded-md px-1.5 py-0.5 text-[10px] font-bold text-white" style={{ background: color(n) }}>SDG {n}</span>) : <span className="text-xs text-muted-foreground">No direct SDG link</span>}
-                      </li>
-                    );
-                  })}
-                </ul>
+              <section className="mt-8" data-testid="list-impact-explanations">
+                <h2 className="text-xl font-bold">Why each link exists</h2>
+                {listGroups.map((grp) => (
+                  <div key={grp.title} className="mt-4">
+                    <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">{grp.title}</h3>
+                    <ul className="space-y-2">
+                      {model.links.filter((l) => grp.kinds.includes(l.kind)).map((l) => (
+                        <li key={l.key} id={firstFor.get(Number(l.target.slice(4))) === l.key ? `why-sdg-${l.target.slice(4)}` : undefined} className="rounded-2xl border bg-card px-4 py-3 text-sm" data-testid={`explain-${l.key}`}>
+                          <p className="text-xs font-semibold text-muted-foreground">{l.heading}{l.potential && <span className="ml-2 rounded-full bg-amber/15 px-2 py-0.5 text-[10px] text-[hsl(30_80%_30%)]">Potential after you complete this</span>}</p>
+                          <p className="mt-0.5">{l.sentence}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                <details className="mt-4 rounded-2xl border bg-card px-4 py-3 text-sm">
+                  <summary className="cursor-pointer font-semibold">Why these skills are on the map</summary>
+                  <ul className="mt-2 space-y-1.5">{model.links.filter((l) => l.kind === 'career-skill').map((l) => <li key={l.key} data-testid={`explain-${l.key}`}>{l.sentence}</li>)}</ul>
+                </details>
+              </section>
+
+              {source === 'cv' && (
+                <section className="mt-10" data-testid="section-existing-skills">
+                  <h2 className="text-xl font-bold">Existing skills</h2>
+                  <p className="mb-4 text-sm text-muted-foreground">Skills from your uploaded CV profile and the SDGs they could connect to. Shown separately from your roadmap record.</p>
+                  {existing.length === 0 ? <p className="text-sm text-muted-foreground">None of your CV skills matched the skill catalogue yet.</p> : (
+                    <ul className="grid gap-2 sm:grid-cols-2">
+                      {existing.map((k) => {
+                        const links = (ex.data?.links ?? []).filter((l) => l.source.includes(k.id) && l.level === 'skill');
+                        const nums = links.map((l) => ex.data?.nodes.find((n) => n.id === l.target)?.sdgNumber).filter((n): n is number => typeof n === 'number');
+                        return (
+                          <li key={k.id} className="flex items-center gap-3 rounded-2xl border bg-card px-4 py-3" title={links.map((l) => l.justification).join(' ')} data-testid={`row-existing-${k.id}`}>
+                            <span className="flex-1 text-sm font-medium">{k.name}</span>
+                            {ex.isPending ? <span className="text-xs text-muted-foreground">...</span> : nums.length ? nums.map((n) => <span key={n} className="rounded-md px-1.5 py-0.5 text-[10px] font-bold text-white" style={{ background: color(n) }}>SDG {n}</span>) : <span className="text-xs text-muted-foreground">No direct SDG link</span>}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </section>
               )}
-            </section>
-          )}
 
-          <h2 className="mb-4 mt-10 text-xl font-bold">SDG badge grid</h2>
-          {sdgs.isLoading ? <Shimmer className="h-40" /> : (
-            <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-6 lg:grid-cols-9">
-              {(sdgs.data ?? []).map((s, i) => {
-                const mine = userSdgs.has(s.number); const occ = occSdgs.has(s.number);
-                return (
-                  <motion.div key={s.number} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
-                    className={cn('relative flex aspect-square flex-col justify-between rounded-2xl p-2.5 text-white transition', !mine && !occ && 'opacity-25 grayscale', mine && 'ring-4 ring-offset-2 ring-offset-background ring-navy/80 scale-[1.03]')}
-                    style={{ background: s.color }} title={s.name} data-testid={`badge-sdg-${s.number}`}>
-                    <span className="font-display text-2xl font-bold leading-none">{s.number}</span>
-                    <span className="text-[9.5px] font-semibold leading-tight line-clamp-3">{s.name}</span>
-                    {mine && <span className="absolute right-1.5 top-1.5 rounded-full bg-white/90 px-1.5 text-[8px] font-bold text-navy">YOU</span>}
-                  </motion.div>
-                );
-              })}
-            </div>
+
+              <SdgReference sdgs={sdgs.data ?? []} mapped={model.allowed} />
+              <div className="mt-6 space-y-2"><Disclaimer>Potential contributions, not measured impact.</Disclaimer></div>
+            </>
           )}
-          {sdgs.isError && <ErrorState onRetry={() => sdgs.refetch()} />}
-          <div className="mt-6 space-y-2"><Disclaimer>Potential contributions, not measured impact.</Disclaimer>{g.disclaimer && <p className="text-xs text-muted-foreground">{g.disclaimer}</p>}</div>
         </>
       )}
       <NextStep href="/app/understand" hint="Loop back" label="Refine your profile and recalculate" />

@@ -190,7 +190,20 @@ export interface MatchResponse {
   results: CareerMatch[];
 }
 
+export type TrendEvidenceType = typeof TrendEvidenceType[keyof typeof TrendEvidenceType];
+
+
+export const TrendEvidenceType = {
+  Observed: 'Observed',
+  Externally_forecast: 'Externally forecast',
+  Illustrative: 'Illustrative',
+} as const;
+
 export interface Trend {
+  fields?: string[];
+  geography?: string;
+  evidenceType?: TrendEvidenceType;
+  risingSkills?: string[];
   id: string;
   title: string;
   summary: string;
@@ -202,7 +215,47 @@ export interface Trend {
   publishedDate: string;
 }
 
+export interface TrendField {
+  id: string;
+  name: string;
+  occupations: string[];
+}
+
+export type OutlookSkillDirection = typeof OutlookSkillDirection[keyof typeof OutlookSkillDirection];
+
+
+export const OutlookSkillDirection = {
+  rising: 'rising',
+  stable: 'stable',
+  declining: 'declining',
+} as const;
+
+export type OutlookSkillEvidenceType = typeof OutlookSkillEvidenceType[keyof typeof OutlookSkillEvidenceType];
+
+
+export const OutlookSkillEvidenceType = {
+  Observed: 'Observed',
+  Externally_forecast: 'Externally forecast',
+  Illustrative: 'Illustrative',
+} as const;
+
+export interface OutlookSkill {
+  skillId: string;
+  name: string;
+  direction: OutlookSkillDirection;
+  evidenceType: OutlookSkillEvidenceType;
+  trendIds: string[];
+  sourceNames: string[];
+}
+
+export interface FieldOutlook {
+  fieldId: string;
+  skills: OutlookSkill[];
+}
+
 export interface TrendList {
+  fields?: TrendField[];
+  outlook?: FieldOutlook[];
   lastUpdated: string;
   industries: string[];
   items: Trend[];

@@ -5,8 +5,13 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { TrendEvidenceType } from './trendEvidenceType';
 
 export interface Trend {
+  fields?: string[];
+  geography?: string;
+  evidenceType?: TrendEvidenceType;
+  risingSkills?: string[];
   id: string;
   title: string;
   summary: string;

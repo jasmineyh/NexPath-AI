@@ -12,7 +12,7 @@ const NAV: (NavLeaf | NavGroup)[] = [
   { href: '/app/understand', label: 'Understand Me', icon: UserRound },
   { label: 'Explore Me', icon: Telescope, children: [
     { href: '/app/explore/market', label: 'Career Market', icon: BarChart3 },
-    { href: '/app/explore/trends', label: 'Trends', icon: Radar, optional: true },
+    { href: '/app/explore/trends', label: 'Future Skills Radar', icon: Radar, optional: true },
     { href: '/app/explore/time-machine', label: 'Career Time Machine', icon: Clock4, optional: true },
   ] },
   { label: 'Roadmap', icon: MapIcon, children: [
@@ -25,7 +25,7 @@ const NAV: (NavLeaf | NavGroup)[] = [
 const CRUMBS: Record<string, string[]> = {
   '/app/understand': ['Understand Me'],
   '/app/explore/market': ['Explore Me', 'Career Market'],
-  '/app/explore/trends': ['Explore Me', 'Trends'],
+  '/app/explore/trends': ['Explore Me', 'Future Skills Radar'],
   '/app/explore/time-machine': ['Explore Me', 'Career Time Machine'],
   '/app/roadmap': ['Roadmap', 'Skill Roadmap & Progress'],
   '/app/roadmap/resume': ['Roadmap', 'My Resume'],

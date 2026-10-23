@@ -7,6 +7,7 @@ import { useStore } from '@/lib/store';
 import { PageHeader, ErrorState, Shimmer, NextStep } from '@/components/common';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { ReadinessCompare } from '@/components/readiness-compare';
 
 type Mode = 'gradual' | 'rapid';
 const TREND = {
@@ -38,6 +39,8 @@ export default function TimeMachinePage() {
     <div>
       <PageHeader eyebrow="Explore Me / Career Time Machine" title="Career Time Machine"
         description="Pick a career, then shift between two planning scenarios to see which skills rise, hold or decline in priority." />
+
+      <ReadinessCompare occupationId={id} mode={mode} scenarioSkills={data?.skills} />
 
       <div className="relative overflow-hidden rounded-[2rem] bg-navy text-white shadow-2xl shadow-primary/20">
         <motion.svg className="pointer-events-none absolute -right-40 -top-40 h-[560px] w-[560px] opacity-25" viewBox="0 0 200 200" animate={{ rotate: rapid ? 140 : 0 }} transition={{ duration: 1.4, ease: [0.2, 0.8, 0.2, 1] }} aria-hidden>

@@ -5,9 +5,13 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { FieldOutlook } from './fieldOutlook';
 import type { Trend } from './trend';
+import type { TrendField } from './trendField';
 
 export interface TrendList {
+  fields?: TrendField[];
+  outlook?: FieldOutlook[];
   lastUpdated: string;
   industries: string[];
   items: Trend[];

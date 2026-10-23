@@ -101,6 +101,10 @@ export const GetProfileSummaryResponse = zod.object({
   "directions": zod.array(zod.string()),
   "developmentAreas": zod.array(zod.string()),
   "marketInsights": zod.array(zod.object({
+  "fields": zod.array(zod.string()).optional(),
+  "geography": zod.string().optional(),
+  "evidenceType": zod.enum(['Observed', 'Externally forecast', 'Illustrative']).optional(),
+  "risingSkills": zod.array(zod.string()).optional(),
   "id": zod.string(),
   "title": zod.string(),
   "summary": zod.string(),
@@ -290,9 +294,29 @@ export const ListTrendsQueryParams = zod.object({
 })
 
 export const ListTrendsResponse = zod.object({
+  "fields": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "occupations": zod.array(zod.string())
+})).optional(),
+  "outlook": zod.array(zod.object({
+  "fieldId": zod.string(),
+  "skills": zod.array(zod.object({
+  "skillId": zod.string(),
+  "name": zod.string(),
+  "direction": zod.enum(['rising', 'stable', 'declining']),
+  "evidenceType": zod.enum(['Observed', 'Externally forecast', 'Illustrative']),
+  "trendIds": zod.array(zod.string()),
+  "sourceNames": zod.array(zod.string())
+}))
+})).optional(),
   "lastUpdated": zod.string(),
   "industries": zod.array(zod.string()),
   "items": zod.array(zod.object({
+  "fields": zod.array(zod.string()).optional(),
+  "geography": zod.string().optional(),
+  "evidenceType": zod.enum(['Observed', 'Externally forecast', 'Illustrative']).optional(),
+  "risingSkills": zod.array(zod.string()).optional(),
   "id": zod.string(),
   "title": zod.string(),
   "summary": zod.string(),

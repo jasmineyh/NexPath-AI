@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Profile } from '@workspace/api-client-react';
+import type { ResumeEdits, ResumeHidden } from '@/lib/resume-model';
 
 export type StepStatus = 'not-started' | 'in-progress' | 'completed';
 export interface StepProgress {
@@ -18,6 +19,9 @@ export interface ResumeState {
   template: 'classic' | 'modern';
   contact: { fullName: string; email: string; phone: string; location: string; link: string };
   overrides: Partial<Record<ResumeSection, string>>;
+  /** Structured edits made after generation (see resume-model). Optional so older saved data still loads. */
+  edits?: ResumeEdits;
+  hidden?: ResumeHidden;
 }
 
 interface StoreShape {

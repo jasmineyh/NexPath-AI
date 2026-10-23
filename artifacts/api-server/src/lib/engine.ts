@@ -250,8 +250,14 @@ function mapTrend(t: TrendRec, skills: SkillRec[], occs: OccupationRec[]) {
     sourceName: t.sourceName,
     sourceUrl: t.sourceUrl,
     publishedDate: t.publishedDate,
+    fields: t.fields ?? [],
+    geography: t.geography ?? "Not specified",
+    evidenceType: t.evidenceType ?? "Illustrative",
+    risingSkills: (t.risingSkills ?? []).map((s) => skillName(skills, s)),
   };
 }
+
+const EVIDENCE_RANK = { Observed: 0, "Externally forecast": 1, Illustrative: 2 } as const;
 
 export function listTrends(industry?: string, skill?: string) {
   const file = getTrends();
@@ -267,7 +273,30 @@ export function listTrends(industry?: string, skill?: string) {
     );
   }
   items = [...items].sort((a, b) => b.publishedDate.localeCompare(a.publishedDate));
-  return { lastUpdated: file.lastUpdated, industries, items: items.map((t) => mapTrend(t, skills, occs)) };
+  const outlook = (file.outlook ?? []).map((o) => ({
+    fieldId: o.fieldId,
+    skills: o.skills.map((e) => {
+      const src = e.trendIds.map((id) => file.items.find((x) => x.id === id)).filter((x): x is TrendRec => Boolean(x));
+      const evidenceType = src.length
+        ? src.reduce((best, x) => (EVIDENCE_RANK[x.evidenceType ?? "Illustrative"] < EVIDENCE_RANK[best] ? (x.evidenceType ?? "Illustrative") : best), "Illustrative" as keyof typeof EVIDENCE_RANK)
+        : ("Illustrative" as const);
+      return {
+        skillId: e.skillId,
+        name: skillName(skills, e.skillId),
+        direction: e.direction,
+        evidenceType,
+        trendIds: src.map((x) => x.id),
+        sourceNames: Array.from(new Set(src.map((x) => x.sourceName).filter(Boolean))),
+      };
+    }),
+  }));
+  return {
+    lastUpdated: file.lastUpdated,
+    industries,
+    fields: file.fields ?? [],
+    outlook,
+    items: items.map((t) => mapTrend(t, skills, occs)),
+  };
 }
 
 export async function profileSummary(profile: ProfileInput) {

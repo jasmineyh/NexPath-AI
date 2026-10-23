@@ -1,71 +1,46 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Printer, RotateCcw, AlertCircle } from 'lucide-react';
-import { useStore, type ResumeSection } from '@/lib/store';
+import { useStore } from '@/lib/store';
 import { PageHeader, LockedPrompt, NextStep, DemoBadge } from '@/components/common';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { SectionEditor, SectionView } from '@/components/resume-editor';
+import { SECTION_LIST, applyNotice, buildGenerated, isEmptyContent, noticeKeys, pendingNotice, type SectionContent, type SectionKey } from '@/lib/resume-model';
 import { cn } from '@/lib/utils';
-
-const SECTIONS: { key: ResumeSection; title: string }[] = [
-  { key: 'summary', title: 'Professional Summary' },
-  { key: 'education', title: 'Education' },
-  { key: 'experience', title: 'Experience & Projects' },
-  { key: 'skills', title: 'Skills' },
-  { key: 'certifications', title: 'Certifications & Learning' },
-];
-
-function normSkill(n: string) {
-  return n.toLowerCase().replace(/\((basic|beginner|intermediate|advanced)\)/g, '').replace(/[^a-z0-9+#]+/g, ' ').trim();
-}
 
 export default function ResumePage() {
   const { profile, isDemo, source, targetTitle, progress, resume, setResume } = useStore();
-  const [tab, setTab] = useState<ResumeSection | 'contact'>('contact');
+  const [tab, setTab] = useState<SectionKey | 'contact'>('contact');
 
   const origin = source === 'cv' ? 'From CV' : 'Self-reported';
-  const built = useMemo(() => {
-    const empty = { text: { summary: '', education: '', experience: '', skills: '', certifications: '' } as Record<ResumeSection, string>, tagged: [] as { name: string; tag: string; group: 'Technical' | 'Professional' }[] };
-    if (!profile) return empty;
-    const done = Object.values(progress).filter((p) => p.status === 'completed');
-    const seen = new Set<string>();
-    const tagged: { name: string; tag: string; group: 'Technical' | 'Professional' }[] = [];
-    const push = (name: string, tag: string, group: 'Technical' | 'Professional') => {
-      const k = normSkill(name);
-      if (!k || seen.has(k)) return;
-      seen.add(k); tagged.push({ name: name.trim(), tag, group });
-    };
-    profile.technicalSkills.forEach((n) => push(n, origin, 'Technical'));
-    profile.humanSkills.forEach((n) => push(n, origin, 'Professional'));
-    done.forEach((d) => push(d.skill, 'Completed in roadmap', 'Technical'));
-    const tech = tagged.filter((t) => t.group === 'Technical').map((t) => t.name);
-    const prof = tagged.filter((t) => t.group === 'Professional').map((t) => t.name);
-    const statusWord = profile.status === 'fresh graduate' ? 'Recent' : profile.status === 'student' ? 'Current' : '';
-    const target = targetTitle ? ` seeking an entry-level ${targetTitle} role` : '';
-    const strengths = profile.humanSkills.slice(0, 3).map((x) => x.toLowerCase()).join(', ');
-    const certLines = [
-      ...(profile.certifications ?? []).filter(Boolean),
-      ...done.filter((d) => d.course).map((d) => [`${d.course!.title} | ${d.course!.provider}`, d.completedAt, d.evidence ? `Evidence: ${d.evidence}` : ''].filter(Boolean).join(' | ')),
-    ];
-    const text: Record<ResumeSection, string> = {
-      summary: `${statusWord ? statusWord + ' ' : ''}${profile.major} ${profile.status === 'student' ? 'student' : 'graduate'}${target}. Hands-on with ${profile.technicalSkills.slice(0, 4).join(', ') || 'core technical tools'}${done.length ? `, recently building ${done.map((d) => d.skill).slice(0, 3).join(', ')}` : ''}.${strengths ? ` Brings ${strengths} to cross-functional teams.` : ''}`,
-      education: [[profile.major, profile.institution].filter(Boolean).join(' | '), [profile.educationLevel, profile.graduation].filter(Boolean).join(' | ')].filter(Boolean).join('\n'),
-      experience: (profile.experiences ?? []).filter((e) => e.title.trim()).map((e) => {
-        const head = [e.title, e.org, e.dates].filter((x) => x && x.trim()).join(' | ');
-        return e.description.trim() ? `${head}\n- ${e.description.trim()}` : head;
-      }).join('\n\n'),
-      skills: [tech.length ? `Technical: ${tech.join(', ')}` : '', prof.length ? `Professional: ${prof.join(', ')}` : ''].filter(Boolean).join('\n'),
-      certifications: certLines.join('\n'),
-    };
-    return { text, tagged };
-  }, [profile, progress, targetTitle, origin]);
-  const generated = built.text;
+  const gen = useMemo(() => (profile ? buildGenerated(profile, progress, targetTitle, origin) : null), [profile, progress, targetTitle, origin]);
 
+  if (!profile || !gen) return <LockedPrompt title="Complete Understand Me first" body="Your resume is generated only from what you enter and the roadmap steps you complete." href="/app/understand" cta="Go to Understand Me" />;
 
-  if (!profile) return <LockedPrompt title="Complete Understand Me first" body="Your resume is generated only from what you enter and the roadmap steps you complete." href="/app/understand" cta="Go to Understand Me" />;
+  const edits = resume.edits ?? {};
+  const hidden = resume.hidden ?? {};
+  const effective = (k: SectionKey): SectionContent => edits[k]?.content ?? gen.content[k];
+  const setEdit = (k: SectionKey, content: SectionContent) =>
+    setResume((r) => ({ ...r, edits: { ...(r.edits ?? {}), [k]: { content, baseline: r.edits?.[k]?.baseline ?? JSON.stringify(gen.content[k]), ignored: r.edits?.[k]?.ignored ?? [] } } }));
+  const resetSection = (k: SectionKey) => setResume((r) => { const e = { ...(r.edits ?? {}) }; delete e[k]; return { ...r, edits: e }; });
+  const toggleHidden = (k: SectionKey) => setResume((r) => ({ ...r, hidden: { ...(r.hidden ?? {}), [k]: !r.hidden?.[k] } }));
+  const resetAll = () => setResume((r) => ({ ...r, edits: {}, hidden: {}, overrides: {}, contact: { fullName: '', email: '', phone: '', location: '', link: '' } }));
+  const acceptNotice = (k: SectionKey) => setResume((r) => {
+    const rec = r.edits?.[k];
+    if (!rec) return r;
+    const next = applyNotice(gen.content[k], rec.content);
+    return { ...r, edits: { ...(r.edits ?? {}), [k]: { ...rec, content: next, baseline: JSON.stringify(gen.content[k]) } } };
+  });
+  const ignoreNotice = (k: SectionKey) => setResume((r) => {
+    const rec = r.edits?.[k];
+    if (!rec) return r;
+    return { ...r, edits: { ...(r.edits ?? {}), [k]: { ...rec, ignored: [...rec.ignored, ...noticeKeys(gen.content[k], rec)] } } };
+  });
+  const noticeOf = (k: SectionKey) => pendingNotice(k, gen.content[k], edits[k]);
+  const anyEdited = SECTION_LIST.some((s) => edits[s.key]) || Object.values(hidden).some(Boolean);
 
-  const text = (k: ResumeSection) => resume.overrides[k] ?? generated[k];
   const rc = resume.contact;
   const c = { fullName: rc.fullName || profile.name || '', email: rc.email || profile.email || '', phone: rc.phone || profile.phone || '', location: rc.location || profile.location || '', link: rc.link || profile.links?.[0] || '' };
   const name = c.fullName || 'Your Name';
@@ -76,10 +51,11 @@ export default function ResumePage() {
     window.print();
     document.title = prev;
   };
+  const activeSec = SECTION_LIST.find((s) => s.key === tab);
 
   return (
     <div>
-      <PageHeader eyebrow="Roadmap / My Resume" title="My Resume" description="ATS-friendly, built from your profile plus completed roadmap skills. Nothing is invented."
+      <PageHeader eyebrow="Roadmap / My Resume" title="My Resume" description="ATS-friendly, built from your profile plus completed roadmap skills. Nothing is invented, and every section is editable."
         actions={<>
           {isDemo && <DemoBadge />}
           <button onClick={() => print(true)} data-testid="button-download-pdf" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"><Download className="h-4 w-4" /> Download PDF</button>
@@ -89,7 +65,7 @@ export default function ResumePage() {
         <AlertCircle className="h-4 w-4 shrink-0" /> Review and edit before sending to employers. "Download PDF" opens the print dialog: choose "Save as PDF".
       </p>
 
-      <div className="grid gap-6 xl:grid-cols-[400px_1fr]">
+      <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
         <div className="space-y-4">
           <div className="flex rounded-full bg-secondary p-1">
             {(['classic', 'modern'] as const).map((t) => (
@@ -99,9 +75,13 @@ export default function ResumePage() {
           </div>
           <div className="rounded-3xl border bg-card p-4">
             <div className="mb-4 flex flex-wrap gap-1.5">
-              {[{ key: 'contact' as const, title: 'Contact' }, ...SECTIONS].map((s) => (
+              {[{ key: 'contact' as const, short: 'Contact' }, ...SECTION_LIST].map((s) => (
                 <button key={s.key} onClick={() => setTab(s.key)} data-testid={`tab-${s.key}`}
-                  className={cn('rounded-full px-3 py-1 text-xs font-medium transition', tab === s.key ? 'bg-primary text-primary-foreground' : 'bg-secondary hover:bg-muted')}>{s.title.split(' ')[0]}</button>
+                  className={cn('inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition', tab === s.key ? 'bg-primary text-primary-foreground' : 'bg-secondary hover:bg-muted')}>
+                  {s.short}
+                  {s.key !== 'contact' && edits[s.key] && <span className="h-1.5 w-1.5 rounded-full bg-teal" aria-label="edited" />}
+                  {s.key !== 'contact' && noticeOf(s.key) && <span className="h-1.5 w-1.5 rounded-full bg-amber" aria-label="update available" />}
+                </button>
               ))}
             </div>
             {tab === 'contact' ? (
@@ -111,30 +91,28 @@ export default function ResumePage() {
                     <Input value={rc[k]} placeholder={c[k] || ph} onChange={(e) => setResume((r) => ({ ...r, contact: { ...r.contact, [k]: e.target.value } }))} data-testid={`input-contact-${k}`} /></div>
                 ))}
               </div>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs">{SECTIONS.find((s) => s.key === tab)?.title}</Label>
-                  {resume.overrides[tab] !== undefined && (
-                    <button onClick={() => setResume((r) => { const o = { ...r.overrides }; delete o[tab]; return { ...r, overrides: o }; })} className="inline-flex items-center gap-1 text-xs text-primary" data-testid="button-reset-section"><RotateCcw className="h-3 w-3" /> Reset to generated</button>
-                  )}
-                </div>
-                <Textarea rows={12} value={text(tab)} onChange={(e) => setResume((r) => ({ ...r, overrides: { ...r.overrides, [tab]: e.target.value } }))} className="font-mono text-xs" data-testid={`input-section-${tab}`}
-                  placeholder={tab === 'certifications' ? 'Complete roadmap steps to add courses here.' : ''} />
-                {tab === 'skills' && (
-                  <div className="pt-2" data-testid="list-skill-origins">
-                    <p className="mb-2 text-[11px] uppercase tracking-wider text-muted-foreground">Skill sources (editor only, not printed)</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {built.tagged.map((t) => (
-                        <span key={t.name} className="inline-flex items-center gap-1.5 rounded-full border bg-background px-2.5 py-1 text-xs">{t.name}
-                          <span className={cn('rounded-full px-1.5 py-px text-[9px] font-semibold uppercase', t.tag === 'Completed in roadmap' ? 'bg-teal/15 text-accent-foreground' : t.tag === 'From CV' ? 'bg-primary/10 text-primary' : 'bg-secondary text-secondary-foreground')}>{t.tag}</span></span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+            ) : activeSec && (
+              <SectionEditor key={activeSec.key} sec={activeSec.key} title={activeSec.title} content={effective(activeSec.key)} edited={Boolean(edits[activeSec.key])} hidden={Boolean(hidden[activeSec.key])}
+                notice={noticeOf(activeSec.key)} tags={gen.tags}
+                onChange={(content) => setEdit(activeSec.key, content)} onReset={() => resetSection(activeSec.key)} onToggleHidden={() => toggleHidden(activeSec.key)}
+                onAcceptNotice={() => acceptNotice(activeSec.key)} onIgnoreNotice={() => ignoreNotice(activeSec.key)} />
             )}
           </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button disabled={!anyEdited && !rc.fullName && !rc.email && !rc.phone && !rc.location && !rc.link} className="inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold disabled:opacity-40" data-testid="button-reset-all"><RotateCcw className="h-3.5 w-3.5" /> Reset all</button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset the whole resume?</AlertDialogTitle>
+                <AlertDialogDescription>All your edits, hidden sections and contact changes will be replaced by the auto-generated resume. This cannot be undone.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel data-testid="button-reset-all-cancel">Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={resetAll} data-testid="button-reset-all-confirm">Reset all</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
 
         <motion.div key={resume.template} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="overflow-x-auto rounded-3xl bg-muted/60 p-3 md:p-6">
@@ -150,13 +128,13 @@ export default function ResumePage() {
                 <p className="mt-1 text-xs">{[c.email, c.phone, c.location, c.link].filter(Boolean).join('  |  ')}</p>
               </div>
             )}
-            {SECTIONS.map((s) => {
-              const t = text(s.key).trim();
-              if (!t) return null;
+            {SECTION_LIST.map((s) => {
+              const content = effective(s.key);
+              if (hidden[s.key] || isEmptyContent(content)) return null;
               return (
-                <section key={s.key} className="mb-5 break-inside-avoid">
+                <section key={s.key} className="mb-5 break-inside-avoid" data-testid={`resume-section-${s.key}`}>
                   <h2 className={cn('mb-1.5 text-[12px] font-bold uppercase tracking-[0.14em]', modern ? 'font-sans text-[hsl(200_80%_29%)]' : 'font-serif border-b border-[hsl(210_20%_75%)] pb-0.5')}>{s.title}</h2>
-                  <div className="whitespace-pre-line">{t}</div>
+                  <SectionView content={content} />
                 </section>
               );
             })}

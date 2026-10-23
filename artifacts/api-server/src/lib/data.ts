@@ -40,10 +40,16 @@ export interface TrendRec {
   sourceName: string;
   sourceUrl: string;
   publishedDate: string;
+  fields?: string[];
+  geography?: string;
+  evidenceType?: "Observed" | "Externally forecast" | "Illustrative";
+  risingSkills?: string[];
 }
 export interface TrendsFile {
   lastUpdated: string;
   items: TrendRec[];
+  fields?: { id: string; name: string; occupations: string[] }[];
+  outlook?: { fieldId: string; skills: { skillId: string; direction: "rising" | "stable" | "declining"; trendIds: string[] }[] }[];
 }
 export interface ScenarioFile {
   disclaimer: string;

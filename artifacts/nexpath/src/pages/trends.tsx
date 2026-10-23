@@ -4,6 +4,7 @@ import { CalendarDays, ExternalLink, Search, X } from 'lucide-react';
 import { useListTrends, getListTrendsQueryKey, type ListTrendsParams } from '@workspace/api-client-react';
 import { PageHeader, ErrorState, CardSkeletons, NextStep, stagger } from '@/components/common';
 import { cn } from '@/lib/utils';
+import { SkillsRadar, TrendMeta, EvidenceLegend } from '@/components/skills-radar';
 
 export default function TrendsPage() {
   const [industry, setIndustry] = useState<string>('');
@@ -17,9 +18,14 @@ export default function TrendsPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Explore Me / Trends" title="Career Evolution Radar"
-        description="Curated AI and workforce signals with named sources. Maintained in a data file, not hard-coded."
+      <PageHeader eyebrow="Explore Me / Future Skills Radar" title="Future Skills Radar"
+        description="Pick a field to see which skills may be rising, stable or declining, personalised to your profile. Every signal shows its source, date, geography and type of evidence."
         actions={q.data && <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 font-mono text-xs" data-testid="text-last-updated"><CalendarDays className="h-3.5 w-3.5 text-teal" /> Last updated {q.data.lastUpdated}</span>} />
+
+      <SkillsRadar />
+
+      <h2 className="mb-3 font-display text-xl font-bold">All signals</h2>
+      <div className="mb-4"><EvidenceLegend /></div>
 
       <div className="sticky top-16 z-20 -mx-4 mb-8 space-y-3 bg-background/85 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
         <div className="flex flex-wrap gap-2">
@@ -56,13 +62,12 @@ export default function TrendsPage() {
                 <div><p className="mb-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">Affected occupations</p><div className="flex flex-wrap gap-1.5">{t.occupations.map((o) => <span key={o} className="rounded-full border px-2.5 py-0.5 text-xs">{o}</span>)}</div></div>
                 <div><p className="mb-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">Skills in focus</p><div className="flex flex-wrap gap-1.5">{t.skills.map((s) => <button key={s} onClick={() => { setSkill(s); setSkillText(s); }} className="rounded-full bg-accent px-2.5 py-0.5 text-xs text-accent-foreground hover:ring-1 hover:ring-teal">{s}</button>)}</div></div>
               </div>
-              <a href={t.sourceUrl} target="_blank" rel="noreferrer" data-testid={`link-source-${t.id}`} className="mt-5 inline-flex items-center gap-1.5 border-t pt-3 text-sm font-medium text-primary hover:underline">
-                Source: {t.sourceName} <ExternalLink className="h-3.5 w-3.5" />
-              </a>
+              <TrendMeta t={t} />
             </article>
           </motion.li>
         ))}
       </motion.ol>
+      <p className="mt-8 text-center text-xs text-muted-foreground" data-testid="text-trends-footer">Trends show how skill demand may be changing. They are not predictions about any individual's job.</p>
       <NextStep href="/app/roadmap" hint="Optional detour" label="Continue to Roadmap" />
     </div>
   );

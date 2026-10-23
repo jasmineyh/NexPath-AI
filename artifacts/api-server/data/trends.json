@@ -1,138 +1,1192 @@
 {
   "lastUpdated": "2026-10-23",
-  "note": "Edit this file to maintain the Trends page. Summaries are short paraphrases; always verify details at the linked source.",
+  "note": "Edit this file to maintain the Future Skills Radar. Each item has an evidenceType: Observed, Externally forecast or Illustrative. Illustrative items are our own planning assumptions and have no external source. Outlook entries without trendIds are Illustrative (derived from data/scenarios.json). Verify details at the linked source.",
   "items": [
     {
       "id": "wef-2025-skills",
       "title": "Technology skills are among the fastest-growing in demand worldwide",
       "summary": "The World Economic Forum's 2025 survey of employers reports that AI and big data, networks and cybersecurity, and technological literacy are among the fastest-growing skills, alongside analytical thinking, resilience and flexibility.",
-      "industries": ["Cross-industry", "Technology", "Data & Analytics"],
-      "skills": ["data-analysis", "machine-learning", "cybersecurity", "critical-thinking", "adaptability"],
-      "occupations": ["data-analyst", "data-scientist", "ai-ml-engineer", "cybersecurity-analyst"],
+      "industries": [
+        "Cross-industry",
+        "Technology",
+        "Data & Analytics"
+      ],
+      "skills": [
+        "data-analysis",
+        "machine-learning",
+        "cybersecurity",
+        "critical-thinking",
+        "adaptability"
+      ],
+      "occupations": [
+        "data-analyst",
+        "data-scientist",
+        "ai-ml-engineer",
+        "cybersecurity-analyst"
+      ],
       "sourceName": "World Economic Forum, Future of Jobs Report 2025",
       "sourceUrl": "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
-      "publishedDate": "2025-01-08"
+      "publishedDate": "2025-01-08",
+      "evidenceType": "Externally forecast",
+      "geography": "Global",
+      "risingSkills": [
+        "machine-learning",
+        "data-analysis",
+        "cybersecurity",
+        "networking",
+        "critical-thinking",
+        "adaptability"
+      ],
+      "fields": [
+        "data-analytics",
+        "software",
+        "ai-ml",
+        "cybersecurity",
+        "marketing",
+        "design",
+        "project-management",
+        "cloud",
+        "education-technology"
+      ]
     },
     {
       "id": "wef-2025-churn",
       "title": "Large job creation and displacement are expected at the same time",
       "summary": "Employers surveyed by the World Economic Forum expect both substantial job creation and displacement by 2030, with a net positive effect. They also expect a large share of workers' skills to need updating, which makes reskilling a central workforce priority.",
-      "industries": ["Cross-industry"],
-      "skills": ["adaptability", "critical-thinking", "leadership"],
-      "occupations": ["project-manager", "business-analyst"],
+      "industries": [
+        "Cross-industry"
+      ],
+      "skills": [
+        "adaptability",
+        "critical-thinking",
+        "leadership"
+      ],
+      "occupations": [
+        "project-manager",
+        "business-analyst"
+      ],
       "sourceName": "World Economic Forum, Future of Jobs Report 2025",
       "sourceUrl": "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
-      "publishedDate": "2025-01-08"
+      "publishedDate": "2025-01-08",
+      "evidenceType": "Externally forecast",
+      "geography": "Global",
+      "risingSkills": [
+        "adaptability"
+      ],
+      "fields": [
+        "data-analytics",
+        "software",
+        "ai-ml",
+        "cybersecurity",
+        "marketing",
+        "design",
+        "project-management",
+        "cloud",
+        "education-technology"
+      ]
     },
     {
       "id": "linkedin-ai-skills",
       "title": "Skills required for the same job are changing quickly",
       "summary": "LinkedIn's Economic Graph research on AI at work suggests the skills needed in many jobs are shifting, which increases the value of adaptable, transferable skills alongside technical ones.",
-      "industries": ["Cross-industry"],
-      "skills": ["adaptability", "communication", "generative-ai"],
-      "occupations": ["business-analyst", "project-manager", "digital-marketing-specialist"],
+      "industries": [
+        "Cross-industry"
+      ],
+      "skills": [
+        "adaptability",
+        "communication",
+        "generative-ai"
+      ],
+      "occupations": [
+        "business-analyst",
+        "project-manager",
+        "digital-marketing-specialist"
+      ],
       "sourceName": "LinkedIn Economic Graph, Future of Work Report: AI at Work",
       "sourceUrl": "https://economicgraph.linkedin.com/research/future-of-work-report-ai",
-      "publishedDate": "2023-11-01"
+      "publishedDate": "2023-11-01",
+      "evidenceType": "Observed",
+      "geography": "Global",
+      "risingSkills": [
+        "adaptability",
+        "communication"
+      ],
+      "fields": [
+        "data-analytics",
+        "software",
+        "ai-ml",
+        "cybersecurity",
+        "marketing",
+        "design",
+        "project-management",
+        "cloud",
+        "education-technology"
+      ]
     },
     {
       "id": "microsoft-wti-2024",
       "title": "Generative AI use at work is already widespread",
       "summary": "Microsoft and LinkedIn's 2024 Work Trend Index found that a large majority of knowledge workers surveyed already use generative AI at work, and that many employers say they would hire a less experienced candidate who has AI skills.",
-      "industries": ["Cross-industry", "Business", "Marketing"],
-      "skills": ["generative-ai", "ai-literacy", "communication"],
-      "occupations": ["business-analyst", "digital-marketing-specialist", "project-manager"],
+      "industries": [
+        "Cross-industry",
+        "Business",
+        "Marketing"
+      ],
+      "skills": [
+        "generative-ai",
+        "ai-literacy",
+        "communication"
+      ],
+      "occupations": [
+        "business-analyst",
+        "digital-marketing-specialist",
+        "project-manager"
+      ],
       "sourceName": "Microsoft and LinkedIn, 2024 Work Trend Index",
       "sourceUrl": "https://www.microsoft.com/en-us/worklab/work-trend-index/ai-at-work-is-here-now-comes-the-hard-part",
-      "publishedDate": "2024-05-08"
+      "publishedDate": "2024-05-08",
+      "evidenceType": "Observed",
+      "geography": "Global",
+      "risingSkills": [
+        "generative-ai",
+        "ai-literacy"
+      ],
+      "fields": [
+        "data-analytics",
+        "software",
+        "ai-ml",
+        "cybersecurity",
+        "marketing",
+        "design",
+        "project-management",
+        "cloud",
+        "education-technology"
+      ]
     },
     {
       "id": "mckinsey-genai-2023",
       "title": "Generative AI could change a large share of knowledge-work tasks",
       "summary": "McKinsey estimates generative AI could add large economic value across functions such as customer operations, marketing and sales, software engineering and R&D, mainly by changing how tasks within jobs are done.",
-      "industries": ["Technology", "Marketing", "Business"],
-      "skills": ["software-engineering", "digital-marketing", "generative-ai", "data-analysis"],
-      "occupations": ["software-developer", "digital-marketing-specialist", "data-analyst"],
+      "industries": [
+        "Technology",
+        "Marketing",
+        "Business"
+      ],
+      "skills": [
+        "software-engineering",
+        "digital-marketing",
+        "generative-ai",
+        "data-analysis"
+      ],
+      "occupations": [
+        "software-developer",
+        "digital-marketing-specialist",
+        "data-analyst"
+      ],
       "sourceName": "McKinsey, The economic potential of generative AI",
       "sourceUrl": "https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-economic-potential-of-generative-ai-the-next-productivity-frontier",
-      "publishedDate": "2023-06-14"
+      "publishedDate": "2023-06-14",
+      "evidenceType": "Externally forecast",
+      "geography": "Global",
+      "risingSkills": [
+        "generative-ai"
+      ],
+      "fields": [
+        "data-analytics",
+        "software",
+        "marketing"
+      ]
     },
     {
       "id": "ilo-genai-2023",
       "title": "Most exposure to generative AI is augmentation, not full automation",
       "summary": "An ILO global analysis finds that most occupations are more likely to be partly augmented than fully automated by generative AI, with clerical work the most exposed, and stresses the importance of job quality and policy.",
-      "industries": ["Cross-industry", "Business"],
-      "skills": ["adaptability", "critical-thinking", "ethics"],
-      "occupations": ["business-analyst", "project-manager"],
+      "industries": [
+        "Cross-industry",
+        "Business"
+      ],
+      "skills": [
+        "adaptability",
+        "critical-thinking",
+        "ethics"
+      ],
+      "occupations": [
+        "business-analyst",
+        "project-manager"
+      ],
       "sourceName": "International Labour Organization, Generative AI and Jobs",
       "sourceUrl": "https://www.ilo.org/publications/generative-ai-and-jobs-global-analysis-potential-effects-job-quantity-and",
-      "publishedDate": "2023-08-21"
+      "publishedDate": "2023-08-21",
+      "evidenceType": "Externally forecast",
+      "geography": "Global",
+      "risingSkills": [],
+      "fields": [
+        "data-analytics",
+        "software",
+        "ai-ml",
+        "cybersecurity",
+        "marketing",
+        "design",
+        "project-management",
+        "cloud",
+        "education-technology"
+      ]
     },
     {
       "id": "imf-genai-2024",
       "title": "A large share of jobs worldwide is exposed to AI",
       "summary": "An IMF staff note estimates that around 40 percent of global employment is exposed to AI, with higher exposure in advanced economies and mixed effects on inequality, which makes skills and policy choices important.",
-      "industries": ["Cross-industry"],
-      "skills": ["adaptability", "ai-literacy", "critical-thinking"],
-      "occupations": ["data-analyst", "business-analyst", "software-developer"],
+      "industries": [
+        "Cross-industry"
+      ],
+      "skills": [
+        "adaptability",
+        "ai-literacy",
+        "critical-thinking"
+      ],
+      "occupations": [
+        "data-analyst",
+        "business-analyst",
+        "software-developer"
+      ],
       "sourceName": "International Monetary Fund, Gen-AI: Artificial Intelligence and the Future of Work",
       "sourceUrl": "https://www.imf.org/en/Publications/Staff-Discussion-Notes/Issues/2024/01/14/Gen-AI-Artificial-Intelligence-and-the-Future-of-Work-542379",
-      "publishedDate": "2024-01-14"
+      "publishedDate": "2024-01-14",
+      "evidenceType": "Externally forecast",
+      "geography": "Global",
+      "risingSkills": [
+        "ai-literacy"
+      ],
+      "fields": [
+        "data-analytics",
+        "software",
+        "ai-ml",
+        "cybersecurity",
+        "marketing",
+        "design",
+        "project-management",
+        "cloud",
+        "education-technology"
+      ]
     },
     {
       "id": "stackoverflow-2024",
       "title": "Developers are adopting AI tools quickly, with mixed trust",
       "summary": "The Stack Overflow 2024 Developer Survey reports that a large majority of respondents are using or planning to use AI tools in development, while many remain cautious about accuracy.",
-      "industries": ["Technology"],
-      "skills": ["software-engineering", "generative-ai", "testing", "python"],
-      "occupations": ["software-developer", "ai-ml-engineer", "cloud-engineer"],
+      "industries": [
+        "Technology"
+      ],
+      "skills": [
+        "software-engineering",
+        "generative-ai",
+        "testing",
+        "python"
+      ],
+      "occupations": [
+        "software-developer",
+        "ai-ml-engineer",
+        "cloud-engineer"
+      ],
       "sourceName": "Stack Overflow, 2024 Developer Survey",
       "sourceUrl": "https://survey.stackoverflow.co/2024/",
-      "publishedDate": "2024-07-24"
+      "publishedDate": "2024-07-24",
+      "evidenceType": "Observed",
+      "geography": "Global",
+      "risingSkills": [
+        "generative-ai"
+      ],
+      "fields": [
+        "software",
+        "ai-ml",
+        "cloud"
+      ]
     },
     {
       "id": "isc2-2024",
       "title": "Cybersecurity teams report persistent staffing and skills gaps",
       "summary": "ISC2's 2024 workforce study estimates a continuing global shortfall of cybersecurity professionals and highlights AI and cloud security among the skills teams most want to develop.",
-      "industries": ["Security", "Technology"],
-      "skills": ["cybersecurity", "cloud-computing", "risk-assessment", "networking"],
-      "occupations": ["cybersecurity-analyst", "cloud-engineer"],
+      "industries": [
+        "Security",
+        "Technology"
+      ],
+      "skills": [
+        "cybersecurity",
+        "cloud-computing",
+        "risk-assessment",
+        "networking"
+      ],
+      "occupations": [
+        "cybersecurity-analyst",
+        "cloud-engineer"
+      ],
       "sourceName": "ISC2, 2024 Cybersecurity Workforce Study",
       "sourceUrl": "https://www.isc2.org/Insights/2024/10/ISC2-2024-Cybersecurity-Workforce-Study",
-      "publishedDate": "2024-10-31"
+      "publishedDate": "2024-10-31",
+      "evidenceType": "Observed",
+      "geography": "Global",
+      "risingSkills": [
+        "cybersecurity",
+        "cloud-computing"
+      ],
+      "fields": [
+        "cybersecurity",
+        "cloud"
+      ]
     },
     {
       "id": "nng-ai-ux",
       "title": "AI is changing how people interact with software",
       "summary": "Nielsen Norman Group argues that AI introduces a new interaction paradigm in which users state intent in natural language, raising the importance of user research and interaction design judgement.",
-      "industries": ["Design", "Technology"],
-      "skills": ["ux-research", "ui-design", "creativity", "generative-ai"],
-      "occupations": ["ux-designer"],
+      "industries": [
+        "Design",
+        "Technology"
+      ],
+      "skills": [
+        "ux-research",
+        "ui-design",
+        "creativity",
+        "generative-ai"
+      ],
+      "occupations": [
+        "ux-designer"
+      ],
       "sourceName": "Nielsen Norman Group, AI Is First New UI Paradigm in 60 Years",
       "sourceUrl": "https://www.nngroup.com/articles/ai-paradigm/",
-      "publishedDate": "2023-06-18"
+      "publishedDate": "2023-06-18",
+      "evidenceType": "Externally forecast",
+      "geography": "Global",
+      "risingSkills": [
+        "ux-research",
+        "ui-design"
+      ],
+      "fields": [
+        "design"
+      ]
     },
     {
       "id": "unesco-ai-competency",
       "title": "Education systems are defining AI competencies for students and teachers",
       "summary": "UNESCO has published AI competency frameworks for students and for teachers, covering human-centred mindset, ethics, AI techniques and system design, to guide responsible use of AI in education.",
-      "industries": ["Education"],
-      "skills": ["ai-literacy", "instructional-design", "edtech-tools", "ethics"],
-      "occupations": ["education-technologist"],
+      "industries": [
+        "Education"
+      ],
+      "skills": [
+        "ai-literacy",
+        "instructional-design",
+        "edtech-tools",
+        "ethics"
+      ],
+      "occupations": [
+        "education-technologist"
+      ],
       "sourceName": "UNESCO, AI competency frameworks for students and teachers",
       "sourceUrl": "https://www.unesco.org/en/digital-education/ai-future-learning/competency-frameworks",
-      "publishedDate": "2024-09-08"
+      "publishedDate": "2024-09-08",
+      "evidenceType": "Observed",
+      "geography": "Global",
+      "risingSkills": [
+        "ai-literacy",
+        "ethics"
+      ],
+      "fields": [
+        "education-technology"
+      ]
     },
     {
       "id": "mydigital-malaysia",
       "title": "Malaysia's national digital policy emphasises digital talent",
       "summary": "The MyDIGITAL initiative sets Malaysia's national direction for digital economy growth and includes a focus on developing digital talent and adoption across sectors, which is relevant context for local graduates.",
-      "industries": ["Cross-industry", "Technology"],
-      "skills": ["software-engineering", "data-analysis", "cybersecurity", "cloud-computing"],
-      "occupations": ["software-developer", "data-analyst", "cloud-engineer", "cybersecurity-analyst"],
+      "industries": [
+        "Cross-industry",
+        "Technology"
+      ],
+      "skills": [
+        "software-engineering",
+        "data-analysis",
+        "cybersecurity",
+        "cloud-computing"
+      ],
+      "occupations": [
+        "software-developer",
+        "data-analyst",
+        "cloud-engineer",
+        "cybersecurity-analyst"
+      ],
       "sourceName": "Government of Malaysia, MyDIGITAL",
       "sourceUrl": "https://mydigital.gov.my/",
-      "publishedDate": "2021-02-19"
+      "publishedDate": "2021-02-19",
+      "evidenceType": "Observed",
+      "geography": "Malaysia",
+      "risingSkills": [
+        "software-engineering",
+        "data-analysis",
+        "cybersecurity",
+        "cloud-computing"
+      ],
+      "fields": [
+        "data-analytics",
+        "software",
+        "ai-ml",
+        "cybersecurity",
+        "marketing",
+        "design",
+        "project-management",
+        "cloud",
+        "education-technology"
+      ]
+    },
+    {
+      "id": "illustrative-data-analytics",
+      "title": "Planning assumption for Data and Analytics: how skill priorities may shift",
+      "summary": "Our own illustrative planning assumption, not drawn from an external source: priority may rise for Data Storytelling; priority may ease for Data Visualization & Reporting. It comes from the Career Time Machine scenario weights and should be treated as a prompt for planning, not evidence.",
+      "industries": [
+        "Data & Analytics"
+      ],
+      "skills": [
+        "data-storytelling",
+        "data-visualization"
+      ],
+      "occupations": [
+        "data-analyst",
+        "data-scientist"
+      ],
+      "sourceName": "",
+      "sourceUrl": "",
+      "publishedDate": "2026-10-23",
+      "geography": "Not specified",
+      "evidenceType": "Illustrative",
+      "risingSkills": [
+        "data-storytelling"
+      ],
+      "fields": [
+        "data-analytics"
+      ]
+    },
+    {
+      "id": "illustrative-software",
+      "title": "Planning assumption for Software: how skill priorities may shift",
+      "summary": "Our own illustrative planning assumption, not drawn from an external source: priority may rise for Software Testing. It comes from the Career Time Machine scenario weights and should be treated as a prompt for planning, not evidence.",
+      "industries": [
+        "Technology"
+      ],
+      "skills": [
+        "testing"
+      ],
+      "occupations": [
+        "software-developer"
+      ],
+      "sourceName": "",
+      "sourceUrl": "",
+      "publishedDate": "2026-10-23",
+      "geography": "Not specified",
+      "evidenceType": "Illustrative",
+      "risingSkills": [
+        "testing"
+      ],
+      "fields": [
+        "software"
+      ]
+    },
+    {
+      "id": "illustrative-cybersecurity",
+      "title": "Planning assumption for Cybersecurity: how skill priorities may shift",
+      "summary": "Our own illustrative planning assumption, not drawn from an external source: priority may rise for Ethics & Data Privacy. It comes from the Career Time Machine scenario weights and should be treated as a prompt for planning, not evidence.",
+      "industries": [
+        "Security"
+      ],
+      "skills": [
+        "ethics"
+      ],
+      "occupations": [
+        "cybersecurity-analyst"
+      ],
+      "sourceName": "",
+      "sourceUrl": "",
+      "publishedDate": "2026-10-23",
+      "geography": "Not specified",
+      "evidenceType": "Illustrative",
+      "risingSkills": [
+        "ethics"
+      ],
+      "fields": [
+        "cybersecurity"
+      ]
+    },
+    {
+      "id": "illustrative-marketing",
+      "title": "Planning assumption for Marketing: how skill priorities may shift",
+      "summary": "Our own illustrative planning assumption, not drawn from an external source: priority may ease for SEO & Web Analytics, Content Creation & Copywriting. It comes from the Career Time Machine scenario weights and should be treated as a prompt for planning, not evidence.",
+      "industries": [
+        "Marketing"
+      ],
+      "skills": [
+        "seo-analytics",
+        "content-writing"
+      ],
+      "occupations": [
+        "digital-marketing-specialist"
+      ],
+      "sourceName": "",
+      "sourceUrl": "",
+      "publishedDate": "2026-10-23",
+      "geography": "Not specified",
+      "evidenceType": "Illustrative",
+      "risingSkills": [],
+      "fields": [
+        "marketing"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "data-analytics",
+      "name": "Data and Analytics",
+      "occupations": [
+        "data-analyst",
+        "data-scientist"
+      ]
+    },
+    {
+      "id": "software",
+      "name": "Software",
+      "occupations": [
+        "software-developer"
+      ]
+    },
+    {
+      "id": "ai-ml",
+      "name": "AI / ML",
+      "occupations": [
+        "ai-ml-engineer"
+      ]
+    },
+    {
+      "id": "cybersecurity",
+      "name": "Cybersecurity",
+      "occupations": [
+        "cybersecurity-analyst"
+      ]
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing",
+      "occupations": [
+        "digital-marketing-specialist"
+      ]
+    },
+    {
+      "id": "design",
+      "name": "Design",
+      "occupations": [
+        "ux-designer"
+      ]
+    },
+    {
+      "id": "project-management",
+      "name": "Project Management",
+      "occupations": [
+        "project-manager",
+        "business-analyst"
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "Cloud",
+      "occupations": [
+        "cloud-engineer"
+      ]
+    },
+    {
+      "id": "education-technology",
+      "name": "Education Technology",
+      "occupations": [
+        "education-technologist"
+      ]
+    }
+  ],
+  "outlook": [
+    {
+      "fieldId": "data-analytics",
+      "skills": [
+        {
+          "skillId": "sql",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "data-analysis",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "data-visualization",
+          "direction": "declining",
+          "trendIds": []
+        },
+        {
+          "skillId": "statistics",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "python",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "machine-learning",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills"
+          ]
+        },
+        {
+          "skillId": "communication",
+          "direction": "rising",
+          "trendIds": [
+            "linkedin-ai-skills"
+          ]
+        },
+        {
+          "skillId": "data-storytelling",
+          "direction": "rising",
+          "trendIds": []
+        },
+        {
+          "skillId": "critical-thinking",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills"
+          ]
+        },
+        {
+          "skillId": "problem-solving",
+          "direction": "stable",
+          "trendIds": []
+        }
+      ]
+    },
+    {
+      "fieldId": "software",
+      "skills": [
+        {
+          "skillId": "software-engineering",
+          "direction": "rising",
+          "trendIds": [
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "problem-solving",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "apis",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "git",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "java",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "javascript",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "python",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "testing",
+          "direction": "rising",
+          "trendIds": []
+        },
+        {
+          "skillId": "sql",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "teamwork",
+          "direction": "stable",
+          "trendIds": []
+        }
+      ]
+    },
+    {
+      "fieldId": "ai-ml",
+      "skills": [
+        {
+          "skillId": "python",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "machine-learning",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills"
+          ]
+        },
+        {
+          "skillId": "deep-learning",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "software-engineering",
+          "direction": "rising",
+          "trendIds": [
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "generative-ai",
+          "direction": "rising",
+          "trendIds": [
+            "microsoft-wti-2024",
+            "stackoverflow-2024"
+          ]
+        },
+        {
+          "skillId": "problem-solving",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "apis",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "cloud-computing",
+          "direction": "rising",
+          "trendIds": [
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "statistics",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "ai-literacy",
+          "direction": "rising",
+          "trendIds": [
+            "microsoft-wti-2024",
+            "imf-genai-2024"
+          ]
+        }
+      ]
+    },
+    {
+      "fieldId": "cybersecurity",
+      "skills": [
+        {
+          "skillId": "cybersecurity",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "isc2-2024",
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "networking",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills"
+          ]
+        },
+        {
+          "skillId": "risk-assessment",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "problem-solving",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "critical-thinking",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills"
+          ]
+        },
+        {
+          "skillId": "python",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "ethics",
+          "direction": "rising",
+          "trendIds": []
+        },
+        {
+          "skillId": "communication",
+          "direction": "rising",
+          "trendIds": [
+            "linkedin-ai-skills"
+          ]
+        },
+        {
+          "skillId": "cloud-computing",
+          "direction": "rising",
+          "trendIds": [
+            "isc2-2024",
+            "mydigital-malaysia"
+          ]
+        }
+      ]
+    },
+    {
+      "fieldId": "marketing",
+      "skills": [
+        {
+          "skillId": "digital-marketing",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "seo-analytics",
+          "direction": "declining",
+          "trendIds": []
+        },
+        {
+          "skillId": "content-writing",
+          "direction": "declining",
+          "trendIds": []
+        },
+        {
+          "skillId": "creativity",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "communication",
+          "direction": "rising",
+          "trendIds": [
+            "linkedin-ai-skills"
+          ]
+        },
+        {
+          "skillId": "data-analysis",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "generative-ai",
+          "direction": "rising",
+          "trendIds": [
+            "microsoft-wti-2024",
+            "mckinsey-genai-2023"
+          ]
+        },
+        {
+          "skillId": "adaptability",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "wef-2025-churn",
+            "linkedin-ai-skills"
+          ]
+        }
+      ]
+    },
+    {
+      "fieldId": "design",
+      "skills": [
+        {
+          "skillId": "ux-research",
+          "direction": "rising",
+          "trendIds": [
+            "nng-ai-ux"
+          ]
+        },
+        {
+          "skillId": "ui-design",
+          "direction": "rising",
+          "trendIds": [
+            "nng-ai-ux"
+          ]
+        },
+        {
+          "skillId": "creativity",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "communication",
+          "direction": "rising",
+          "trendIds": [
+            "linkedin-ai-skills"
+          ]
+        },
+        {
+          "skillId": "teamwork",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "critical-thinking",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills"
+          ]
+        },
+        {
+          "skillId": "problem-solving",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "generative-ai",
+          "direction": "rising",
+          "trendIds": [
+            "microsoft-wti-2024"
+          ]
+        },
+        {
+          "skillId": "data-analysis",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "mydigital-malaysia"
+          ]
+        }
+      ]
+    },
+    {
+      "fieldId": "project-management",
+      "skills": [
+        {
+          "skillId": "project-management",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "stakeholder-management",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "communication",
+          "direction": "rising",
+          "trendIds": [
+            "linkedin-ai-skills"
+          ]
+        },
+        {
+          "skillId": "business-analysis",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "leadership",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "teamwork",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "data-analysis",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "problem-solving",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "risk-assessment",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "adaptability",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "wef-2025-churn",
+            "linkedin-ai-skills"
+          ]
+        },
+        {
+          "skillId": "sql",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "data-visualization",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "critical-thinking",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills"
+          ]
+        },
+        {
+          "skillId": "generative-ai",
+          "direction": "rising",
+          "trendIds": [
+            "microsoft-wti-2024"
+          ]
+        }
+      ]
+    },
+    {
+      "fieldId": "cloud",
+      "skills": [
+        {
+          "skillId": "cloud-computing",
+          "direction": "rising",
+          "trendIds": [
+            "isc2-2024",
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "devops",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "networking",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills"
+          ]
+        },
+        {
+          "skillId": "problem-solving",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "cybersecurity",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "isc2-2024",
+            "mydigital-malaysia"
+          ]
+        },
+        {
+          "skillId": "python",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "git",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "teamwork",
+          "direction": "stable",
+          "trendIds": []
+        }
+      ]
+    },
+    {
+      "fieldId": "education-technology",
+      "skills": [
+        {
+          "skillId": "instructional-design",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "edtech-tools",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "communication",
+          "direction": "rising",
+          "trendIds": [
+            "linkedin-ai-skills"
+          ]
+        },
+        {
+          "skillId": "creativity",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "ai-literacy",
+          "direction": "rising",
+          "trendIds": [
+            "microsoft-wti-2024",
+            "imf-genai-2024",
+            "unesco-ai-competency"
+          ]
+        },
+        {
+          "skillId": "generative-ai",
+          "direction": "rising",
+          "trendIds": [
+            "microsoft-wti-2024"
+          ]
+        },
+        {
+          "skillId": "content-writing",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "teamwork",
+          "direction": "stable",
+          "trendIds": []
+        },
+        {
+          "skillId": "adaptability",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "wef-2025-churn",
+            "linkedin-ai-skills"
+          ]
+        },
+        {
+          "skillId": "data-analysis",
+          "direction": "rising",
+          "trendIds": [
+            "wef-2025-skills",
+            "mydigital-malaysia"
+          ]
+        }
+      ]
     }
   ]
 }
