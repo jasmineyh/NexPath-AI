@@ -2,7 +2,7 @@ import { useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertTriangle, CheckCircle2, FileUp, Loader2, Lock, PenLine, Plus, ShieldCheck, Trash2, X } from 'lucide-react';
 import { useAnalyseCv, type EducationEntry, type Experience, type Profile } from '@workspace/api-client-react';
-import { extractCvText, CvReadError } from '@/lib/cv-extract';
+import { classifyCvText, extractCvText, CvReadError, normalizeExtractedText } from '@/lib/cv-extract';
 import { EDUCATION_LEVELS, STATUSES } from '@/lib/demo';
 import { ModeBadge } from '@/components/common';
 import { Input } from '@/components/ui/input';
@@ -27,28 +27,55 @@ export function CvUpload({ onResult, onManual, onCancel }: { onResult: (p: Profi
   const [error, setError] = useState<{ msg: string; unreadable: boolean } | null>(null);
   const [drag, setDrag] = useState(false);
   const [fileName, setFileName] = useState('');
+  const [showPaste, setShowPaste] = useState(false);
+  const [pasteText, setPasteText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const analyse = useAnalyseCv();
 
+  const startAnalysis = (text: string, sourceLabel = 'Your CV') => {
+    const clean = normalizeExtractedText(text);
+    const assessment = classifyCvText(clean);
+    if (!assessment.ok) {
+      setError({ msg: assessment.message ?? 'We could not read enough text to build your profile.', unreadable: true });
+      setPhase('error');
+      return;
+    }
+
+    setFileName(sourceLabel);
+    setError(null);
+    setPhase('analysing');
+    analyse.mutate({ data: { text: clean } }, {
+      onSuccess: (r) => onResult(r.profile, r.found, { mode: r.mode, label: r.modeLabel }),
+      onError: () => { setError({ msg: 'The analysis service did not respond. Your file was not sent anywhere; please try again or use the manual form.', unreadable: false }); setPhase('error'); },
+    });
+  };
+
   const handle = async (file?: File | null) => {
     if (!file) return;
-    setFileName(file.name);
-    setError(null);
+    setShowPaste(false);
     setPhase('reading');
     let text: string;
     try {
       text = await extractCvText(file);
     } catch (e) {
       const ce = e instanceof CvReadError ? e : null;
-      setError({ msg: ce?.message ?? 'We could not read this file.', unreadable: !ce || ce.kind === 'unreadable' });
+      setError({ msg: ce?.message ?? 'We could not read this file.', unreadable: !ce || ce.kind === 'unreadable' || ce.kind === 'scanned' || ce.kind === 'encrypted' || ce.kind === 'corrupt' });
       setPhase('error');
       return;
     }
-    setPhase('analysing');
-    analyse.mutate({ data: { text } }, {
-      onSuccess: (r) => onResult(r.profile, r.found, { mode: r.mode, label: r.modeLabel }),
-      onError: () => { setError({ msg: 'The analysis service did not respond. Your file was not sent anywhere; please try again or use the manual form.', unreadable: false }); setPhase('error'); },
-    });
+    startAnalysis(text, file.name);
+  };
+
+  const handlePaste = () => {
+    const text = pasteText.trim();
+    if (!text) {
+      setError({ msg: 'Paste a CV or resume excerpt before continuing.', unreadable: true });
+      setPhase('error');
+      return;
+    }
+    setShowPaste(false);
+    setPasteText('');
+    startAnalysis(text, 'Pasted CV text');
   };
 
   const onDrop = (e: DragEvent) => { e.preventDefault(); setDrag(false); void handle(e.dataTransfer.files?.[0]); };
@@ -76,11 +103,24 @@ export function CvUpload({ onResult, onManual, onCancel }: { onResult: (p: Profi
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary text-primary"><FileUp className="h-7 w-7" /></div>
               <p className="mt-4 font-display text-xl font-semibold">Drop your CV here</p>
               <p className="mt-1 text-sm text-muted-foreground">PDF, DOCX or TXT, up to 5 MB</p>
-              <button onClick={() => inputRef.current?.click()} data-testid="button-pick-cv" className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Choose a file</button>
+              <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <button onClick={() => inputRef.current?.click()} data-testid="button-pick-cv" className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Choose a file</button>
+                <button onClick={() => { setShowPaste(true); setError(null); }} className="inline-flex items-center gap-2 rounded-full border bg-card px-5 py-2.5 text-sm font-semibold">Paste text</button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      {showPaste && !busy && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border bg-card p-4">
+          <label className="mb-2 block text-sm font-medium">Paste your CV text</label>
+          <textarea value={pasteText} onChange={(e) => setPasteText(e.target.value)} rows={8} className="w-full rounded-xl border bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" placeholder="Paste the text from your resume, cover letter, or profile summary…" data-testid="textarea-cv-paste" />
+          <div className="mt-3 flex flex-wrap justify-end gap-2">
+            <button onClick={() => setShowPaste(false)} className="rounded-full border px-4 py-2 text-sm">Cancel</button>
+            <button onClick={handlePaste} className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground" data-testid="button-cv-paste-submit">Use pasted text</button>
+          </div>
+        </motion.div>
+      )}
       {phase === 'error' && error && (
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 rounded-2xl border border-destructive/25 bg-destructive/5 p-5 sm:flex-row sm:items-center" data-testid="status-cv-error">
           <AlertTriangle className="h-5 w-5 shrink-0 text-destructive" />

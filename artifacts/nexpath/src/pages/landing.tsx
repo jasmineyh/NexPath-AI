@@ -93,6 +93,18 @@ export default function LandingPage() {
               </Link>
               <a href="#how" className="rounded-full px-5 py-4 text-sm font-medium text-primary hover:bg-secondary">See how it works</a>
             </motion.div>
+            <motion.div variants={fade} className="mt-7 grid gap-3 sm:grid-cols-3">
+              {[
+                { label: 'guided steps', value: '5' },
+                { label: 'match signals', value: 'AI + labor' },
+                { label: 'career path', value: '2 scenario views' },
+              ].map((card) => (
+                <div key={card.label} className="rounded-[22px] border border-primary/10 bg-card/75 p-3 shadow-[0_18px_35px_-28px_rgba(14,165,233,0.8)]">
+                  <p className="font-display text-xl font-bold text-foreground">{card.value}</p>
+                  <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{card.label}</p>
+                </div>
+              ))}
+            </motion.div>
             <motion.p variants={fade} className="mt-6 text-xs text-muted-foreground">No account. Your data stays in your browser. Try the synthetic demo profile in one click.</motion.p>
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.2 }} className="relative">

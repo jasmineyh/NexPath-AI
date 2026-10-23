@@ -11,7 +11,6 @@ export interface MapLink {
   source: string;
   target: string;
   sentence: string;
-  /** Short heading, e.g. "Data analysis to SDG 13 Climate Action" */
   heading: string;
   potential: boolean;
 }
@@ -21,6 +20,88 @@ const W = 900;
 const CAREER = { x: 110, w: 190 };
 const SKILL = { x: 450, w: 230 };
 const SDG = { x: 790, w: 190 };
+
+const SDG_OFFICIAL_COLORS: Record<number, string> = {
+  1: '#E5243B', 2: '#DDA63A', 3: '#4C9F38', 4: '#C5192D', 5: '#FF3A21', 6: '#26BDE2',
+  7: '#FCC30B', 8: '#A21942', 9: '#FD6925', 10: '#DD1367', 11: '#FD9D24', 12: '#BF8B2E',
+  13: '#3F7E44', 14: '#0A97D9', 15: '#56C02B', 16: '#00689D', 17: '#19486A',
+};
+
+export function SdgWheel({ sdgs, mapped, selected, onSelect }: { sdgs: MapSdg[]; mapped: Set<number>; selected: number | null; onSelect: (n: number | null) => void }) {
+  const list = Array.from({ length: 17 }, (_, i) => i + 1);
+  const radius = 120;
+  const cx = 180;
+  const cy = 180;
+
+  const getArc = (num: number) => {
+    const start = ((num - 1) / 17) * Math.PI * 2 - Math.PI / 2;
+    const end = (num / 17) * Math.PI * 2 - Math.PI / 2;
+    const innerRadius = 58;
+    const outerRadius = 130;
+    const x1 = cx + innerRadius * Math.cos(start);
+    const y1 = cy + innerRadius * Math.sin(start);
+    const x2 = cx + innerRadius * Math.cos(end);
+    const y2 = cy + innerRadius * Math.sin(end);
+    const x3 = cx + outerRadius * Math.cos(end);
+    const y3 = cy + outerRadius * Math.sin(end);
+    const x4 = cx + outerRadius * Math.cos(start);
+    const y4 = cy + outerRadius * Math.sin(start);
+    const largeArc = Math.abs(end - start) > Math.PI ? 1 : 0;
+    return `M ${x1} ${y1} A ${innerRadius} ${innerRadius} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${outerRadius} ${outerRadius} 0 ${largeArc} 0 ${x4} ${y4} Z`;
+  };
+
+  return (
+    <div className="rounded-[30px] border bg-card p-4 md:p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">SDG portfolio</p>
+          <h3 className="mt-1 font-display text-2xl font-bold">17-goal map</h3>
+        </div>
+        <div className="rounded-full border bg-secondary px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{mapped.size} connected</div>
+      </div>
+      <div className="grid gap-5 lg:grid-cols-[1fr_320px] lg:items-center">
+        <div className="flex justify-center">
+          <svg viewBox="0 0 360 360" className="h-[360px] w-[360px] max-w-full" role="img" aria-label="Wheel of Sustainable Development Goals">
+            <circle cx={cx} cy={cy} r={radius + 18} fill="rgba(148, 163, 184, 0.08)" />
+            {list.map((num) => {
+              const goal = sdgs.find((g) => g.number === num) ?? { number: num, name: `SDG ${num}`, color: '#CBD5E1' };
+              const isMapped = mapped.has(num);
+              const isSelected = selected === num;
+              return (
+                <g key={num} onClick={() => onSelect(isSelected ? null : num)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(isSelected ? null : num); } }} role="button" tabIndex={0}
+                  className="cursor-pointer outline-none" aria-label={`SDG ${num}: ${goal.name}`}>
+                  <path d={getArc(num)} fill={isMapped ? (goal.color || SDG_OFFICIAL_COLORS[num] || '#64748b') : '#E2E8F0'} stroke={isSelected ? '#111827' : 'rgba(15,23,42,0.18)'} strokeWidth={isSelected ? 3 : 1.2} />
+                  <text x={cx + (radius + 10) * Math.cos((num - 0.5) * (Math.PI * 2 / 17) - Math.PI / 2)} y={cy + (radius + 10) * Math.sin((num - 0.5) * (Math.PI * 2 / 17) - Math.PI / 2)} textAnchor="middle" dominantBaseline="middle"
+                    fontSize="13" fontWeight={800} fill={isMapped ? '#fff' : '#334155'}>{num}</text>
+                </g>
+              );
+            })}
+            <circle cx={cx} cy={cy} r={48} fill="#fff" stroke="rgba(15,23,42,0.08)" strokeWidth="2" />
+            <text x={cx} y={cy - 6} textAnchor="middle" fontSize="14" fontWeight={700} fill="#0f172a">SDGs</text>
+            <text x={cx} y={cy + 16} textAnchor="middle" fontSize="10" fill="#475569">17 total</text>
+          </svg>
+        </div>
+        <div className="rounded-[24px] border border-primary/10 bg-[linear-gradient(180deg,rgba(14,165,233,0.06),rgba(15,23,42,0.02))] p-4">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Selected goal</p>
+          {selected ? (
+            <>
+              <div className="mt-3 flex items-center gap-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl text-lg font-bold text-white" style={{ background: sdgs.find((g) => g.number === selected)?.color || SDG_OFFICIAL_COLORS[selected] || '#64748b' }}>{selected}</span>
+                <div>
+                  <p className="font-display text-xl font-bold">{sdgs.find((g) => g.number === selected)?.name ?? `SDG ${selected}`}</p>
+                  <p className="text-xs text-muted-foreground">{mapped.has(selected) ? 'Linked to your profile' : 'Currently not linked to your current profile'}</p>
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{(sdgs.find((g) => g.number === selected)?.name ? `Goal ${selected} focuses on ${sdgs.find((g) => g.number === selected)?.name.toLowerCase()}.` : '')}{mapped.has(selected) ? ' This goal is represented in the current impact map because a linked skill or career connection is active.' : ' This goal remains grey because there is no supported link from your current career and skills.'}</p>
+            </>
+          ) : (
+            <p className="mt-3 text-sm text-muted-foreground">Select a goal to review whether it is active in your current profile, planned, or not yet linked.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function ImpactMap({ careerTitle, skills, sdgs, links, active, onActive }: {
   careerTitle: string;
@@ -60,7 +141,6 @@ export function ImpactMap({ careerTitle, skills, sdgs, links, active, onActive }
     <div className="overflow-x-auto rounded-3xl border bg-card p-4">
       <div className="mb-2 grid min-w-[780px] grid-cols-3 text-center font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"><span>Career</span><span>Skills</span><span>SDGs</span></div>
       <svg viewBox={`0 0 ${W} ${layout.H}`} className="min-w-[780px] w-full" role="group" aria-label="Map connecting your career, skills and Sustainable Development Goals" data-testid="chart-impact">
-        {/* career to SDG arcs, drawn first so skill nodes sit on top */}
         {[...links].sort((x, y) => Number(y.kind === 'career-sdg') - Number(x.kind === 'career-sdg')).map((l, i) => {
           const d = edge(l);
           if (!d) return null;
