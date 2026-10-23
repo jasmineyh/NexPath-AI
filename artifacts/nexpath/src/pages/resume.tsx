@@ -16,31 +16,59 @@ const SECTIONS: { key: ResumeSection; title: string }[] = [
   { key: 'certifications', title: 'Certifications & Learning' },
 ];
 
+function normSkill(n: string) {
+  return n.toLowerCase().replace(/\((basic|beginner|intermediate|advanced)\)/g, '').replace(/[^a-z0-9+#]+/g, ' ').trim();
+}
+
 export default function ResumePage() {
-  const { profile, isDemo, targetTitle, progress, resume, setResume } = useStore();
+  const { profile, isDemo, source, targetTitle, progress, resume, setResume } = useStore();
   const [tab, setTab] = useState<ResumeSection | 'contact'>('contact');
 
-  const generated = useMemo<Record<ResumeSection, string>>(() => {
-    if (!profile) return { summary: '', education: '', experience: '', skills: '', certifications: '' };
+  const origin = source === 'cv' ? 'From CV' : 'Self-reported';
+  const built = useMemo(() => {
+    const empty = { text: { summary: '', education: '', experience: '', skills: '', certifications: '' } as Record<ResumeSection, string>, tagged: [] as { name: string; tag: string; group: 'Technical' | 'Professional' }[] };
+    if (!profile) return empty;
     const done = Object.values(progress).filter((p) => p.status === 'completed');
-    const tech = Array.from(new Set([...profile.technicalSkills, ...done.map((d) => d.skill)]));
+    const seen = new Set<string>();
+    const tagged: { name: string; tag: string; group: 'Technical' | 'Professional' }[] = [];
+    const push = (name: string, tag: string, group: 'Technical' | 'Professional') => {
+      const k = normSkill(name);
+      if (!k || seen.has(k)) return;
+      seen.add(k); tagged.push({ name: name.trim(), tag, group });
+    };
+    profile.technicalSkills.forEach((n) => push(n, origin, 'Technical'));
+    profile.humanSkills.forEach((n) => push(n, origin, 'Professional'));
+    done.forEach((d) => push(d.skill, 'Completed in roadmap', 'Technical'));
+    const tech = tagged.filter((t) => t.group === 'Technical').map((t) => t.name);
+    const prof = tagged.filter((t) => t.group === 'Professional').map((t) => t.name);
     const statusWord = profile.status === 'fresh graduate' ? 'Recent' : profile.status === 'student' ? 'Current' : '';
     const target = targetTitle ? ` seeking an entry-level ${targetTitle} role` : '';
-    const strengths = profile.humanSkills.slice(0, 3).map((s) => s.toLowerCase()).join(', ');
-    return {
-      summary: `${statusWord ? statusWord + ' ' : ''}${profile.major} ${profile.status === 'student' ? 'student' : 'graduate'}${target}. Hands-on with ${profile.technicalSkills.slice(0, 4).join(', ') || 'core technical tools'}${done.length ? `, recently building ${done.map((d) => d.skill).slice(0, 3).join(', ')}` : ''}. Brings ${strengths || 'strong collaboration'} to cross-functional teams.`,
-      education: `${profile.major}${profile.institution ? ` | ${profile.institution}` : ''}\n${profile.educationLevel}`,
-      experience: (profile.experiences ?? []).filter((e) => e.title).map((e) => `${e.title} | ${e.org}${e.kind ? ` (${e.kind})` : ''}\n- ${e.description}`).join('\n\n'),
-      skills: `Technical: ${tech.join(', ')}\nProfessional: ${profile.humanSkills.join(', ')}`,
-      certifications: done.filter((d) => d.course).map((d) => `${d.course!.title} | ${d.course!.provider}${d.completedAt ? ` | ${d.completedAt}` : ''}`).join('\n'),
+    const strengths = profile.humanSkills.slice(0, 3).map((x) => x.toLowerCase()).join(', ');
+    const certLines = [
+      ...(profile.certifications ?? []).filter(Boolean),
+      ...done.filter((d) => d.course).map((d) => [`${d.course!.title} | ${d.course!.provider}`, d.completedAt, d.evidence ? `Evidence: ${d.evidence}` : ''].filter(Boolean).join(' | ')),
+    ];
+    const text: Record<ResumeSection, string> = {
+      summary: `${statusWord ? statusWord + ' ' : ''}${profile.major} ${profile.status === 'student' ? 'student' : 'graduate'}${target}. Hands-on with ${profile.technicalSkills.slice(0, 4).join(', ') || 'core technical tools'}${done.length ? `, recently building ${done.map((d) => d.skill).slice(0, 3).join(', ')}` : ''}.${strengths ? ` Brings ${strengths} to cross-functional teams.` : ''}`,
+      education: [[profile.major, profile.institution].filter(Boolean).join(' | '), [profile.educationLevel, profile.graduation].filter(Boolean).join(' | ')].filter(Boolean).join('\n'),
+      experience: (profile.experiences ?? []).filter((e) => e.title.trim()).map((e) => {
+        const head = [e.title, e.org, e.dates].filter((x) => x && x.trim()).join(' | ');
+        return e.description.trim() ? `${head}\n- ${e.description.trim()}` : head;
+      }).join('\n\n'),
+      skills: [tech.length ? `Technical: ${tech.join(', ')}` : '', prof.length ? `Professional: ${prof.join(', ')}` : ''].filter(Boolean).join('\n'),
+      certifications: certLines.join('\n'),
     };
-  }, [profile, progress, targetTitle]);
+    return { text, tagged };
+  }, [profile, progress, targetTitle, origin]);
+  const generated = built.text;
+
 
   if (!profile) return <LockedPrompt title="Complete Understand Me first" body="Your resume is generated only from what you enter and the roadmap steps you complete." href="/app/understand" cta="Go to Understand Me" />;
 
   const text = (k: ResumeSection) => resume.overrides[k] ?? generated[k];
-  const c = resume.contact;
-  const name = c.fullName || profile.name || 'Your Name';
+  const rc = resume.contact;
+  const c = { fullName: rc.fullName || profile.name || '', email: rc.email || profile.email || '', phone: rc.phone || profile.phone || '', location: rc.location || profile.location || '', link: rc.link || profile.links?.[0] || '' };
+  const name = c.fullName || 'Your Name';
   const modern = resume.template === 'modern';
   const print = (pdf: boolean) => {
     const prev = document.title;
@@ -78,9 +106,9 @@ export default function ResumePage() {
             </div>
             {tab === 'contact' ? (
               <div className="space-y-3">
-                {([['fullName', 'Full name', profile.name || 'Your Name'], ['email', 'Email', ''], ['phone', 'Phone', ''], ['location', 'Location', ''], ['link', 'LinkedIn / portfolio', '']] as const).map(([k, l, ph]) => (
+                {([['fullName', 'Full name', 'Your name'], ['email', 'Email', 'your.name@email.com'], ['phone', 'Phone', '+60 ...'], ['location', 'Location', 'City, Malaysia'], ['link', 'LinkedIn / portfolio', 'linkedin.com/in/...']] as const).map(([k, l, ph]) => (
                   <div key={k} className="space-y-1"><Label className="text-xs">{l}</Label>
-                    <Input value={c[k]} placeholder={ph} onChange={(e) => setResume((r) => ({ ...r, contact: { ...r.contact, [k]: e.target.value } }))} data-testid={`input-contact-${k}`} /></div>
+                    <Input value={rc[k]} placeholder={c[k] || ph} onChange={(e) => setResume((r) => ({ ...r, contact: { ...r.contact, [k]: e.target.value } }))} data-testid={`input-contact-${k}`} /></div>
                 ))}
               </div>
             ) : (
@@ -93,6 +121,17 @@ export default function ResumePage() {
                 </div>
                 <Textarea rows={12} value={text(tab)} onChange={(e) => setResume((r) => ({ ...r, overrides: { ...r.overrides, [tab]: e.target.value } }))} className="font-mono text-xs" data-testid={`input-section-${tab}`}
                   placeholder={tab === 'certifications' ? 'Complete roadmap steps to add courses here.' : ''} />
+                {tab === 'skills' && (
+                  <div className="pt-2" data-testid="list-skill-origins">
+                    <p className="mb-2 text-[11px] uppercase tracking-wider text-muted-foreground">Skill sources (editor only, not printed)</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {built.tagged.map((t) => (
+                        <span key={t.name} className="inline-flex items-center gap-1.5 rounded-full border bg-background px-2.5 py-1 text-xs">{t.name}
+                          <span className={cn('rounded-full px-1.5 py-px text-[9px] font-semibold uppercase', t.tag === 'Completed in roadmap' ? 'bg-teal/15 text-accent-foreground' : t.tag === 'From CV' ? 'bg-primary/10 text-primary' : 'bg-secondary text-secondary-foreground')}>{t.tag}</span></span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

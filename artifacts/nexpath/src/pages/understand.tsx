@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import { useSearch, useLocation, Link } from 'wouter';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Briefcase, ExternalLink, FlaskConical, Lightbulb, Pencil, Plus, Sparkles, Trash2, X, Target, Compass } from 'lucide-react';
+import { FileUp, PenLine, RotateCcw, ArrowLeft, ArrowRight, Briefcase, ExternalLink, FlaskConical, Lightbulb, Pencil, Plus, Sparkles, Trash2, X, Target, Compass } from 'lucide-react';
 import { useGetProfileSummary, useListSkills, getListSkillsQueryKey, type Profile, type Experience } from '@workspace/api-client-react';
 import { useStore } from '@/lib/store';
 import { DEMO_PROFILE, EDUCATION_LEVELS, STATUSES } from '@/lib/demo';
@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { CvUpload, CvReview, PrivacyNote } from '@/components/cv-flow';
 import { cn } from '@/lib/utils';
 
 const EMPTY: Profile = { name: '', educationLevel: '', major: '', institution: '', status: '', experiences: [], technicalSkills: [], humanSkills: [], selfDescription: '', interests: '', goals: '' };
@@ -57,10 +58,10 @@ function TagInput({ value, onChange, suggestions, placeholder, testid }: { value
   );
 }
 
-function Survey({ initial, onDone }: { initial: Profile; onDone: (p: Profile, demo: boolean) => void }) {
-  const [p, setP] = useState<Profile>(initial);
-  const [demo, setDemo] = useState(false);
-  const [step, setStep] = useState(0);
+function Survey({ initial, onDone, startDemo = false }: { initial: Profile; onDone: (p: Profile, demo: boolean) => void; startDemo?: boolean }) {
+  const [p, setP] = useState<Profile>(startDemo ? DEMO_PROFILE : initial);
+  const [demo, setDemo] = useState(startDemo);
+  const [step, setStep] = useState(startDemo ? STEPS.length - 1 : 0);
   const [dir, setDir] = useState(1);
   const { data: skills } = useListSkills({ query: { queryKey: getListSkillsQueryKey(), staleTime: Infinity } });
   const tech = useMemo(() => (skills ?? []).filter((s) => s.category === 'technical').map((s) => s.name), [skills]);
@@ -281,27 +282,66 @@ function Summary({ profile, isDemo, onEdit }: { profile: Profile; isDemo: boolea
   );
 }
 
+type View = 'choose' | 'cv' | 'review' | 'survey' | 'demo' | 'summary';
+
+function EntryChoice({ onPick }: { onPick: (v: 'cv' | 'survey' | 'demo') => void }) {
+  const opts = [
+    { v: 'cv' as const, icon: FileUp, t: 'Upload my CV (auto-fill)', d: 'PDF, DOCX or TXT. We read it in your browser, fill the form, and you review every field.', cls: 'bg-gradient-to-br from-primary to-[hsl(186_70%_30%)] text-white md:row-span-2' },
+    { v: 'survey' as const, icon: PenLine, t: 'Fill in manually', d: 'Five short guided steps.', cls: 'bg-card border' },
+    { v: 'demo' as const, icon: FlaskConical, t: 'Load demo profile', d: 'Synthetic persona "Alex Tan", labelled as demo data.', cls: 'border border-amber/40 bg-amber/5' },
+  ];
+  return (
+    <div className="space-y-4">
+      <motion.div variants={stagger.container} initial="hidden" animate="show" className="grid gap-4 md:grid-cols-2 md:grid-rows-2">
+        {opts.map((o) => (
+          <motion.button variants={stagger.item} key={o.v} onClick={() => onPick(o.v)} data-testid={`button-entry-${o.v}`}
+            className={cn('card-lift group flex flex-col justify-between rounded-3xl p-6 text-left', o.cls)}>
+            <o.icon className="h-7 w-7 opacity-90" />
+            <div className="mt-8"><p className="font-display text-xl font-bold">{o.t}</p><p className="mt-1 text-sm opacity-75">{o.d}</p></div>
+            <ArrowRight className="mt-4 h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </motion.button>
+        ))}
+      </motion.div>
+      <PrivacyNote />
+    </div>
+  );
+}
+
 export default function UnderstandPage() {
-  const { profile, isDemo, setProfile } = useStore();
+  const { profile, isDemo, source, setProfile, clearAll } = useStore();
   const search = useSearch();
   const [, navigate] = useLocation();
-  const [editing, setEditing] = useState(!profile || search.includes('edit=1'));
+  const editInit: View = source === 'cv' ? 'review' : 'survey';
+  const [view, setView] = useState<View>(!profile ? 'choose' : search.includes('edit=1') ? editInit : 'summary');
+  const [cv, setCv] = useState<{ profile: Profile; found: string[]; mode?: { mode: string; label: string } } | null>(null);
   const { toast } = useToast();
-  useEffect(() => { if (search.includes('edit=1')) setEditing(true); }, [search]);
+  useEffect(() => { if (search.includes('edit=1') && profile) setView(source === 'cv' ? 'review' : 'survey'); }, [search]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const save = (p: Profile, src: 'cv' | 'manual' | 'demo') => {
+    setProfile(p, src); setView('summary'); setCv(null); navigate('/app/understand');
+    toast({ title: 'Profile saved', description: 'Matches and roadmap will recalculate for this profile.' });
+  };
+  const startOver = () => { clearAll(); setCv(null); setView('choose'); navigate('/app/understand'); toast({ title: 'Your data was removed', description: 'Profile, target career, progress and resume edits were cleared from this browser.' }); };
+  const titles: Record<View, string> = { choose: 'How would you like to start?', cv: 'Upload my CV', review: 'Review extracted information', survey: 'Tell us about you', demo: 'Tell us about you', summary: 'Your career profile' };
 
   return (
     <div>
-      <PageHeader eyebrow="Understand Me" title={editing ? 'Tell us about you' : 'Your career profile'}
-        description={editing ? 'Five short steps. Your answers stay in this browser; nothing is stored on a server.' : 'A transparent summary of what you told us and what the system inferred.'} />
-      {editing ? (
-        <Survey initial={profile ?? EMPTY} onDone={(p, demo) => {
-          setProfile(p, demo); setEditing(false); navigate('/app/understand');
-          toast({ title: 'Profile saved', description: 'Matches and roadmap will recalculate for this profile.' });
-        }} />
-      ) : profile ? (
-        <Summary profile={profile} isDemo={isDemo} onEdit={() => setEditing(true)} />
-      ) : null}
-      {!editing && !profile && <Link href="/app/understand?edit=1">Start</Link>}
+      <PageHeader eyebrow="Understand Me" title={titles[view]}
+        description={view === 'summary' ? 'A transparent summary of what you told us and what the system inferred.' : 'Your answers stay in this browser; nothing is stored on a server.'}
+        actions={(profile || view !== 'choose') && (
+          <button onClick={startOver} data-testid="button-start-over" className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3.5 py-1.5 text-sm text-muted-foreground hover:border-destructive/40 hover:text-destructive"><RotateCcw className="h-4 w-4" /> Remove my data / start over</button>
+        )} />
+      {view === 'choose' && <EntryChoice onPick={(v) => setView(v)} />}
+      {view === 'cv' && <CvUpload onCancel={() => setView('choose')} onManual={() => setView('survey')} onResult={(p, found, mode) => { setCv({ profile: p, found, mode }); setView('review'); }} />}
+      {view === 'review' && (
+        <CvReview key={cv ? 'cv' : 'edit'} initial={cv?.profile ?? profile ?? EMPTY} found={cv?.found ?? []} mode={cv?.mode}
+          onCancel={() => setView(profile ? 'summary' : 'choose')} onConfirm={(p) => save(p, 'cv')} />
+      )}
+      {(view === 'survey' || view === 'demo') && (
+        <Survey key={view} startDemo={view === 'demo'} initial={profile ?? EMPTY} onDone={(p, demo) => save(p, demo ? 'demo' : source === 'cv' ? 'cv' : 'manual')} />
+      )}
+      {view === 'summary' && profile && <Summary profile={profile} isDemo={isDemo} onEdit={() => setView(source === 'cv' ? 'review' : 'survey')} />}
+      {view === 'summary' && !profile && <Link href="/app/understand?edit=1">Start</Link>}
     </div>
   );
 }

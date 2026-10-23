@@ -63,7 +63,7 @@ export default function TrendsPage() {
           </motion.li>
         ))}
       </motion.ol>
-      <NextStep href="/app/explore/time-machine" hint="Next" label="Step into the Career Time Machine" />
+      <NextStep href="/app/roadmap" hint="Optional detour" label="Continue to Roadmap" />
     </div>
   );
 }

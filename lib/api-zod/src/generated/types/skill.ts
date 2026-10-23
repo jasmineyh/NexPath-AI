@@ -11,4 +11,5 @@ export interface Skill {
   id: string;
   name: string;
   category: SkillCategory;
+  synonyms?: string[];
 }

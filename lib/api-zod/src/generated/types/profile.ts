@@ -20,4 +20,10 @@ export interface Profile {
   selfDescription?: string;
   interests?: string;
   goals?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  links?: string[];
+  certifications?: string[];
+  graduation?: string;
 }

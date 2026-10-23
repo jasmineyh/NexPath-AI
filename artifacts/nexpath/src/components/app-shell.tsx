@@ -1,23 +1,22 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'wouter';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Activity, BarChart3, Check, ChevronDown, ChevronRight, Clock4, Compass, FileText, Globe2, ListChecks, Map, Menu, PanelLeftClose, PanelLeftOpen, Radar, Telescope, UserRound, UserPen, X } from 'lucide-react';
+import { Map as MapIcon, Activity, BarChart3, Check, ChevronDown, ChevronRight, Clock4, Compass, FileText, Globe2, ListChecks, Menu, PanelLeftClose, PanelLeftOpen, Radar, Telescope, UserRound, UserPen, X } from 'lucide-react';
 import { AboutDialog, Logo, DemoBadge } from '@/components/common';
 import { useStore, completedIds } from '@/lib/store';
 import { cn } from '@/lib/utils';
 
-type NavLeaf = { href: string; label: string; icon: typeof Compass };
+type NavLeaf = { href: string; label: string; icon: typeof Compass; optional?: boolean };
 type NavGroup = { label: string; icon: typeof Compass; children: NavLeaf[] };
 const NAV: (NavLeaf | NavGroup)[] = [
   { href: '/app/understand', label: 'Understand Me', icon: UserRound },
   { label: 'Explore Me', icon: Telescope, children: [
     { href: '/app/explore/market', label: 'Career Market', icon: BarChart3 },
-    { href: '/app/explore/trends', label: 'Trends', icon: Radar },
-    { href: '/app/explore/time-machine', label: 'Career Time Machine', icon: Clock4 },
+    { href: '/app/explore/trends', label: 'Trends', icon: Radar, optional: true },
+    { href: '/app/explore/time-machine', label: 'Career Time Machine', icon: Clock4, optional: true },
   ] },
-  { label: 'Roadmap', icon: Map, children: [
-    { href: '/app/roadmap', label: 'Skill Roadmap', icon: Map },
-    { href: '/app/roadmap/tracker', label: 'Progress Tracker', icon: ListChecks },
+  { label: 'Roadmap', icon: MapIcon, children: [
+    { href: '/app/roadmap', label: 'Skill Roadmap & Progress', icon: ListChecks },
     { href: '/app/roadmap/resume', label: 'My Resume', icon: FileText },
   ] },
   { label: 'Impact', icon: Globe2, children: [{ href: '/app/impact', label: 'SDG Impact', icon: Globe2 }] },
@@ -28,8 +27,7 @@ const CRUMBS: Record<string, string[]> = {
   '/app/explore/market': ['Explore Me', 'Career Market'],
   '/app/explore/trends': ['Explore Me', 'Trends'],
   '/app/explore/time-machine': ['Explore Me', 'Career Time Machine'],
-  '/app/roadmap': ['Roadmap', 'Skill Roadmap'],
-  '/app/roadmap/tracker': ['Roadmap', 'Progress Tracker'],
+  '/app/roadmap': ['Roadmap', 'Skill Roadmap & Progress'],
   '/app/roadmap/resume': ['Roadmap', 'My Resume'],
   '/app/impact': ['Impact', 'SDG Impact'],
   '/app/ai-status': ['System', 'AI Status'],
@@ -79,6 +77,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         {active && <motion.span layoutId="nav-active" className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-sidebar-primary" />}
         <n.icon className={cn('h-4 w-4 shrink-0', active ? 'text-sidebar-primary' : 'opacity-70')} />
         <span className="flex-1 truncate">{n.label}</span>
+        {n.optional && <span className="rounded-full border border-sidebar-foreground/25 px-1.5 py-px text-[9px] uppercase tracking-wider text-sidebar-foreground/60" data-testid={`tag-optional-${n.href.split('/').pop()}`}>Optional</span>}
         {locked && <span className="h-1.5 w-1.5 rounded-full bg-sidebar-foreground/30" title="Complete Understand Me first" />}
       </Link>
     );

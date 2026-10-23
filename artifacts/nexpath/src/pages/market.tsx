@@ -123,7 +123,10 @@ export default function MarketPage() {
         </motion.div>
       )}
       <div className="mt-6"><Disclaimer>Recommendations are decision support based on the information you provided. They do not reflect real-time job availability.</Disclaimer></div>
-      <NextStep href="/app/explore/trends" hint="Next" label="Explore Trends shaping these careers" />
+      {targetId ? <NextStep href="/app/roadmap" hint="Next" label="Next: Build my Roadmap" /> : (
+        <p className="mt-12 rounded-2xl border border-dashed p-5 text-center text-sm text-muted-foreground" data-testid="text-choose-hint">Choose a career above to unlock your Skill Roadmap.</p>
+      )}
+      <p className="mt-4 text-center text-sm text-muted-foreground" data-testid="text-optional-note">Want to go deeper? Trends and the Career Time Machine are optional. You can open them any time from Explore Me in the sidebar.</p>
     </div>
   );
 }

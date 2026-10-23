@@ -61,6 +61,7 @@ export interface Experience {
   description: string;
   /** work, internship or project */
   kind?: string;
+  dates?: string;
 }
 
 export interface Profile {
@@ -76,6 +77,36 @@ export interface Profile {
   selfDescription?: string;
   interests?: string;
   goals?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  links?: string[];
+  certifications?: string[];
+  graduation?: string;
+}
+
+export interface CvRequest {
+  /**
+     * @minLength 1
+     * @maxLength 60000
+     */
+  text: string;
+}
+
+export type CvAnalysisMode = typeof CvAnalysisMode[keyof typeof CvAnalysisMode];
+
+
+export const CvAnalysisMode = {
+  embedding: 'embedding',
+  deterministic: 'deterministic',
+} as const;
+
+export interface CvAnalysis {
+  profile: Profile;
+  /** Profile field keys that were found in the CV text */
+  found: string[];
+  mode: CvAnalysisMode;
+  modeLabel: string;
 }
 
 export type SkillCategory = typeof SkillCategory[keyof typeof SkillCategory];
@@ -90,6 +121,7 @@ export interface Skill {
   id: string;
   name: string;
   category: SkillCategory;
+  synonyms?: string[];
 }
 
 export interface OccupationSkill {

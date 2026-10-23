@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useBuildImpact, useListSdgs, getListSdgsQueryKey, type ImpactRequest, type ImpactNode, type ImpactLink } from '@workspace/api-client-react';
+import { useBuildImpact, useListSdgs, getListSdgsQueryKey, useListSkills, getListSkillsQueryKey, type ImpactRequest, type ImpactNode, type ImpactLink } from '@workspace/api-client-react';
 import { useStore, completedIds } from '@/lib/store';
 import { useAutoMutation } from '@/hooks/use-auto-mutation';
 import { PageHeader, ErrorState, Shimmer, LockedPrompt, Disclaimer, NextStep } from '@/components/common';
@@ -10,12 +10,25 @@ const W = 900;
 const COLX = { career: 120, skill: 450, sdg: 780 } as const;
 
 export default function ImpactPage() {
-  const { profile, targetId, progress } = useStore();
+  const { profile, targetId, progress, source } = useStore();
   const sdgs = useListSdgs({ query: { queryKey: getListSdgsQueryKey(), staleTime: Infinity } });
   const m = useBuildImpact();
   const done = useMemo(() => completedIds(progress), [progress]);
   const payload = useMemo<ImpactRequest | null>(() => (profile ? { occupationId: targetId, completedSkillIds: done } : null), [profile, targetId, done]);
   const retry = useAutoMutation(m.mutate, payload);
+  const catalogue = useListSkills({ query: { queryKey: getListSkillsQueryKey(), staleTime: Infinity } });
+  const existing = useMemo(() => {
+    if (!profile || source !== 'cv' || !catalogue.data) return [];
+    const norm = (x: string) => x.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9+#]+/g, ' ').trim();
+    const byName = new Map<string, (typeof catalogue.data)[number]>();
+    catalogue.data.forEach((k) => [k.name, ...(k.synonyms ?? [])].forEach((n) => byName.set(norm(n), k)));
+    const out = new Map<string, { id: string; name: string }>();
+    [...profile.technicalSkills, ...profile.humanSkills].forEach((n) => { const k = byName.get(norm(n)); if (k) out.set(k.id, { id: k.id, name: k.name }); });
+    return [...out.values()];
+  }, [profile, source, catalogue.data]);
+  const ex = useBuildImpact();
+  const exPayload = useMemo<ImpactRequest | null>(() => (existing.length ? { occupationId: null, completedSkillIds: existing.map((e) => e.id) } : null), [existing]);
+  useAutoMutation(ex.mutate, exPayload);
   const [hover, setHover] = useState<string | null>(null);
   const [sel, setSel] = useState<ImpactLink | null>(null);
   const g = m.data;
@@ -100,6 +113,27 @@ export default function ImpactPage() {
           <motion.div key={sel ? sel.source + sel.target : 'none'} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-4 rounded-2xl border-l-4 border-teal bg-accent/40 p-4 text-sm" data-testid="text-justification">
             {sel ? <><span className="mr-2 rounded bg-card px-1.5 py-0.5 font-mono text-[10px] uppercase">{sel.level}-level</span>{sel.justification}</> : 'Hover or tap a link to read why it connects.'}
           </motion.div>
+
+          {source === 'cv' && (
+            <section className="mt-10" data-testid="section-existing-skills">
+              <h2 className="text-xl font-bold">Existing skills</h2>
+              <p className="mb-4 text-sm text-muted-foreground">Skills from your uploaded CV profile and the SDGs they could connect to. Shown separately from your roadmap record.</p>
+              {existing.length === 0 ? <p className="text-sm text-muted-foreground">None of your CV skills matched the skill catalogue yet.</p> : (
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  {existing.map((k) => {
+                    const links = (ex.data?.links ?? []).filter((l) => l.source.includes(k.id) && l.level === 'skill');
+                    const nums = links.map((l) => ex.data?.nodes.find((n) => n.id === l.target)?.sdgNumber).filter((n): n is number => typeof n === 'number');
+                    return (
+                      <li key={k.id} className="flex items-center gap-3 rounded-2xl border bg-card px-4 py-3" title={links.map((l) => l.justification).join(' ')} data-testid={`row-existing-${k.id}`}>
+                        <span className="flex-1 text-sm font-medium">{k.name}</span>
+                        {ex.isPending ? <span className="text-xs text-muted-foreground">...</span> : nums.length ? nums.map((n) => <span key={n} className="rounded-md px-1.5 py-0.5 text-[10px] font-bold text-white" style={{ background: color(n) }}>SDG {n}</span>) : <span className="text-xs text-muted-foreground">No direct SDG link</span>}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </section>
+          )}
 
           <h2 className="mb-4 mt-10 text-xl font-bold">SDG badge grid</h2>
           {sdgs.isLoading ? <Shimmer className="h-40" /> : (

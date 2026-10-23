@@ -62,13 +62,20 @@ export const GetProfileSummaryBody = zod.object({
   "title": zod.string(),
   "org": zod.string(),
   "description": zod.string(),
-  "kind": zod.string().optional().describe('work, internship or project')
+  "kind": zod.string().optional().describe('work, internship or project'),
+  "dates": zod.string().optional()
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
   "selfDescription": zod.string().optional(),
   "interests": zod.string().optional(),
-  "goals": zod.string().optional()
+  "goals": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "links": zod.array(zod.string()).optional(),
+  "certifications": zod.array(zod.string()).optional(),
+  "graduation": zod.string().optional()
 })
 
 export const GetProfileSummaryResponse = zod.object({
@@ -99,12 +106,56 @@ export const GetProfileSummaryResponse = zod.object({
 
 
 /**
+ * @summary Rule-based extraction of profile fields from CV text (text is never stored or logged)
+ */
+export const analyseCvBodyTextMax = 60000;
+
+
+
+export const AnalyseCvBody = zod.object({
+  "text": zod.string().min(1).max(analyseCvBodyTextMax)
+})
+
+export const AnalyseCvResponse = zod.object({
+  "profile": zod.object({
+  "name": zod.string().optional(),
+  "educationLevel": zod.string(),
+  "major": zod.string(),
+  "institution": zod.string().optional(),
+  "status": zod.string().describe('student, fresh graduate, employed or career switcher'),
+  "experiences": zod.array(zod.object({
+  "title": zod.string(),
+  "org": zod.string(),
+  "description": zod.string(),
+  "kind": zod.string().optional().describe('work, internship or project'),
+  "dates": zod.string().optional()
+})).optional(),
+  "technicalSkills": zod.array(zod.string()),
+  "humanSkills": zod.array(zod.string()),
+  "selfDescription": zod.string().optional(),
+  "interests": zod.string().optional(),
+  "goals": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "links": zod.array(zod.string()).optional(),
+  "certifications": zod.array(zod.string()).optional(),
+  "graduation": zod.string().optional()
+}),
+  "found": zod.array(zod.string()).describe('Profile field keys that were found in the CV text'),
+  "mode": zod.enum(['embedding', 'deterministic']),
+  "modeLabel": zod.string()
+})
+
+
+/**
  * @summary Skill catalogue (used for suggestions)
  */
 export const ListSkillsResponseItem = zod.object({
   "id": zod.string(),
   "name": zod.string(),
-  "category": zod.enum(['technical', 'professional'])
+  "category": zod.enum(['technical', 'professional']),
+  "synonyms": zod.array(zod.string()).optional()
 })
 export const ListSkillsResponse = zod.array(ListSkillsResponseItem)
 
@@ -140,13 +191,20 @@ export const MatchCareersBody = zod.object({
   "title": zod.string(),
   "org": zod.string(),
   "description": zod.string(),
-  "kind": zod.string().optional().describe('work, internship or project')
+  "kind": zod.string().optional().describe('work, internship or project'),
+  "dates": zod.string().optional()
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
   "selfDescription": zod.string().optional(),
   "interests": zod.string().optional(),
-  "goals": zod.string().optional()
+  "goals": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "links": zod.array(zod.string()).optional(),
+  "certifications": zod.array(zod.string()).optional(),
+  "graduation": zod.string().optional()
 })
 
 export const MatchCareersResponse = zod.object({
@@ -260,13 +318,20 @@ export const BuildRoadmapBody = zod.object({
   "title": zod.string(),
   "org": zod.string(),
   "description": zod.string(),
-  "kind": zod.string().optional().describe('work, internship or project')
+  "kind": zod.string().optional().describe('work, internship or project'),
+  "dates": zod.string().optional()
 })).optional(),
   "technicalSkills": zod.array(zod.string()),
   "humanSkills": zod.array(zod.string()),
   "selfDescription": zod.string().optional(),
   "interests": zod.string().optional(),
-  "goals": zod.string().optional()
+  "goals": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "links": zod.array(zod.string()).optional(),
+  "certifications": zod.array(zod.string()).optional(),
+  "graduation": zod.string().optional()
 })
 })
 

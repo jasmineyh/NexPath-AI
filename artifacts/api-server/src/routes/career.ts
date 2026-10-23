@@ -1,5 +1,8 @@
 import { Router, type IRouter } from "express";
+import { analyseCv } from "../lib/cv";
 import {
+  AnalyseCvBody,
+  AnalyseCvResponse,
   BuildImpactBody,
   BuildImpactResponse,
   BuildRoadmapBody,
@@ -31,7 +34,7 @@ import {
 const router: IRouter = Router();
 
 router.get("/skills", (_req, res) => {
-  res.json(ListSkillsResponse.parse(getSkills().map((s) => ({ id: s.id, name: s.name, category: s.category }))));
+  res.json(ListSkillsResponse.parse(getSkills().map((s) => ({ id: s.id, name: s.name, category: s.category, synonyms: s.synonyms }))));
 });
 
 router.get("/occupations", (_req, res) => {
@@ -74,6 +77,16 @@ router.post("/profile/summary", async (req, res) => {
   }
   const summary = await profileSummary(body.data as ProfileInput);
   res.json(GetProfileSummaryResponse.parse(summary));
+});
+
+// The CV text is processed in memory only: never stored and never logged.
+router.post("/cv/analyse", async (req, res) => {
+  const body = AnalyseCvBody.safeParse(req.body);
+  if (!body.success) {
+    res.status(400).json({ error: "CV text is required (max 60,000 characters)" });
+    return;
+  }
+  res.json(AnalyseCvResponse.parse(await analyseCv(body.data.text)));
 });
 
 router.post("/match", async (req, res) => {

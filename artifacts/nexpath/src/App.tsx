@@ -13,7 +13,6 @@ import MarketPage from '@/pages/market';
 import TrendsPage from '@/pages/trends';
 import TimeMachinePage from '@/pages/time-machine';
 import RoadmapPage from '@/pages/roadmap';
-import TrackerPage from '@/pages/tracker';
 import ResumePage from '@/pages/resume';
 import ImpactPage from '@/pages/impact';
 import AiStatusPage from '@/pages/ai-status';
@@ -31,7 +30,7 @@ function AppRoutes() {
           <Route path="/app/explore/trends" component={TrendsPage} />
           <Route path="/app/explore/time-machine" component={TimeMachinePage} />
           <Route path="/app/roadmap" component={RoadmapPage} />
-          <Route path="/app/roadmap/tracker" component={TrackerPage} />
+          <Route path="/app/roadmap/tracker"><Redirect to="/app/roadmap" /></Route>
           <Route path="/app/roadmap/resume" component={ResumePage} />
           <Route path="/app/impact" component={ImpactPage} />
           <Route path="/app/ai-status" component={AiStatusPage} />

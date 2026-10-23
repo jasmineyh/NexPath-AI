@@ -71,11 +71,6 @@ export default function LandingPage() {
       <header className="fixed inset-x-0 top-0 z-50 border-b border-transparent bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
           <Link href="/" data-testid="link-logo"><Logo /></Link>
-          <nav className="flex items-center gap-1 text-sm md:gap-6">
-            <a href="#how" className="hidden text-muted-foreground hover:text-foreground sm:block" data-testid="link-how">How it works</a>
-            <a href="#features" className="hidden text-muted-foreground hover:text-foreground sm:block" data-testid="link-features">Features</a>
-            <Link href="/app/understand" className="rounded-full bg-primary px-4 py-2 font-semibold text-primary-foreground" data-testid="link-open-app">Open app</Link>
-          </nav>
         </div>
       </header>
 
@@ -196,13 +191,6 @@ export default function LandingPage() {
             <p><strong className="text-foreground">Inferences are labelled.</strong> You always see what you said versus what the system guessed.</p>
           </div>
         </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-5 py-24 text-center">
-        <h2 className="mx-auto max-w-3xl text-4xl font-bold md:text-6xl">Your next move, mapped in about ten minutes.</h2>
-        <Link href="/app/understand" data-testid="link-final-cta" className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-xl shadow-primary/20 transition hover:-translate-y-0.5">
-          Explore My Future <ArrowRight className="h-5 w-5" />
-        </Link>
       </section>
 
       <footer className="bg-navy text-sidebar-foreground">

@@ -143,7 +143,7 @@ export default function TimeMachinePage() {
         )}
         {data && <p className="relative px-6 pb-6 text-xs text-white/50 md:px-8">{data.disclaimer}</p>}
       </div>
-      <NextStep href="/app/roadmap" hint="Next" label="Build your Skill Roadmap" />
+      <NextStep href="/app/roadmap" hint="Optional detour" label="Continue to Roadmap" />
     </div>
   );
 }
