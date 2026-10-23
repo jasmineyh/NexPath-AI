@@ -1,104 +1,300 @@
-# NexPath AI — Navigate What's Next.
+# NexPath AI
 
-AI-powered career navigation and reskilling prototype for Malaysian university students, fresh graduates and early-career professionals. Built for the SDC Hackathon 2026 (Future-Ready Workforce). Primary SDG 8; supporting SDGs 4, 9 and 10.
+**Navigate Your Skills. Discover Your Future.**
 
-## Team
+An AI-powered career intelligence and skills development platform that helps individuals understand their capabilities, explore evolving industry demands, discover career opportunities, and build personalised learning pathways.
 
-| | |
+**SDC Hackathon 2026 | Domain 1**
+
+**Team:** No Idea
+
+---
+
+## Project Links
+
+| Resource | Link |
 |---|---|
-| **Team name** | `No Idea` |
-| **Domain / track** | Future-Ready Workforce |
-| **Members** | `Chia Jin Yi`, `Gan Yu Xuan`, `Jasmine Chin Ying Hui`, `Tan Xiao Shih`, `Then Pei Joo` |
+| Live Application | [Launch NexPath AI](INSERT_DEMO_URL) |
+| Pitch Video | [Watch Our Pitch](INSERT_PITCH_VIDEO_URL) |
+| Pitch Deck | [View Presentation](INSERT_PITCH_DECK_URL) |
+| GitHub Repository | [NexPath AI](https://github.com/jasmineyh/NexPath-AI) |
 
-## Links
+> **Note:** Replace the placeholder URLs with publicly accessible links before submission.
 
-| | |
+## 1. Project Overview
+
+### The Problem
+
+As industries evolve through technological advancement and digital transformation, students and job seekers face increasing uncertainty about which skills to develop and how to prepare for future career opportunities.
+
+Career guidance resources are often fragmented, making it difficult for individuals to connect their existing capabilities with industry expectations and actionable development plans.
+
+### Our Solution
+
+**NexPath AI** brings career exploration, skills intelligence, and personalised development planning into one interactive platform.
+
+By combining user profile analysis, skills trends, career exploration, and learning recommendations, NexPath AI helps users make more informed decisions about their professional development.
+
+Our goal is to make career readiness more **accessible, personalised, and actionable**.
+
+## 2. Key Features
+
+| Feature | Description |
 |---|---|
-| **Live app (Replit)** | https://replit.com/t/no-idea-nexpath-ai/repls/NexPath-AI |
-| **Demo video** | `TODO: ` |
-| **Pitch video** | `TODO:` |
+| **My Profile** | Build a personal skills profile through CV uploading or manual entry, with editable extracted information and a visual Skills DNA overview. |
+| **Future Skills Radar** | Explore current skills demand, industry trends, emerging capabilities, and personalised opportunities through interactive data visualisations. |
+| **Career Explorer** | Discover potential career pathways, examine relevant skills requirements, and identify areas for improvement. |
+| **My Pathway** | Explore personalised upskilling and reskilling recommendations through a structured learning roadmap. |
+| **My Career Portfolio** | Present skills, experiences, and relevant contributions through a career portfolio with an interactive Sustainable Development Goals (SDG) visualisation. |
 
-## Submission files
+### User Journey
 
-All required documents are in [`submission/`](./submission):
+```text
+Create Profile / Upload CV
+            |
+            v
+Understand Existing Skills
+            |
+            v
+Explore Future Skills Trends
+            |
+            v
+Discover Career Opportunities
+            |
+            v
+Identify Skills Gaps
+            |
+            v
+Build a Learning Pathway
+            |
+            v
+Showcase Career Portfolio
+```
 
-- `SDC2026_TeamName_Preliminary.pdf` — completed submission template
-- `Replit Proof of Use.pdf` — deployment and AI credits screenshots
-- `RunPod Proof of Use.pdf` — running pod and GPU usage screenshots
+## 3. Technology Stack
 
-## Stack
+| Layer | Technology | Purpose |
+|---|---|---|
+| Frontend | React, TypeScript, Vite | Interactive web application |
+| Styling | Tailwind CSS | Responsive interface and design system |
+| Package Management | pnpm | Monorepo dependency management |
+| Backend | Existing NexPath API server | Application logic and data processing |
+| CV Processing | PDF.js, Mammoth | Text extraction from PDF and DOCX resumes |
+| Data Visualisation | React-based chart components | Skills intelligence, trends, and profile visualisations |
+| Development | VS Code, GitHub, Replit | Development, prototyping, and version control |
+| AI Infrastructure | RunPod worker infrastructure | Server-side AI inference integration where configured |
 
-- Frontend: React + Vite + Tailwind (`artifacts/nexpath`), wouter routing, React Query. Profile, chosen career, roadmap progress and resume edits persist in `localStorage`.
-- Backend: Node + Express 5 + TypeScript (`artifacts/api-server`), contract-first OpenAPI (`lib/api-spec/openapi.yaml`) with generated Zod schemas and React Query hooks.
-- Embedding service: RunPod worker (`runpod-worker/`) serving `sentence-transformers/all-MiniLM-L6-v2`.
-- No database is required: all reference data is in editable JSON files.
+The application uses a modular architecture that separates its frontend, backend services, and AI worker components.
 
-## How to run
+## 4. Replit and RunPod Integration
 
-**On Replit (recommended):** open the Replit project and press Run. Both services start as workflows:
+### Replit — Rapid Prototyping and Development
 
-- `artifacts/api-server: API Server`
-- `artifacts/nexpath: web`
+Replit was used as part of our development workflow to accelerate the initial prototyping and implementation of NexPath AI.
 
-**Locally:**
+Its cloud-based development environment supported rapid iteration of the application's structure, interface, and early functionality.
+
+The project was subsequently refined using VS Code, with GitHub supporting source control and collaboration.
+
+**Replit's role:**
+- Rapid application prototyping
+- Early frontend and backend development
+- Iterative feature implementation
+- Streamlined development workflow
+
+### RunPod — AI Processing Infrastructure
+
+NexPath AI includes a dedicated RunPod worker implementation designed to support server-side AI processing.
+
+The worker infrastructure is organised separately from the frontend, enabling AI inference workloads to be integrated through backend services without exposing API credentials in the browser.
+
+**RunPod worker components:**
+- `handler.py` — worker request handling
+- `Dockerfile` — container configuration
+- `requirements.txt` — Python dependencies
+
+The intended architecture is:
+
+```text
+NexPath AI Frontend
+        |
+        v
+NexPath Backend API
+        |
+        v
+RunPod Serverless Endpoint
+        |
+        v
+AI Processing Worker
+        |
+        v
+Structured Response
+        |
+        v
+NexPath AI User Interface
+```
+
+**Deployment status:** [Confirm whether the RunPod endpoint is deployed and operational, configured but not deployed, or still under development.]
+
+The presence of the worker code does not by itself establish that live RunPod inference is active.
+
+## 5. Project Structure
+
+The repository is organised as a pnpm monorepo.
+
+```text
+NexPath-AI/
+|
+|-- artifacts/
+|   |-- nexpath/
+|   |   |-- src/
+|   |   |   |-- components/     # Reusable UI components
+|   |   |   |-- pages/          # Application pages
+|   |   |   |-- lib/            # Utilities and CV extraction
+|   |   |-- tests/              # Frontend-related tests
+|   |   |-- vite.config.ts
+|   |
+|   |-- api-server/
+|       |-- src/
+|           |-- lib/            # Backend logic and data processing
+|
+|-- runpod-worker/
+|   |-- Dockerfile
+|   |-- handler.py
+|   |-- requirements.txt
+|
+|-- submission/                 # Hackathon submission materials
+|
+|-- package.json
+|-- pnpm-lock.yaml
+|-- pnpm-workspace.yaml
+|-- README.md
+```
+
+## 6. Getting Started
+
+### Prerequisites
+
+Ensure the following tools are installed:
+
+- Node.js (compatible with the project's package requirements)
+- pnpm
+- Git
+- A modern web browser
+
+### Step 1 — Clone the Repository
+
+```bash
+git clone https://github.com/jasmineyh/NexPath-AI.git
+cd NexPath-AI
+```
+
+### Step 2 — Install Dependencies
 
 ```bash
 pnpm install
-# TODO: add the dev commands for api-server and nexpath (see each package.json)
 ```
 
-To change the API contract, edit `lib/api-spec/openapi.yaml` and run:
+### Step 3 — Configure Environment Variables
+
+Configure the environment variables required by the relevant frontend and backend services.
+
+For local frontend development using Windows PowerShell:
+
+```powershell
+$env:PORT="5174"
+$env:BASE_PATH="/"
+```
+
+If using a deployed RunPod endpoint, configure the following securely in the backend environment:
+
+```env
+RUNPOD_API_KEY=your_runpod_api_key
+RUNPOD_ENDPOINT_ID=your_runpod_endpoint_id
+```
+
+Do not commit actual API keys, secrets, or private credentials to GitHub.
+
+### Step 4 — Start the Frontend
+
+From the repository root:
 
 ```bash
-pnpm --filter @workspace/api-spec run codegen
+pnpm --filter @workspace/nexpath dev
 ```
 
-## Environment variables
+Open the application at:
 
-| Variable            | Purpose                                                                                                                     |
-|---------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `EMBEDDING_API_URL` | HTTP endpoint of the embedding service (e.g. a RunPod endpoint running `sentence-transformers/all-MiniLM-L6-v2`). Optional. |
-| `EMBEDDING_API_KEY` | Bearer token for that endpoint. Optional.                                                                                   |
-| `NEXPATH_DATA_DIR`  | Optional override for the data directory (default `artifacts/api-server/data`).                                             |
+**http://localhost:5174/**
 
-If either embedding variable is missing, or the call fails or times out (8 s), matching silently falls back to the rule-based matcher and the UI badge shows "Matching mode: Rule-based fallback".
+If the frontend requires backend services for certain features, those services must also be running and correctly configured.
 
-### Embedding endpoint contract
+### Step 5 — Start the Backend
 
-```
-POST $EMBEDDING_API_URL
-Authorization: Bearer $EMBEDDING_API_KEY
-{ "texts": ["creating charts and reports", "..."] }
+The backend is located under:
 
-200 OK
-{ "vectors": [[0.01, ...], [0.02, ...]] }      // "embeddings" is also accepted
+```text
+artifacts/api-server/
 ```
 
-Cosine similarity is computed in the backend (`src/lib/matcher/embedding.ts`). Skill catalogue vectors are cached in memory after the first call. After a failure the backend stays on the rule-based matcher for 30 seconds before retrying.
+Install dependencies using the root workspace installation and start the backend using the development script defined in its package configuration.
 
-## Matching engine
+Refer to the backend's actual environment requirements before enabling AI-dependent features.
 
-`SkillMatcher` interface (`artifacts/api-server/src/lib/matcher`) with two implementations:
+### Step 6 — Run Checks
 
-1. `deterministic` — normalised keyword, synonym and token-overlap matching. Always runs.
-2. `embedding` — semantic similarity from the external endpoint. When active, its scores are blended with the deterministic scores by taking the higher value per skill, so exact keyword hits are never lost.
+To verify TypeScript compilation:
 
-Career score = 45% weighted required-skill coverage + 35% weighted similarity + 20% interest alignment (interest keywords and related majors). Every result returns matched skills, missing skills and plain-language reasons. The score is a prototype suitability indicator, not a prediction.
+```bash
+pnpm --filter @workspace/nexpath exec tsc --noEmit
+```
 
-`GET /api/health` reports the active mode and `POST /api/similarity` returns the most similar skills for a phrase; both power the AI status page (`/app/ai-status`).
+To create a production build:
 
-## Data files (`artifacts/api-server/data`)
+```bash
+pnpm --filter @workspace/nexpath build
+```
 
-Files are re-read on every request, so edits take effect without a rebuild.
+## 7. Suggested Demo Walkthrough
 
-| File                | Content                                                                                            |
-|---------------------|----------------------------------------------------------------------------------------------------|
-| `skills.json`       | Skill catalogue with synonyms                                                                      |
-| `occupations.json`  | 11 curated occupations, required skills with importance weights, interest keywords, related majors |
-| `courses.json`      | Learning activities and resources per skill                                                        |
-| `trends.json`       | Trend cards with source name, URL and publication date, plus the "last updated" date               |
-| `scenarios.json`    | Explicit assumptions and skill-priority shifts for the Career Time Machine                         |
-| `sdg_mappings.json` | SDG list plus selective occupation-level and skill-level mappings with justifications              |
+For judges exploring the application, we recommend the following sequence:
+
+1. **Create a profile** — Upload a CV or enter personal details manually.
+2. **Explore Skills DNA** — Review existing technical and transferable skills.
+3. **Open Future Skills Radar** — Explore interactive industry demand and skills trend visualisations.
+4. **Discover career pathways** — Compare potential careers and identify relevant skills gaps.
+5. **Build a learning pathway** — Explore recommended upskilling opportunities.
+6. **View the career portfolio** — Explore experiences, skills, and relevant SDG contributions.
+
+This walkthrough demonstrates how NexPath AI connects personal skills understanding with career exploration and development planning.
+
+## 8. Sustainable Development Goals
+
+NexPath AI incorporates the United Nations Sustainable Development Goals as a framework for exploring how skills, learning, and professional contributions may relate to broader sustainability outcomes.
+
+The interactive 17-goal visualisation allows users to explore relevant goals through their confirmed skills, experiences, and activities.
+
+The project's broader objectives are particularly relevant to:
+
+- **SDG 4 — Quality Education:** Supporting accessible learning and skills development.
+- **SDG 8 — Decent Work and Economic Growth:** Encouraging career readiness, employability, and professional development.
+- **SDG 9 — Industry, Innovation and Infrastructure:** Supporting digital skills and technology-driven innovation.
+
+SDG associations in the application should be interpreted as evidence-based relevance indicators rather than independently verified impact measurements.
+
+## 9. Project Status
+
+NexPath AI is a hackathon prototype demonstrating an integrated approach to career intelligence, skills exploration, and personalised development planning.
+
+Some market intelligence visualisations may use curated or illustrative datasets rather than continuously updated labour-market information. Such information should be interpreted according to its displayed source and evidence classification.
+
+AI-dependent functionality may require configured backend services and external inference infrastructure.
+
+---
+
+**NexPath AI — Navigate Your Skills. Discover Your Future.**
+
+Developed for **SDC Hackathon 2026**.
 
 ## Data sources and provenance
 
