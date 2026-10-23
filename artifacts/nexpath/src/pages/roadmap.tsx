@@ -113,7 +113,7 @@ export default function RoadmapPage() {
       {isPending && <CardSkeletons n={4} h="h-32" />}
       {roadmap && (
         <>
-          <div className="mb-8 grid gap-4 rounded-3xl border bg-card p-6 md:grid-cols-[auto_1fr_auto] md:items-center">
+          <div className="mb-8 grid gap-4 rounded-[30px] border border-primary/10 bg-[linear-gradient(135deg,rgba(14,165,233,0.08),rgba(15,23,42,0.02))] p-6 shadow-[0_24px_50px_-34px_rgba(14,165,233,0.7)] md:grid-cols-[auto_1fr_auto] md:items-center">
             <Ring value={overall} size={130} stroke={12} sub="overall" />
             <div>
               <p className="flex items-center gap-2 text-sm text-muted-foreground"><Target className="h-4 w-4 text-teal" /> Target career</p>
@@ -122,7 +122,7 @@ export default function RoadmapPage() {
             </div>
             <div className="grid grid-cols-3 gap-3 text-center">
               {[['Not started', steps.length - done.length - inProg], ['In progress', inProg], ['Completed', done.length]].map(([l, n]) => (
-                <div key={l} className="rounded-2xl bg-secondary/60 px-4 py-3" data-testid={`count-${String(l).replace(' ', '-').toLowerCase()}`}><p className="font-display text-2xl font-bold">{n}</p><p className="text-[11px] text-muted-foreground">{l}</p></div>
+                <div key={l} className="rounded-2xl bg-secondary/60 px-4 py-3 shadow-[0_10px_22px_-20px_rgba(15,23,42,0.5)]" data-testid={`count-${String(l).replace(' ', '-').toLowerCase()}`}><p className="font-display text-2xl font-bold">{n}</p><p className="text-[11px] text-muted-foreground">{l}</p></div>
               ))}
             </div>
           </div>
@@ -152,7 +152,12 @@ export default function RoadmapPage() {
                 })}
               </motion.ol>
               <div className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
-                {selected && <Detail key={selected.skillId + JSON.stringify(progress[selected.skillId] ?? {})} s={selected} p={progress[selected.skillId]} />}
+                {selected && (
+                  <div className="overflow-hidden rounded-[30px] border border-primary/10 bg-[linear-gradient(180deg,rgba(14,165,233,0.06),rgba(15,23,42,0.02))]">
+                    <div className="border-b bg-card/40 px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Selected skill</div>
+                    <div className="p-2"><Detail key={selected.skillId + JSON.stringify(progress[selected.skillId] ?? {})} s={selected} p={progress[selected.skillId]} /></div>
+                  </div>
+                )}
               </div>
             </div>
           )}

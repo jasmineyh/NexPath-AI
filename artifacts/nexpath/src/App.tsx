@@ -26,13 +26,21 @@ function AppRoutes() {
         <Switch>
           <Route path="/app"><Redirect to="/app/understand" /></Route>
           <Route path="/app/understand" component={UnderstandPage} />
+          <Route path="/app/profile"><Redirect to="/app/understand" /></Route>
           <Route path="/app/explore/market" component={MarketPage} />
+          <Route path="/app/career-explorer"><Redirect to="/app/explore/market" /></Route>
           <Route path="/app/explore/trends" component={TrendsPage} />
+          <Route path="/app/future-skills"><Redirect to="/app/explore/trends" /></Route>
+          <Route path="/app/future-skills/trends"><Redirect to="/app/explore/trends" /></Route>
           <Route path="/app/explore/time-machine" component={TimeMachinePage} />
+          <Route path="/app/future-skills/time-machine"><Redirect to="/app/explore/time-machine" /></Route>
           <Route path="/app/roadmap" component={RoadmapPage} />
+          <Route path="/app/pathway"><Redirect to="/app/roadmap" /></Route>
           <Route path="/app/roadmap/tracker"><Redirect to="/app/roadmap" /></Route>
           <Route path="/app/roadmap/resume" component={ResumePage} />
           <Route path="/app/impact" component={ImpactPage} />
+          <Route path="/app/portfolio"><Redirect to="/app/impact" /></Route>
+          <Route path="/app/portfolio/resume"><Redirect to="/app/roadmap/resume" /></Route>
           <Route path="/app/ai-status" component={AiStatusPage} />
           <Route component={NotFound} />
         </Switch>

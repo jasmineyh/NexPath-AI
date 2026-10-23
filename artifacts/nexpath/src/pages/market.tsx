@@ -21,10 +21,14 @@ function MatchCard({ m, rank, chosen, onChoose, compareSel, onCompare }: { m: Ca
   const [open, setOpen] = useState(rank === 1);
   const o = m.occupation;
   return (
-    <motion.article variants={stagger.item} layout className={cn('rounded-3xl border bg-card p-5 md:p-6 transition-shadow', chosen && 'ring-2 ring-teal', rank === 1 && 'shadow-xl shadow-primary/5')} data-testid={`card-match-${o.id}`}>
+    <motion.article variants={stagger.item} layout className={cn('rounded-[28px] border bg-card p-5 md:p-6 transition-all', chosen && 'ring-2 ring-teal/60 shadow-[0_24px_56px_-32px_rgba(45,212,191,0.7)]', rank === 1 && 'border-primary/20 shadow-[0_24px_50px_-28px_rgba(14,165,233,0.72)]')} data-testid={`card-match-${o.id}`}>
+      <div className="mb-4 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        <span>Fit signal</span>
+        <span className="rounded-full bg-primary/10 px-2 py-1 font-medium text-primary">{Math.round(m.score)}% match</span>
+      </div>
       <div className="flex flex-col gap-5 md:flex-row md:items-center">
         <div className="flex items-center gap-4">
-          <span className="font-mono text-xs text-muted-foreground">#{rank}</span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-secondary font-mono text-xs font-semibold text-muted-foreground">#{rank}</span>
           <Ring value={m.score} size={84} stroke={8} sub="indicator" />
         </div>
         <div className="flex-1 min-w-0">
@@ -70,6 +74,29 @@ function MatchCard({ m, rank, chosen, onChoose, compareSel, onCompare }: { m: Ca
   );
 }
 
+function TopSummary({ profile, targetId, results }: { profile: any; targetId: string | null; results: CareerMatch[] }) {
+  const target = results.find((r) => r.occupation.id === targetId);
+  return (
+    <div className="mb-6 grid gap-4 md:grid-cols-3">
+      <div className="rounded-[28px] border border-primary/10 bg-[linear-gradient(135deg,rgba(14,165,233,0.08),rgba(15,23,42,0.02))] p-5 shadow-[0_18px_35px_-30px_rgba(14,165,233,0.8)]">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Profile status</p>
+        <p className="mt-3 font-display text-3xl font-bold">{profile.name || 'Ready'}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{profile.major || 'Career profile complete'}</p>
+      </div>
+      <div className="rounded-[28px] border border-primary/10 bg-card p-5 shadow-[0_18px_35px_-30px_rgba(45,212,191,0.7)]">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Top match</p>
+        <p className="mt-3 font-display text-3xl font-bold">{results[0]?.occupation.title ?? '—'}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{results[0] ? `${Math.round(results[0].score)}% fit` : 'Waiting for calculation'}</p>
+      </div>
+      <div className="rounded-[28px] border border-primary/10 bg-card p-5 shadow-[0_18px_35px_-30px_rgba(251,191,36,0.6)]">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Target focus</p>
+        <p className="mt-3 font-display text-3xl font-bold">{target ? target.occupation.title : 'Not set'}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{target ? `${Math.round(target.score)}% suitability` : 'Choose a career to begin'}</p>
+      </div>
+    </div>
+  );
+}
+
 function Compare({ a, b, onClose }: { a: CareerMatch; b: CareerMatch; onClose: () => void }) {
   const rows: [string, (m: CareerMatch) => number][] = [['Suitability indicator', (m) => m.score], ['Skill coverage', (m) => m.coverage], ['Interest alignment', (m) => m.interestAlignment]];
   return (
@@ -108,6 +135,7 @@ export default function MarketPage() {
       <PageHeader eyebrow="Explore Me / Career Market" title="Future Role Matcher"
         description="Careers ranked against your profile. Scores are a prototype suitability indicator, not a guarantee of fit or employment."
         actions={m.data && <ModeBadge mode={m.data.mode} label={m.data.modeLabel} />} />
+      {m.data && <TopSummary profile={profile} targetId={targetId} results={results} />}
       {cmp.length === 1 && <p className="mb-4 rounded-xl bg-secondary px-4 py-2 text-sm">Pick one more career to compare.</p>}
       <AnimatePresence>{pair.length === 2 && <Compare a={pair[0]} b={pair[1]} onClose={() => setCmp([])} />}</AnimatePresence>
       {m.isError && <ErrorState onRetry={retry} />}

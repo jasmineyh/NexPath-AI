@@ -5,7 +5,7 @@ import { useStore } from '@/lib/store';
 import { useRoadmap } from '@/hooks/use-roadmap';
 import { useAutoMutation } from '@/hooks/use-auto-mutation';
 import { PageHeader, ErrorState, Shimmer, LockedPrompt, Disclaimer, NextStep } from '@/components/common';
-import { ImpactMap, type MapLink, type MapSkill, type MapSdg, type SkillStatus } from '@/components/impact-map';
+import { ImpactMap, SdgWheel, type MapLink, type MapSkill, type MapSdg, type SkillStatus } from '@/components/impact-map';
 import { SdgReference } from '@/components/sdg-reference';
 
 const norm = (x: string) => x.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9+#]+/g, ' ').trim();
@@ -35,6 +35,7 @@ export default function ImpactPage() {
   const exPayload = useMemo<ImpactRequest | null>(() => (existing.length ? { occupationId: null, completedSkillIds: existing.map((e) => e.id) } : null), [existing]);
   useAutoMutation(ex.mutate, exPayload);
   const [active, setActive] = useState<MapLink | null>(null);
+  const [selectedGoal, setSelectedGoal] = useState<number | null>(null);
   const g = m.data;
   const color = (n?: number | null) => sdgs.data?.find((s) => s.number === n)?.color ?? 'hsl(200 80% 35%)';
 
@@ -93,6 +94,18 @@ export default function ImpactPage() {
   return (
     <div>
       <PageHeader eyebrow="Impact / SDG Impact" title="Your SDG record" description="How your career and skills could connect to the Sustainable Development Goals. Hover, focus or tap a line to read why it connects." />
+      {occ && (
+        <div className="mb-6 grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-[28px] border border-primary/10 bg-[linear-gradient(135deg,rgba(14,165,233,0.10),rgba(15,23,42,0.02))] p-5 shadow-[0_18px_35px_-28px_rgba(14,165,233,0.8)]">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Active career</p>
+            <p className="mt-3 font-display text-3xl font-bold">{occ.title}</p>
+          </div>
+          <div className="rounded-[28px] border bg-card p-5 shadow-[0_18px_35px_-28px_rgba(45,212,191,0.7)]">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Current impact view</p>
+            <p className="mt-3 font-display text-3xl font-bold">{model?.count ?? 0} SDG{(model?.count ?? 0) === 1 ? '' : 's'}</p>
+          </div>
+        </div>
+      )}
       {!targetId || (occs.data && !occ) ? (
         <section className="rounded-3xl border border-dashed bg-card p-8 text-center" data-testid="panel-impact-empty">
           <p className="font-display text-lg font-semibold">Choose a career to see your impact map</p>
@@ -113,21 +126,28 @@ export default function ImpactPage() {
                 <p className="text-sm text-muted-foreground">Counted from skills you already have or have completed. Skills still planned or in progress are shown as "Potential after you complete this".</p>
               </div>
 
-              <ImpactMap careerTitle={occ.title} skills={model.skills} sdgs={model.mapSdgs} links={model.links} active={active} onActive={setActive} />
+              <SdgWheel sdgs={sdgs.data ?? []} mapped={model.allowed} selected={selectedGoal} onSelect={setSelectedGoal} />
 
               <div className="mt-4 min-h-[3.5rem] rounded-2xl border-l-4 border-teal bg-accent/40 p-4 text-sm" aria-live="polite" data-testid="text-justification">
-                {active ? active.sentence : 'Hover, focus or tap a line on the map to read why it connects.'}
+                {active ? active.sentence : selectedGoal ? `Goal ${selectedGoal} is ${model.allowed.has(selectedGoal) ? 'currently linked to your profile' : 'not currently linked to your profile'}.` : 'Select a goal on the wheel to read its connection.'}
               </div>
 
               <section className="mt-8" data-testid="list-impact-explanations">
-                <h2 className="text-xl font-bold">Why each link exists</h2>
+                <h2 className="text-xl font-bold">Key connections</h2>
+                {selectedGoal ? (
+                  <div className="mt-4 rounded-2xl border bg-card p-4 text-sm">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Selected SDG</p>
+                    <p className="mt-2 font-display text-xl font-bold">SDG {selectedGoal}</p>
+                    <p className="mt-2 text-muted-foreground">{model.allowed.has(selectedGoal) ? 'This goal is supported by a current or planned skill connection in your profile.' : 'This goal has no current supported connection from your selected career and skill profile.'}</p>
+                  </div>
+                ) : null}
                 {listGroups.map((grp) => (
                   <div key={grp.title} className="mt-4">
                     <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">{grp.title}</h3>
                     <ul className="space-y-2">
-                      {model.links.filter((l) => grp.kinds.includes(l.kind)).map((l) => (
+                      {model.links.filter((l) => grp.kinds.includes(l.kind)).slice(0, 4).map((l) => (
                         <li key={l.key} id={firstFor.get(Number(l.target.slice(4))) === l.key ? `why-sdg-${l.target.slice(4)}` : undefined} className="rounded-2xl border bg-card px-4 py-3 text-sm" data-testid={`explain-${l.key}`}>
-                          <p className="text-xs font-semibold text-muted-foreground">{l.heading}{l.potential && <span className="ml-2 rounded-full bg-amber/15 px-2 py-0.5 text-[10px] text-[hsl(30_80%_30%)]">Potential after you complete this</span>}</p>
+                          <p className="text-xs font-semibold text-muted-foreground">{l.heading}{l.potential && <span className="ml-2 rounded-full bg-amber/15 px-2 py-0.5 text-[10px] text-[hsl(30_80%_30%)]">Potential</span>}</p>
                           <p className="mt-0.5">{l.sentence}</p>
                         </li>
                       ))}
@@ -135,8 +155,8 @@ export default function ImpactPage() {
                   </div>
                 ))}
                 <details className="mt-4 rounded-2xl border bg-card px-4 py-3 text-sm">
-                  <summary className="cursor-pointer font-semibold">Why these skills are on the map</summary>
-                  <ul className="mt-2 space-y-1.5">{model.links.filter((l) => l.kind === 'career-skill').map((l) => <li key={l.key} data-testid={`explain-${l.key}`}>{l.sentence}</li>)}</ul>
+                  <summary className="cursor-pointer font-semibold">Skill links</summary>
+                  <ul className="mt-2 space-y-1.5">{model.links.filter((l) => l.kind === 'career-skill').slice(0, 6).map((l) => <li key={l.key} data-testid={`explain-${l.key}`}>{l.sentence}</li>)}</ul>
                 </details>
               </section>
 

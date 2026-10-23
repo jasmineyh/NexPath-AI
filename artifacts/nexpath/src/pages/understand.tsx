@@ -77,6 +77,7 @@ function Survey({ initial, onDone, startDemo = false }: { initial: Profile; onDo
     true,
     true,
   ];
+  const profileCompletion = Math.min(100, Math.round(((p.educationLevel ? 1 : 0) + (p.major.trim() ? 1 : 0) + (p.status ? 1 : 0) + (p.technicalSkills.length ? 1 : 0) + (p.humanSkills.length ? 1 : 0) + (p.selfDescription.trim() ? 1 : 0)) / 6 * 100));
   const go = (d: number) => { setDir(d); setStep((s) => s + d); };
   const loadDemo = () => { setP(DEMO_PROFILE); setDemo(true); setStep(STEPS.length - 1); };
 
@@ -102,11 +103,15 @@ function Survey({ initial, onDone, startDemo = false }: { initial: Profile; onDo
         </ol>
       </div>
 
-      <div className="rounded-3xl border bg-card p-6 md:p-8">
+      <div className="rounded-[32px] border bg-card p-6 shadow-[0_24px_50px_-34px_rgba(14,165,233,0.7)] md:p-8">
         <div className="mb-6">
           <div className="mb-2 flex items-center justify-between text-xs">
             <span className="font-mono uppercase tracking-[0.16em] text-teal">Step {step + 1} of {STEPS.length}</span>
             {demo && <DemoBadge />}
+          </div>
+          <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl border bg-secondary/40 px-3 py-2 text-xs text-muted-foreground">
+            <span>Profile quality</span>
+            <span className="font-semibold text-foreground">{profileCompletion}%</span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
             <motion.div className="h-full rounded-full bg-gradient-to-r from-primary to-teal" animate={{ width: `${((step + 1) / STEPS.length) * 100}%` }} transition={{ duration: 0.5 }} />
@@ -207,6 +212,13 @@ function Summary({ profile, isDemo, onEdit }: { profile: Profile; isDemo: boolea
   const m = useGetProfileSummary();
   const retry = useAutoMutation(m.mutate, profile);
   const s = m.data;
+  const topStats = s ? [
+    { label: 'Skills stated', value: s.statedSkills.length },
+    { label: 'Inferred strengths', value: s.inferredStrengths.length },
+    { label: 'Direction options', value: s.directions.length },
+  ] : [];
+  const readiness = s ? Math.min(100, Math.max(42, (s.statedSkills.length * 12) + (s.inferredStrengths.length * 8) + (profile.status ? 15 : 0))) : 0;
+
   return (
     <div className="space-y-10">
       <div className="flex flex-wrap items-center gap-2">
@@ -214,6 +226,29 @@ function Summary({ profile, isDemo, onEdit }: { profile: Profile; isDemo: boolea
         {s && <ModeBadge mode={s.mode} label={s.modeLabel} />}
         <button onClick={onEdit} data-testid="button-edit-profile" className="ml-auto inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm hover:bg-secondary"><Pencil className="h-3.5 w-3.5" /> Edit answers</button>
       </div>
+      {s && (
+        <div className="grid gap-4 md:grid-cols-4">
+          <div className="rounded-[26px] border border-primary/8 bg-[linear-gradient(135deg,rgba(14,165,233,0.08),rgba(15,23,42,0.02))] p-4 shadow-[0_18px_35px_-30px_rgba(14,165,233,0.75)]">
+            <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Current status</p>
+            <p className="mt-3 font-display text-2xl font-bold">{profile.status || 'Unspecified'}</p>
+          </div>
+          <div className="rounded-[26px] border bg-card p-4 shadow-[0_18px_35px_-30px_rgba(45,212,191,0.7)]">
+            <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Top skill</p>
+            <p className="mt-3 font-display text-2xl font-bold">{s.statedSkills[0] || 'Not set'}</p>
+          </div>
+          <div className="rounded-[26px] border bg-card p-4 shadow-[0_18px_35px_-30px_rgba(251,191,36,0.6)]">
+            <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Career direction</p>
+            <p className="mt-3 font-display text-2xl font-bold">{s.directions[0] ? s.directions[0].split(' ').slice(0, 3).join(' ') : 'Exploring'}</p>
+          </div>
+          <div className="rounded-[26px] border bg-card p-4 shadow-[0_18px_35px_-30px_rgba(168,85,247,0.6)]">
+            <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Readiness signal</p>
+            <div className="mt-3 flex items-end gap-2">
+              <p className="font-display text-2xl font-bold">{readiness}%</p>
+              <span className="mb-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-primary">Signal</span>
+            </div>
+          </div>
+        </div>
+      )}
       {m.isError && <ErrorState onRetry={retry} />}
       {(m.isPending || m.isIdle) && !m.isError && (
         <div className="grid gap-4 md:grid-cols-2"><Shimmer className="h-48 md:col-span-2" /><Shimmer className="h-40" /><Shimmer className="h-40" /></div>
@@ -223,11 +258,22 @@ function Summary({ profile, isDemo, onEdit }: { profile: Profile; isDemo: boolea
           <section>
             <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-teal">Step B / Career profile summary</p>
             <motion.div variants={stagger.container} initial="hidden" animate="show" className="grid gap-4 md:grid-cols-6">
-              <motion.div variants={stagger.item} className="relative overflow-hidden rounded-3xl bg-navy p-7 text-white md:col-span-6">
+              <motion.div variants={stagger.item} className="relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_top_left,_rgba(45,212,191,0.35),_rgba(15,23,42,0.94)_55%)] p-7 text-white md:col-span-6">
                 <svg className="absolute -right-10 -top-10 h-64 w-64 opacity-20 spin-slow" viewBox="0 0 100 100" aria-hidden>{[10, 20, 30, 40, 48].map((r) => <circle key={r} cx="50" cy="50" r={r} fill="none" stroke="hsl(172 62% 60%)" strokeWidth=".4" />)}</svg>
-                <p className="text-xs uppercase tracking-[0.18em] text-sidebar-primary">Professional overview</p>
+                <div className="relative flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs uppercase tracking-[0.18em] text-sidebar-primary">Professional overview</p>
+                  <span className="rounded-full border border-white/20 bg-white/5 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-white/80">Tailored view</span>
+                </div>
                 <p className="relative mt-3 max-w-3xl font-display text-xl leading-snug md:text-2xl" data-testid="text-overview">{s.overview}</p>
               </motion.div>
+
+              {topStats.map((stat) => (
+                <motion.div key={stat.label} variants={stagger.item} className="rounded-3xl border bg-card p-5">
+                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{stat.label}</p>
+                  <p className="mt-3 font-display text-3xl font-bold text-foreground">{stat.value}</p>
+                </motion.div>
+              ))}
+
               <motion.div variants={stagger.item} className="rounded-3xl border bg-card p-6 md:col-span-3">
                 <h3 className="font-semibold">Skills you stated</h3>
                 <p className="mb-4 text-xs text-muted-foreground">Exactly what you entered.</p>
@@ -286,9 +332,9 @@ type View = 'choose' | 'cv' | 'review' | 'survey' | 'demo' | 'summary';
 
 function EntryChoice({ onPick }: { onPick: (v: 'cv' | 'survey' | 'demo') => void }) {
   const opts = [
-    { v: 'cv' as const, icon: FileUp, t: 'Upload my CV (auto-fill)', d: 'PDF, DOCX or TXT. We read it in your browser, fill the form, and you review every field.', cls: 'bg-gradient-to-br from-primary to-[hsl(186_70%_30%)] text-white md:row-span-2' },
-    { v: 'survey' as const, icon: PenLine, t: 'Fill in manually', d: 'Five short guided steps.', cls: 'bg-card border' },
-    { v: 'demo' as const, icon: FlaskConical, t: 'Load demo profile', d: 'Synthetic persona "Alex Tan", labelled as demo data.', cls: 'border border-amber/40 bg-amber/5' },
+    { v: 'cv' as const, icon: FileUp, t: 'Upload my CV (auto-fill)', d: 'PDF, DOCX or TXT. We read it in your browser, fill the form, and you review every field.', badge: 'Browser-only processing', cls: 'bg-[linear-gradient(135deg,_rgba(14,165,233,0.18),_rgba(45,212,191,0.12),_rgba(15,23,42,0.96))] text-white md:row-span-2 border border-primary/20 shadow-[0_24px_50px_-28px_rgba(14,165,233,0.85)]' },
+    { v: 'survey' as const, icon: PenLine, t: 'Fill in manually', d: 'Five short guided steps.', badge: 'Guided', cls: 'bg-card border border-border/80 shadow-[0_20px_44px_-32px_rgba(15,23,42,0.5)]' },
+    { v: 'demo' as const, icon: FlaskConical, t: 'Load demo profile', d: 'Synthetic persona "Alex Tan", labelled as demo data.', badge: 'Preview', cls: 'border border-amber/40 bg-[linear-gradient(135deg,_rgba(251,191,36,0.08),_rgba(255,255,255,0.05))] shadow-[0_20px_44px_-32px_rgba(251,191,36,0.6)]' },
   ];
   return (
     <div className="space-y-4">
@@ -296,9 +342,12 @@ function EntryChoice({ onPick }: { onPick: (v: 'cv' | 'survey' | 'demo') => void
         {opts.map((o) => (
           <motion.button variants={stagger.item} key={o.v} onClick={() => onPick(o.v)} data-testid={`button-entry-${o.v}`}
             className={cn('card-lift group flex flex-col justify-between rounded-3xl p-6 text-left', o.cls)}>
-            <o.icon className="h-7 w-7 opacity-90" />
+            <div className="flex items-center justify-between gap-3">
+              <o.icon className="h-7 w-7 opacity-90" />
+              <span className="rounded-full border border-white/20 bg-white/5 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-current/80">{o.badge}</span>
+            </div>
             <div className="mt-8"><p className="font-display text-xl font-bold">{o.t}</p><p className="mt-1 text-sm opacity-75">{o.d}</p></div>
-            <ArrowRight className="mt-4 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3 text-xs opacity-80"><span>Start now</span><ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></div>
           </motion.button>
         ))}
       </motion.div>
