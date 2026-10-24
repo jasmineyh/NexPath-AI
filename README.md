@@ -17,7 +17,7 @@ An AI-powered career intelligence and skills development platform that helps ind
 | GitHub Repository | https://github.com/jasmineyh/NexPath-AI |
 | Replit Project | https://replit.com/t/no-idea-nexpath-ai/repls/NexPath-AI |
 | Live Demo | https://nex-path-ai.replit.app |
-| Slide Deck | https://www.canva.com/d/vD0Vz5033uGPRfZ |
+| Slide Deck | https://drive.google.com/file/d/14H2kNIV3NpnaX1ATYeKf7RZp-ItD63nH/view?usp=sharing |
 | Pitching and Demo Video | https://youtu.be/WwaJsyaCerY |
 
 ## Submission files
