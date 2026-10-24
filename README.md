@@ -20,7 +20,14 @@ An AI-powered career intelligence and skills development platform that helps ind
 | Slide Deck | https://www.canva.com/d/vD0Vz5033uGPRfZ |
 | Pitching and Demo Video | https://youtu.be/WwaJsyaCerY |
 
-> **Note:** Replace the placeholder URLs with publicly accessible links before submission.
+## Submission files
+
+All required documents are in [`submission/`](./submission):
+
+- `SDC2026_NoIdea_Preliminary.pdf` — completed submission for preliminary proposal
+- `SDC2026_NoIdea_Replit_POU.pdf` — deployment and AI credits screenshots
+- `SDC2026_NoIdea_RunPod_POU.pdf` — running pod and GPU usage screenshots
+- `SDC2026_NoIdea_TechDeclaration.pdf` — completed submission for tech declaration
 
 ## 1. Project Overview
 
