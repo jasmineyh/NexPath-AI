@@ -14,7 +14,7 @@ AI-powered career navigation and reskilling prototype for Malaysian university s
 
 | | |
 |---|---|
-| **Live app (Replit)** | https://replit.com/t/no-idea-nexpath-ai/repls/NexPath-AI |
+| **Live app (Replit)** | https://nex-path-ai.replit.app |
 | **Demo video** | https://youtu.be/WwaJsyaCerY |
 | **Pitch video** | https://youtu.be/WwaJsyaCerY |
 
