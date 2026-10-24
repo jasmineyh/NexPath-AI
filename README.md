@@ -19,15 +19,19 @@ An AI-powered career intelligence and skills development platform that helps ind
 | Live Demo | https://nex-path-ai.replit.app |
 | Slide Deck | https://drive.google.com/file/d/14H2kNIV3NpnaX1ATYeKf7RZp-ItD63nH/view?usp=sharing |
 | Pitching and Demo Video | https://youtu.be/WwaJsyaCerY |
+[ Pitch Deck PDF file](SDC2026_NoIdea_pitch_deck.pdf) 
 
 ## Submission files
 
 All required documents are in [`submission/`](./submission):
 
-- `SDC2026_NoIdea_Preliminary.pdf` — completed submission for preliminary proposal
-- `SDC2026_NoIdea_Replit_POU.pdf` — deployment and AI credits screenshots
-- `SDC2026_NoIdea_RunPod_POU.pdf` — running pod and GPU usage screenshots
-- `SDC2026_NoIdea_TechDeclaration.pdf` — completed submission for tech declaration
+### Submission Documents
+
+* [Preliminary Report](submission/SDC2026_TeamName_Preliminary.pdf) — completed submission for preliminary proposal
+* [Replit POU](submission/SDC2026_TeamName_Replit_POU.pdf) — deployment and AI credits screenshots
+* [Runpod POU](submission/SDC2026_TeamName_Runpod_POU.pdf) — running pod and GPU usage screenshots
+* [Tech Declaration](submission/SDC2026_TeamName_TechDeclaration.pdf) — completed submission for tech declaration
+
 
 ## 1. Project Overview
 
