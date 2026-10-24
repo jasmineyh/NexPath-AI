@@ -19,6 +19,7 @@ An AI-powered career intelligence and skills development platform that helps ind
 | Live Demo | https://nex-path-ai.replit.app |
 | Slide Deck | https://drive.google.com/file/d/14H2kNIV3NpnaX1ATYeKf7RZp-ItD63nH/view?usp=sharing |
 | Pitching and Demo Video | https://youtu.be/WwaJsyaCerY |
+
 [ Pitch Deck PDF file](SDC2026_NoIdea_pitch_deck.pdf) 
 
 ## Submission files
